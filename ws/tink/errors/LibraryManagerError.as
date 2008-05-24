@@ -33,7 +33,7 @@ package ws.tink.errors
 		
 		public function LibraryManagerError( errCode:uint )
 		{
-			super( "LibraryManagerError: Error #" + errCode +": " + ERROR_MSG[ errCode - BASE_ERROR_CODE ], errCode );
+			super( "Error #" + errCode +": " + ERROR_MSG[ errCode - BASE_ERROR_CODE ], errCode );
 			
 			name = "LibraryManagerError";
 		}
