@@ -27,8 +27,6 @@ package ws.tink.flex.skins.wipe
 	import mx.effects.Tween;
 	import mx.events.FlexEvent;
 	import mx.states.State;
-	
-	import ws.tink.utils.MathUtil;
 
 	public class ButtonSkin extends UIComponent
 	{
@@ -233,10 +231,7 @@ package ws.tink.flex.skins.wipe
 
 				_tweenWipeTarget = value;
 				
-				
-				
 				_tweenWipe = new Tween( this, _tweenWipeValue, _tweenWipeTarget, ButtonSkin.DEFAULT_TWEEN_DURATION, -1, onTweenWipeUpdate, onTweenWipeEnd );
-//				_tweenWipe.easingFunction 
 			}
 		}
 		
