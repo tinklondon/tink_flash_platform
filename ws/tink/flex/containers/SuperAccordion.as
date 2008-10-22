@@ -44,7 +44,7 @@ package ws.tink.flex.containers
 	import mx.styles.StyleManager;
 	
 	import ws.tink.flex.containers.superAccordion.SuperAccordionHeader;
-	import ws.tink.flex.events.IndexesChangedEvent;
+	import ws.tink.flex.events.IndicesChangedEvent;
 	
 	use namespace mx_internal;
 	
@@ -257,8 +257,8 @@ package ws.tink.flex.containers
 	    {
 	        super();
 	
-	        headerRenderer = new ClassFactory(SuperAccordionHeader);
-	
+	        headerRenderer = new ClassFactory( SuperAccordionHeader );
+	 
 	        // Most views can't take focus, but an accordion can.
 	        // However, it draws its own focus indicator on the
 	        // header for the currently selected child view.
@@ -290,7 +290,7 @@ package ws.tink.flex.containers
 	    /**
 	     *  @private
 	     */
-	    private var initialSelectedIndexes:Array = [ -1 ];
+	    private var initialSelectedIndices:Array = [ -1 ];
 	
 	    /**
 	     *  @private
@@ -326,8 +326,8 @@ package ws.tink.flex.containers
 	    private var tweenWidthStarts:Array;
 	    private var tweenHeightStarts:Array;
 	    
-	    private var tweenOldSelectedIndexes:Array;
-	    private var tweenNewSelectedIndexes:Array;
+	    private var tweenOldSelectedIndices:Array;
+	    private var tweenNewSelectedIndices:Array;
 	    private var tween:Tween;
 	
 	    /**
@@ -674,13 +674,13 @@ package ws.tink.flex.containers
 	     */
 	    public function get selectedChildren():Array
 	    {
-	        var indexes:Array = ( proposedSelectedIndexes ) ? proposedSelectedIndexes : _selectedIndexes;
+	        var indexes:Array = ( proposedSelectedIndices ) ? proposedSelectedIndices : _selectedIndices;
 			if( !indexes.length ) return null;
 			
 			var sc:Array = new Array();
 			
-			var numSelectedIndexes:int = indexes.length;
-			for( var i:int = 0; i < numSelectedIndexes; i++ )
+			var numSelectedIndices:int = indexes.length;
+			for( var i:int = 0; i < numSelectedIndices; i++ )
 			{
 				sc.push( Container( getChildAt( indexes[ i ] ) ) );
 			}
@@ -696,17 +696,17 @@ package ws.tink.flex.containers
 	    	// Bail if new indexes don't contain more than one index.
 	        if( !value.length ) return;
 	      	        
-	        var newIndexes:Array = new Array();
+	        var newIndices:Array = new Array();
 	        
 	        var child:Container;
 	        var numItems:int = value.length;
 	        for( var i:int = 0; i < numItems; i++ )
 	        {
 	        	child = Container( value[ i ] );
-	        	if( contains( child ) ) newIndexes.push( getChildIndex( child ) );
+	        	if( contains( child ) ) newIndices.push( getChildIndex( child ) );
 	        }
 	        
-	        selectedIndexes = newIndexes;
+	        selectedIndices = newIndices;
 	    }
 	
 	
@@ -733,21 +733,21 @@ package ws.tink.flex.containers
 	     *  @private
 	     *  Storage for the selectedIndex and selectedChild properties.
 	     */
-	    private var _selectedIndexes:Array;
+	    private var _selectedIndices:Array;
 	
 	    /**
 	     *  @private
 	     */
-	    private var proposedSelectedIndexes:Array;
+	    private var proposedSelectedIndices:Array;
 	
 		public function isSelectedIndex( value:int ):Boolean
 		{
-			return arrayContains( _selectedIndexes, value );
+			return arrayContains( _selectedIndices, value );
 		}
 		public function isSelectedChild( value:Container ):Boolean
 		{
 			if( !contains( value ) ) return false
-			return arrayContains( _selectedIndexes, getChildIndex( value ) );
+			return arrayContains( _selectedIndices, getChildIndex( value ) );
 		}
 		
 		
@@ -757,24 +757,24 @@ package ws.tink.flex.containers
 			if( value < 0 || value > numChildren - 1 ) return;
 			
 			// If the index is already selected bail.
-			if( proposedSelectedIndexes )
+			if( proposedSelectedIndices )
 			{
-				if( arrayContains( proposedSelectedIndexes, value ) ) return;
+				if( arrayContains( proposedSelectedIndices, value ) ) return;
 			}
-			else if( arrayContains( _selectedIndexes, value ) )
+			else if( arrayContains( _selectedIndices, value ) )
 			{
 				return;
 			}
 
-			proposedSelectedIndexes = ( _selectedIndexes ) ? _selectedIndexes.concat() : new Array();
-			proposedSelectedIndexes.push( value );
-			proposedSelectedIndexes.sort( Array.NUMERIC );
+			proposedSelectedIndices = ( _selectedIndices ) ? _selectedIndices.concat() : new Array();
+			proposedSelectedIndices.push( value );
+			proposedSelectedIndices.sort( Array.NUMERIC );
 			
 			invalidateProperties();
 	
 	        // Set a flag which will cause the History Manager to save state
 	        // the next time measure() is called.
-	        if( historyManagementEnabled && _selectedIndexes && !bInLoadState ) bSaveState = true;
+	        if( historyManagementEnabled && _selectedIndices && !bInLoadState ) bSaveState = true;
 	        
 	        dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
 		}
@@ -782,28 +782,28 @@ package ws.tink.flex.containers
 		public function deselectIndex( value:int ):void
 		{
 			// If the value is out of range then bail.
-			if( value < 0 || value > numChildren - 1 || _selectedIndexes.length == 1 ) return;
+			if( value < 0 || value > numChildren - 1 || _selectedIndices.length == 1 ) return;
 			
 			// If the index isn't already selected bail.
-			if( proposedSelectedIndexes )
+			if( proposedSelectedIndices )
 			{
-				if( !arrayContains( proposedSelectedIndexes, value ) ) return;
+				if( !arrayContains( proposedSelectedIndices, value ) ) return;
 			}
-			else if( !arrayContains( _selectedIndexes, value ) )
+			else if( !arrayContains( _selectedIndices, value ) )
 			{
 				return;
 			}
 			
 			// IF there are no proposed indices use selected indices
-			if( !proposedSelectedIndexes ) proposedSelectedIndexes = _selectedIndexes.concat();
+			if( !proposedSelectedIndices ) proposedSelectedIndices = _selectedIndices.concat();
 			
 			//var valueChanged:Boolean = false;
-			var numItems:int = proposedSelectedIndexes.length;
+			var numItems:int = proposedSelectedIndices.length;
 			for( var i:int = 0; i < numItems; i++ )
 			{
-				if( proposedSelectedIndexes[ i ] == value )
+				if( proposedSelectedIndices[ i ] == value )
 				{
-					proposedSelectedIndexes.splice( i, 1 );
+					proposedSelectedIndices.splice( i, 1 );
 					//valueChanged = true;
 					break;
 				}
@@ -815,7 +815,7 @@ package ws.tink.flex.containers
 
 	        // Set a flag which will cause the History Manager to save state
 	        // the next time measure() is called.
-	        if( historyManagementEnabled && _selectedIndexes && !bInLoadState ) bSaveState = true;
+	        if( historyManagementEnabled && _selectedIndices && !bInLoadState ) bSaveState = true;
 	        
 	        dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
 		}
@@ -835,17 +835,17 @@ package ws.tink.flex.containers
 	     *  @tiptext Specifies the index of the child view that is currently displayed
 	     *  @helpid 3402
 	     */
-	    public function get selectedIndexes():Array
+	    public function get selectedIndices():Array
 	    {
-	        if( proposedSelectedIndexes ) return proposedSelectedIndexes;
+	        if( proposedSelectedIndices ) return proposedSelectedIndices;
 	
-	        return _selectedIndexes;
+	        return _selectedIndices;
 	    }
 	
 	    /**
 	     *  @private
 	     */
-	    public function set selectedIndexes( value:Array ):void
+	    public function set selectedIndices( value:Array ):void
 	    {
 	        // Bail if new indexes don't contain more than one index.
 	        if( !value.length ) return;
@@ -855,18 +855,18 @@ package ws.tink.flex.containers
 			value = arrayStripDuplcates( value );
 			value.sort( Array.NUMERIC );
 	        
-	        var numIndexes:int = value.length;
+	        var numIndices:int = value.length;
 	        
-	        if( _selectedIndexes )
+	        if( _selectedIndices )
 	        {
-	        	if( _selectedIndexes.length == numIndexes )
+	        	if( _selectedIndices.length == numIndices )
 	        	{
 			        var valueChanged:Boolean = false;
 			        var i:int
 			       
-					for( i = 0; i < numIndexes; i++ )
+					for( i = 0; i < numIndices; i++ )
 					{
-						if( value[ i ] != _selectedIndexes[ i ] )
+						if( value[ i ] != _selectedIndices[ i ] )
 						{
 							valueChanged = true;
 							break;
@@ -877,17 +877,17 @@ package ws.tink.flex.containers
 			    }
 		    }
 		
-			var newIndexes:Array = new Array();
+			var newIndices:Array = new Array();
 			
 			var index:int;
-			for( i = 0; i < numIndexes; i++ )
+			for( i = 0; i < numIndices; i++ )
 			{
 				index = int( value[ i ] );
-	        	if( index >= 0 || index < numChildren ) newIndexes.push( index );
+	        	if( index >= 0 || index < numChildren ) newIndices.push( index );
 			}
 			
 			
-			if( !newIndexes.length ) return;
+			if( !newIndices.length ) return;
 			
 	        // Propose the specified value as the new value for selectedIndex.
 	        // It gets applied later when commitProperties() calls commitSelectedIndex().
@@ -897,12 +897,12 @@ package ws.tink.flex.containers
 	        // can change the proposed index before it is committed. Also,
 	        // childAddHandler() proposes a value of 0 when it creates the first
 	        // child, if no value has yet been proposed.
-	        proposedSelectedIndexes = newIndexes;
+	        proposedSelectedIndices = newIndices;
 	        invalidateProperties();
 	
 	        // Set a flag which will cause the History Manager to save state
 	        // the next time measure() is called.
-	        if (historyManagementEnabled && _selectedIndexes.length && !bInLoadState) bSaveState = true;
+	        if (historyManagementEnabled && _selectedIndices.length && !bInLoadState) bSaveState = true;
 		
 	        dispatchEvent(new FlexEvent( FlexEvent.VALUE_COMMIT ) );
 	    }
@@ -976,12 +976,12 @@ package ws.tink.flex.containers
 	        if( newIndex == oldIndex )  return;
 	
 			var i:int;
-			var numSelectedIndexes:int = selectedIndexes.length;
+			var numSelectedIndices:int = selectedIndices.length;
 			
 	        // De-select the old selected index header
-        	for( i = 0; i < numSelectedIndexes; i++ )
+        	for( i = 0; i < numSelectedIndices; i++ )
         	{
-        		var oldSelectedHeader:SuperAccordionHeader = getHeaderAt( selectedIndexes[ i ] );
+        		var oldSelectedHeader:SuperAccordionHeader = getHeaderAt( selectedIndices[ i ] );
 		        if (oldSelectedHeader)
 		        {
 		            oldSelectedHeader.selected = false;
@@ -997,9 +997,9 @@ package ws.tink.flex.containers
 	        shuffleHeaders( oldIndex, newIndex );
 	
 	        // Select the new selected index header
-        	for( i = 0; i < numSelectedIndexes; i++ )
+        	for( i = 0; i < numSelectedIndices; i++ )
         	{
-		        var newSelectedHeader:SuperAccordionHeader = getHeaderAt( selectedIndexes[ i ] );
+		        var newSelectedHeader:SuperAccordionHeader = getHeaderAt( selectedIndices[ i ] );
 		        if( newSelectedHeader )
 		        {
 		        	//tink
@@ -1170,10 +1170,10 @@ package ws.tink.flex.containers
 	        // This check was moved from the beginning of this function to
 	        // here to fix bugs 103665/104213.
 	        var selectedChild:Container;
-	        var numSelectedIndexes:int = selectedIndexes.length;
-        	for( i = 0; i < numSelectedIndexes; i++ )
+	        var numSelectedIndices:int = selectedIndices.length;
+        	for( i = 0; i < numSelectedIndices; i++ )
         	{
-        		selectedChild = Container( getChildAt( selectedIndexes[ i ] ) );
+        		selectedChild = Container( getChildAt( selectedIndices[ i ] ) );
         		if( selectedChild && selectedChild.numChildrenCreated == -1 ) return;
         	}
 
@@ -1212,7 +1212,7 @@ package ws.tink.flex.containers
 	
 	        // Determine the width and height of the content area.
 	        var localContentWidth:Number = calcContentWidth();
-	        var localContentHeight:Number = calcContentHeight( _selectedIndexes.length );
+	        var localContentHeight:Number = calcContentHeight( _selectedIndices.length );
 	
 	        // Arrange the headers, the content clips,
 	        // based on selectedIndex.
@@ -1257,7 +1257,7 @@ package ws.tink.flex.containers
                     if( contentW > content.getExplicitOrMeasuredWidth() ) contentW = content.getExplicitOrMeasuredWidth();
                 }
 				
-	            if( arrayContains( selectedIndexes, i ) )
+	            if( arrayContains( selectedIndices, i ) )
 	            {
 	                content.move( contentX, y );
 	                content.visible = true;
@@ -1465,8 +1465,8 @@ package ws.tink.flex.containers
 	     */
 	    public function saveState():Object
 	    {
-	        var indexes:Array = ( !_selectedIndexes.length ) ? null : _selectedIndexes;
-	        return { selectedIndexes: indexes };
+	        var indexes:Array = ( !_selectedIndices.length ) ? null : _selectedIndices;
+	        return { selectedIndices: indexes };
 	    }
 	
 	    /**
@@ -1474,20 +1474,24 @@ package ws.tink.flex.containers
 	     */
 	    public function loadState(state:Object):void
 	    {
-	        var newIndexes:Array = state ? state.selectedIndex as Array : null;
+	        var newIndices:Array = state ? state.selectedIndices.split( "%2C" ) : null;
 	
-	        if( !newIndexes ) newIndexes = initialSelectedIndexes;
+	        if( !newIndices ) newIndices = initialSelectedIndices;
 	
 	        //if( newIndex == -1 ) newIndex = 0;
-			var valueChanged:Boolean = false;
-			newIndexes.sort( Array.NUMERIC );
-	        var numIndexes:int = newIndexes.length;
-			for( var i:int = 0; i < numIndexes; i++ )
+			var valueChanged:Boolean = ( newIndices.length != _selectedIndices.length );
+			
+			if( !valueChanged )
 			{
-				if( newIndexes[ i ] != _selectedIndexes[ i ] )
+				newIndices.sort( Array.NUMERIC );
+		        var numIndices:int = newIndices.length;
+				for( var i:int = 0; i < numIndices; i++ )
 				{
-					valueChanged = true;
-					break;
+					if( newIndices[ i ] != _selectedIndices[ i ] )
+					{
+						valueChanged = true;
+						break;
+					}
 				}
 			}
 
@@ -1496,7 +1500,7 @@ package ws.tink.flex.containers
 	            // When loading a new state, we don't want to
 	            // save our current state in the history stack.
 	            bInLoadState = true;
-	            selectedIndexes = newIndexes;
+	            selectedIndices = newIndices;
 	            bInLoadState = false;
 	        }
 	    }
@@ -1556,12 +1560,12 @@ package ws.tink.flex.containers
 	        // Before creating the header, un-select the currently selected
 	        // header. We will be selecting the correct header below.
 	        var header:SuperAccordionHeader;
-	        if( selectedIndexes )
+	        if( selectedIndices )
 	        {
-		        var numSelectedIndexes:int = selectedIndexes.length;
-		        for( i = 0; i < numSelectedIndexes; i++ )
+		        var numSelectedIndices:int = selectedIndices.length;
+		        for( i = 0; i < numSelectedIndices; i++ )
 		        {
-		            header = getHeaderAt( selectedIndexes[ i ] );
+		            header = getHeaderAt( selectedIndices[ i ] );
 		            if( header ) header.selected = false;
 		        }
 			}
@@ -1616,11 +1620,11 @@ package ws.tink.flex.containers
 	        if( index != numChildren - 1 ) shuffleHeaders(numChildren - 1, index);
 	
 	        // Make sure the correct headers are selected
-	        if( selectedIndexes )
+	        if( selectedIndices )
 	        {
-		        for( i = 0; i < numSelectedIndexes; i++ )
+		        for( i = 0; i < numSelectedIndices; i++ )
 		        {
-		        	header = getHeaderAt( selectedIndexes[ i ] );
+		        	header = getHeaderAt( selectedIndices[ i ] );
 		        	//header.selected = true;
 		        }
 			}
@@ -1666,8 +1670,6 @@ package ws.tink.flex.containers
 	            if( i > 0 ) contentHeight -= verticalGap;
 	        }
 	
-			/**   **/
-			// TODO need to take more notice of the vertical gap
 	        return ( numSelectedIndices ) ? contentHeight / numSelectedIndices : contentHeight;
 	    }
 	
@@ -1686,13 +1688,13 @@ package ws.tink.flex.containers
 	    private function headerClickHandler( event:Event ):void
 	    {
 	        var header:SuperAccordionHeader = SuperAccordionHeader( event.currentTarget );
-	        var prevIndices:Array = ( proposedSelectedIndexes ) ? proposedSelectedIndexes : selectedIndexes;
+	        var prevIndices:Array = ( proposedSelectedIndices ) ? proposedSelectedIndices : selectedIndices;
 	        
 	        var selectedChildIndex:int = getChildIndex( Container( IDataRenderer( header ).data ) );
 	       
 			var wasSelected:Boolean = false;
-	        var numPreviousIndexes:int = prevIndices.length;
-	        for( var i:int = 0; i < numPreviousIndexes; i++ )
+	        var numPreviousIndices:int = prevIndices.length;
+	        for( var i:int = 0; i < numPreviousIndices; i++ )
 	        {
 	        	// If this index was previously selected
 	        	if( prevIndices[ i ] == selectedChildIndex )
@@ -1706,7 +1708,7 @@ package ws.tink.flex.containers
 	        // If this index wasn't previously selected
 	        if( !wasSelected ) selectIndex( selectedChildIndex );
 
-			dispatchChangeEvent( prevIndices, selectedIndexes, event );
+			dispatchChangeEvent( prevIndices, selectedIndices, event );
 	    }
 	
 	    /**
@@ -1714,31 +1716,32 @@ package ws.tink.flex.containers
 	     */
 	    private function commitSelectedIndices():void
 	    {
-	        if( !proposedSelectedIndexes ) return;
+	        if( !proposedSelectedIndices ) return;
 
 	        // The selectedIndex must be undefined if there are no children,
 	        // even if a selectedIndex has been proposed.
 	        if( numChildren == 0 )
 	        {
-	            _selectedIndexes = null;
+	            _selectedIndices = null;
 	            return;
 	        }
 	
 			var i:int;
-			var newIndexes:Array = arrayStripDuplcates( proposedSelectedIndexes );
-			newIndexes.sort( Array.NUMERIC );
-	        proposedSelectedIndexes = null;
+			var numNewIndices:int;
+			var newIndices:Array = arrayStripDuplcates( proposedSelectedIndices );
+			newIndices.sort( Array.NUMERIC );
+	        proposedSelectedIndices = null;
 			
 	        // Ensure that the new index is in bounds.
-	        if( newIndexes[ 0 ] < 0 ) newIndexes[ 0 ] = 0;
-	        if( newIndexes[ newIndexes.length - 1 ] > numChildren - 1 ) newIndexes[ newIndexes.length - 1 ] = numChildren - 1;
+	        if( newIndices[ 0 ] < 0 ) newIndices[ 0 ] = 0;
+	        if( newIndices[ newIndices.length - 1 ] > numChildren - 1 ) newIndices[ newIndices.length - 1 ] = numChildren - 1;
 	
 	        // Store the previous indices
-	        var prevIndices:Array = ( _selectedIndexes ) ? _selectedIndexes : new Array();
+	        var prevIndices:Array = ( _selectedIndices ) ? _selectedIndices : new Array();
 			
 			var oldIndices:Array = new Array();
-			var numSelectedIndices:int = ( _selectedIndexes ) ? _selectedIndexes.length : 0;
-			var numNewIndices:int = newIndexes.length;
+			var numSelectedIndices:int = ( _selectedIndices ) ? _selectedIndices.length : 0;
+			numNewIndices = newIndices.length;
 			if( numNewIndices < numSelectedIndices )
 			{
 				var matchFound:Boolean;
@@ -1746,10 +1749,10 @@ package ws.tink.flex.containers
 				for( var s:int = 0; s < numSelectedIndices; s++ )
 				{
 					matchFound = false;
-					selectedIndex = int( _selectedIndexes[ s ] );
+					selectedIndex = int( _selectedIndices[ s ] );
 					for( var n:int = 0; n < numNewIndices; n++ )
 					{
-						if( int( newIndexes[ n ] ) == selectedIndex )
+						if( int( newIndices[ n ] ) == selectedIndex )
 						{
 							matchFound = true;
 							break;
@@ -1787,27 +1790,27 @@ package ws.tink.flex.containers
 	        }
 	
 	        // Unfocus the old header.
-	        if( arrayContains( newIndexes, _focusedIndex ) ) drawHeaderFocus( _focusedIndex, false );
+	        if( arrayContains( newIndices, _focusedIndex ) ) drawHeaderFocus( _focusedIndex, false );
 
 	        // Commit the new indices.
-	        _selectedIndexes = newIndexes;
+	        _selectedIndices = newIndices;
 	
 	        // Remember our initial selected indices so we can
 	        // restore to our default state when the history
 	        // manager requests it.
-	        if( initialSelectedIndexes[ 0 ] == -1 ) initialSelectedIndexes = _selectedIndexes;
+	        if( initialSelectedIndices[ 0 ] == -1 ) initialSelectedIndices = _selectedIndices;
 	
 	        // Select the new headers.
-			var numNewIndexes:int = newIndexes.length;
-	        for( i = 0; i < numNewIndexes; i++ )
+			numNewIndices = newIndices.length;
+	        for( i = 0; i < numNewIndices; i++ )
 	        {
-	        	getHeaderAt( newIndexes[ i ] ).selected = true;
+	        	getHeaderAt( newIndices[ i ] ).selected = true;
 	        }
 	        
-	        if( !arrayContains( newIndexes, _focusedIndex ) )
+	        if( !arrayContains( newIndices, _focusedIndex ) )
 	        {
 	            // Focus the new header.
-	            _focusedIndex = newIndexes[ 0 ];
+	            _focusedIndex = newIndices[ 0 ];
 	            drawHeaderFocus( _focusedIndex, showFocusIndicator );
 	        }
 	
@@ -1820,15 +1823,15 @@ package ws.tink.flex.containers
 			// If this is the very first time commitProperties has been invoked.
 	        if( getStyle("openDuration") == 0 || !prevIndices.length )
 	        {
-		        for( i = 0; i < numNewIndexes; i++ )
+		        for( i = 0; i < numNewIndices; i++ )
 		        {
 		            // Need to set the new index to be visible here
 		            // in order for effects to work.
-		            Container( getChildAt( newIndexes[ i ] ) ).setVisible( true );
+		            Container( getChildAt( newIndices[ i ] ) ).setVisible( true );
 		
 		            // Now that the effects have been triggered, we can hide the
 		            // current view until it is properly sized and positioned below.
-		            Container( getChildAt( newIndexes[ i ] ) ).setVisible( false, true );
+		            Container( getChildAt( newIndices[ i ] ) ).setVisible( false, true );
 		        }
 		        
 		        instantiateSelectedChildren();
@@ -1836,7 +1839,7 @@ package ws.tink.flex.containers
 	        else
 	        {
 				if( tween ) tween.endTween();
-				startTween( oldIndices, prevIndices, newIndexes );
+				startTween( oldIndices, prevIndices, newIndices );
 	        }
 	    }
 	
@@ -1888,17 +1891,17 @@ package ws.tink.flex.containers
 	    /**
 	     *  @private
 	     */
-	    private function dispatchChangeEvent( oldIndexes:Array, newIndexes:Array, cause:Event = null ):void
+	    private function dispatchChangeEvent( oldIndices:Array, newIndices:Array, cause:Event = null ):void
 	    {
 	        var relatedObject:DisplayObject = DisplayObject( IDataRenderer( cause.currentTarget ).data );
 
-	        dispatchEvent( new IndexesChangedEvent( IndexesChangedEvent.CHANGE, false, false, relatedObject, oldIndexes, newIndexes, cause ) );
+	        dispatchEvent( new IndicesChangedEvent( IndicesChangedEvent.CHANGE, false, false, relatedObject, oldIndices, newIndices, cause ) );
 	    }
 	
 	    /**
 	     *  @private
 	     */
-	    private function startTween( oldSelectedIndexes:Array, prevSelectedIndices:Array, newSelectedIndexes:Array ):void
+	    private function startTween( oldSelectedIndices:Array, prevSelectedIndices:Array, newSelectedIndices:Array ):void
 	    {
 	        bSliding = true;
 	        
@@ -1910,9 +1913,9 @@ package ws.tink.flex.containers
 	        // too slow to recalculate at every tween step.)
 	        tweenViewMetrics = viewMetricsAndPadding;
 	        tweenContentWidth = calcContentWidth();
-	        tweenContentHeight = calcContentHeight( _selectedIndexes.length );
-	        tweenOldSelectedIndexes = oldSelectedIndexes;
-	        tweenNewSelectedIndexes = newSelectedIndexes;
+	        tweenContentHeight = calcContentHeight( _selectedIndices.length );
+	        tweenOldSelectedIndices = oldSelectedIndices;
+	        tweenNewSelectedIndices = newSelectedIndices;
 
 	        // A single instance of Tween drives the animation.
 	        var openDuration:Number = getStyle( "openDuration" );
@@ -1930,7 +1933,7 @@ package ws.tink.flex.containers
 	        {
 	        	content = Container( getChildAt( i ) );
 	        	
-	        	if( arrayContains( newSelectedIndexes, getChildIndex( content ) ) )
+	        	if( arrayContains( newSelectedIndices, getChildIndex( content ) ) )
 	        	{
 	        		// Tell the EffectManager that we're tweening.
 	        		content.tweeningProperties = ["x", "y", "width", "height"];
@@ -1955,7 +1958,7 @@ package ws.tink.flex.containers
 						content.scrollRect = new Rectangle( 0, 0, tweenContentWidth, tweenHeightStarts[ i ] );
 					}
 	        	}
-	        	else if( arrayContains( oldSelectedIndexes, i ) )
+	        	else if( arrayContains( oldSelectedIndices, i ) )
 	        	{
 	        		// Tell the EffectManager that we're tweening.
 	        		content.tweeningProperties = ["x", "y", "width", "height"];
@@ -1994,7 +1997,7 @@ package ws.tink.flex.containers
 	            header.$y = childrenY;
 	            childrenY += header.height;
 				
-				if( arrayContains( tweenNewSelectedIndexes, i ) || arrayContains( tweenOldSelectedIndexes, i ) )
+				if( arrayContains( tweenNewSelectedIndices, i ) || arrayContains( tweenOldSelectedIndices, i ) )
 				{
 					content = Container( getChildAt( i ) );
 					content.scrollRect = new Rectangle( 0, 0, tweenContentWidth, tweenHeightStarts[ i ] + ( tweenHeightDifferences[ i ] * value ) );
@@ -2031,7 +2034,7 @@ package ws.tink.flex.containers
 	            header.$y = childrenY;
 	            childrenY += header.height;
 				
-				if( arrayContains( tweenNewSelectedIndexes, i ) )
+				if( arrayContains( tweenNewSelectedIndices, i ) )
 				{
 					content = Container( getChildAt( i ) );
 	                content.cacheAsBitmap = false;
@@ -2042,7 +2045,7 @@ package ws.tink.flex.containers
 	                childrenY += tweenHeightStarts[ i ] + tweenHeightDifferences[ i ];
 				}
 				
-				if( arrayContains( tweenOldSelectedIndexes, i ) )
+				if( arrayContains( tweenOldSelectedIndices, i ) )
 				{
 					content = Container( getChildAt( i ) );
 		            content.cacheAsBitmap = false;
@@ -2059,8 +2062,8 @@ package ws.tink.flex.containers
 	        tweenViewMetrics = null;
 	        tweenContentWidth = NaN;
 	        tweenContentHeight = NaN;
-	        tweenOldSelectedIndexes = null;
-	        tweenNewSelectedIndexes = null;
+	        tweenOldSelectedIndices = null;
+	        tweenNewSelectedIndices = null;
 	
 	        tween = null;
 	
@@ -2251,7 +2254,7 @@ package ws.tink.flex.containers
 
 	        // If we just created the first child and no selected index has
 	        // been proposed, then propose this child to be selected.
-	        if( numChildren == 1 && !proposedSelectedIndexes )
+	        if( numChildren == 1 && !proposedSelectedIndices )
 	        {
 	            selectIndex( 0 );
 	
@@ -2295,8 +2298,8 @@ package ws.tink.flex.containers
 	        	child.removeEventListener( "iconChanged", iconChangedHandler );
 			}*/
 			
-	       	var oldIndexes:Array = selectedIndexes;
-	        var newIndexes:Array;
+	       	var oldIndices:Array = selectedIndices;
+	        var newIndices:Array;
 	        var index:int = getChildIndex( child );
 	        
 	        var nChildren:int = numChildren - 1;
@@ -2317,11 +2320,11 @@ package ws.tink.flex.containers
 	            // There's no need to go through all of commitSelectedIndex(),
 	            // and it wouldn't do the right thing, anyway, because
 	            // it bails immediately if numChildren is 0.
-	            newIndexes = new Array();
-	            newIndexes[ 0 ] = _focusedIndex = -1;
+	            newIndices = new Array();
+	            newIndices[ 0 ] = _focusedIndex = -1;
 	        }
 	
-	        else if( index > selectedIndexes[ selectedIndexes.length - 1 ] )
+	        else if( index > selectedIndices[ selectedIndices.length - 1 ] )
 	        {
 	            return;
 	        }
@@ -2329,54 +2332,54 @@ package ws.tink.flex.containers
 	        // If we deleted a child before the selected child, the
 	        // index of that selected child is now 1 less than it was,
 	        // but the selected child itself hasn't changed.
-	       /* else if (index < selectedIndexes[ selectedIndexes.length - 1 ] )
+	       /* else if (index < selectedIndices[ selectedIndices.length - 1 ] )
 	        {
-	        	newIndexes = new Array();
-	        	var numSelectedIndexes:int = selectedIndexes.length;
-	        	for( var i:int = 0; i < numSelectedIndexes; i++ )
+	        	newIndices = new Array();
+	        	var numSelectedIndices:int = selectedIndices.length;
+	        	for( var i:int = 0; i < numSelectedIndices; i++ )
 	        	{
-	        		if( index < selectedIndexes[ i ] )
+	        		if( index < selectedIndices[ i ] )
 	        		{
-	        			newIndexes.push( selectedIndexes[ i ] );
+	        			newIndices.push( selectedIndices[ i ] );
 	        		}
-	        		else if( index > selectedIndexes[ i ] )
+	        		else if( index > selectedIndices[ i ] )
 	        		{
-	        			newIndexes.push( selectedIndexes[ i ] - 1 );
+	        			newIndices.push( selectedIndices[ i ] - 1 );
 	        		}
 	        	}
 	        }*/
 	
 	        // Now handle the case that we deleted the selected child
 	        // and it was the only selected child therefore we must select another child.
-	        else if( selectedIndexes.length == 1 && selectedIndexes[ 0 ] == index )
+	        else if( selectedIndices.length == 1 && selectedIndices[ 0 ] == index )
 	        {
 	        	// If it was the last child, select the previous one.
 	            // Otherwise, select the next one. This next child now
 	            // has the same index as the one we just deleted,
-	            newIndexes = new Array();
+	            newIndices = new Array();
 	            if (index == nChildren)
-	                newIndexes.push( oldIndexes[ 0 ] - 1 );
+	                newIndices.push( oldIndices[ 0 ] - 1 );
 	            else
-	                newIndexes.push( oldIndexes[ 0 ] );
+	                newIndices.push( oldIndices[ 0 ] );
 	
 	            // Select the new selected index header.
-	            var newHeader:SuperAccordionHeader = getHeaderAt( newIndexes[ 0 ] );
+	            var newHeader:SuperAccordionHeader = getHeaderAt( newIndices[ 0 ] );
 	            newHeader.selected = true;
 	        }
-	        // newIndexes remains the same or the index is just removed from the newIndexes
+	        // newIndices remains the same or the index is just removed from the newIndices
 	        else
 	        {
-	        	newIndexes = new Array();
-	        	var numSelectedIndexes:int = selectedIndexes.length;
-	        	for( i = 0; i < numSelectedIndexes; i++ )
+	        	newIndices = new Array();
+	        	var numSelectedIndices:int = selectedIndices.length;
+	        	for( i = 0; i < numSelectedIndices; i++ )
 	        	{
-	        		if( index < selectedIndexes[ i ] )
+	        		if( index < selectedIndices[ i ] )
 	        		{
-	        			newIndexes.push( selectedIndexes[ i ] );
+	        			newIndices.push( selectedIndices[ i ] );
 	        		}
-	        		else if( index > selectedIndexes[ i ] )
+	        		else if( index > selectedIndices[ i ] )
 	        		{
-	        			newIndexes.push( selectedIndexes[ i ] - 1 );
+	        			newIndices.push( selectedIndices[ i ] - 1 );
 	        		}
 	        	}
 	        }
@@ -2393,7 +2396,7 @@ package ws.tink.flex.containers
 	            drawHeaderFocus(_focusedIndex, showFocusIndicator);
 	        }
 	
-	        _selectedIndexes = newIndexes;
+	        _selectedIndices = newIndices;
 	
 	        instantiateSelectedChildren();
 	
