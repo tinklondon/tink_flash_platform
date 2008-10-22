@@ -45,6 +45,8 @@ package ws.tink.flex.containers
 	
 	use namespace mx_internal;
 	
+	[IconFile("PositionedTabNavigator.png")]
+	
 	//--------------------------------------
 	//  Styles
 	//--------------------------------------
