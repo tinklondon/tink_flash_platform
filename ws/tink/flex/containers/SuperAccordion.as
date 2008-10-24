@@ -45,6 +45,7 @@ package ws.tink.flex.containers
 	
 	import ws.tink.flex.containers.superAccordion.SuperAccordionHeader;
 	import ws.tink.flex.events.IndicesChangedEvent;
+	import ws.tink.flex.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	
@@ -100,6 +101,30 @@ package ws.tink.flex.containers
 	 *  of adjacent headers overlap.
 	 */
 	[Style(name="verticalGap", type="Number", format="Length", inherit="no")]
+	
+	/**
+	 *  Horizontal positioning of children in the SuperAccordian container.
+	 *  The possible values are <code>"top"</code>, <code>"midde"</code>,
+	 *  and <code>"bottom"</code>.
+	 *  The default value is <code>"top"</code>.
+	 * 
+	 *  <p>To see a difference between the alignments,
+	 *  the property closable had to be set to true.
+	 *  The default value of closable is false.</p>
+	 */
+	[Style(name="verticalAlign", type="String", enumeration="top,middle,bottom", inherit="no" )]
+	
+	/**
+	 *  Number of pixels to offset the verticalAlign position of children in the SuperAccordian container.
+	 *  The possible values are <code>"top"</code>, <code>"midde"</code>,
+	 *  and <code>"bottom"</code>.
+	 *  The default value is 0.
+	 * 
+	 *  <p>To see a difference between the alignments,
+	 *  the property closable had to be set to true.
+	 *  The default value of closable is false.</p>
+	 */
+	[Style(name="verticalAlignOffset", type="Number", format="Length", inherit="no")]
 	
 	/**
 	 *  Height of each accordion header, in pixels.
@@ -361,6 +386,11 @@ package ws.tink.flex.containers
 	     *  @private
 	     */
 	    private var currentDissolveEffect:Effect;
+	    
+	    /**
+	     *  @private
+	     */
+	    private var _closable: Boolean;;
 	
 	    //--------------------------------------------------------------------------
 	    //
@@ -655,6 +685,22 @@ package ws.tink.flex.containers
 	        }
 	    }
 	
+		
+		public function get closable():Boolean
+	    {
+	    	return _closable;
+	    }
+	    
+	    public function set closable( value:Boolean ):void
+	    {
+	    	if( _closable == value ) return;
+	    	
+	    	_closable = value;
+	    	if( !proposedSelectedIndices ) proposedSelectedIndices = _selectedIndices.concat();
+	    	invalidateProperties();
+	    }
+	    
+	    
 	    //----------------------------------
 	    //  selectedChild
 	    //----------------------------------
@@ -682,7 +728,7 @@ package ws.tink.flex.containers
 			var numSelectedIndices:int = indexes.length;
 			for( var i:int = 0; i < numSelectedIndices; i++ )
 			{
-				sc.push( Container( getChildAt( indexes[ i ] ) ) );
+				if( indexes[ i ] != -1 ) sc.push( Container( getChildAt( indexes[ i ] ) ) );
 			}
 			
 	        return sc;
@@ -770,6 +816,21 @@ package ws.tink.flex.containers
 			proposedSelectedIndices.push( value );
 			proposedSelectedIndices.sort( Array.NUMERIC );
 			
+			if( _closable )
+			{
+				if( proposedSelectedIndices.length > 1 )
+				{
+					var numProposedIndices:int = proposedSelectedIndices.length;
+					for( var i:int = 0; i < numProposedIndices; i++ )
+					{
+						if( proposedSelectedIndices[ i ] == -1 )
+						{
+							proposedSelectedIndices.splice( i, 1 );
+						}
+					}
+				}
+			}
+			
 			invalidateProperties();
 	
 	        // Set a flag which will cause the History Manager to save state
@@ -779,10 +840,24 @@ package ws.tink.flex.containers
 	        dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
 		}
 		
+		
 		public function deselectIndex( value:int ):void
 		{
-			// If the value is out of range then bail.
-			if( value < 0 || value > numChildren - 1 || _selectedIndices.length == 1 ) return;
+			if( _closable )
+			{
+				if( value < 0 || value > numChildren - 1 ) return;
+				if( _selectedIndices.length == 1 )
+				{
+					proposedSelectedIndices = ( _selectedIndices ) ? _selectedIndices.concat() : new Array();
+					proposedSelectedIndices.push( -1 );
+					proposedSelectedIndices.sort( Array.NUMERIC );
+				}
+			}
+			else
+			{
+				// If the value is out of range then bail.
+				if( value < 0 || value > numChildren - 1 || _selectedIndices.length == 1 ) return;
+			}
 			
 			// If the index isn't already selected bail.
 			if( proposedSelectedIndices )
@@ -852,7 +927,7 @@ package ws.tink.flex.containers
 			
 			// Bail if the indexes aren't changing.
 			
-			value = arrayStripDuplcates( value );
+			value = arrayStripDuplicates( value );
 			value.sort( Array.NUMERIC );
 	        
 	        var numIndices:int = value.length;
@@ -1217,7 +1292,70 @@ package ws.tink.flex.containers
 	        // Arrange the headers, the content clips,
 	        // based on selectedIndex.
 	        var x:Number = bm.left + paddingLeft;
-	        var y:Number = bm.top + paddingTop;
+	        
+	        var n:int;
+	        var i:int;
+	        var y:Number;
+	        if( _closable )
+	        {
+	        	var verticalAlignOffset:Number = getStyle( "verticalAlignOffset" )
+	        	
+		        var topAlign:Number = bm.top + paddingTop;
+		        var bottomAlign:Number = unscaledHeight;
+	        	n = numChildren;
+	        	for ( i = 0; i < n; i++)
+	        	{
+	        		header = getHeaderAt( i );
+	        		bottomAlign -= header.height;
+	        	}
+	        	
+	        	n = _selectedIndices.length;
+	        	for ( i = 0; i < n; i++)
+	        	{
+	        		if( _selectedIndices[ i ] != -1 ) bottomAlign -= localContentHeight;
+	        	}
+        	
+	        	switch( getStyle( "verticalAlign" ) )
+	        	{
+	        		case "middle" :
+	        		{
+	        			var contentHeight:Number = 0;
+			        	n = numChildren;
+			        	for ( i = 0; i < n; i++)
+			        	{
+			        		header = getHeaderAt( i );
+			        		contentHeight += header.height;
+			        	}
+			        	
+			        	n = _selectedIndices.length;
+			        	for ( i = 0; i < n; i++)
+			        	{
+			        		if( _selectedIndices[ i ] != -1 ) contentHeight += localContentHeight;
+			        	}
+			        	
+			        	y = Math.round( ( unscaledHeight - contentHeight ) / 2 );
+			        	y += verticalAlignOffset;
+	        			break;
+	        		}
+	        		case "bottom" :
+	        		{
+	        			y = bottomAlign + verticalAlignOffset;
+	        			break;
+	        		}
+	        		default :
+	        		{
+	        			y = topAlign + verticalAlignOffset;
+	        		}
+	        				
+	        	}
+	        	
+	        	if( y < topAlign ) y = topAlign;
+			    if( y > bottomAlign ) y = bottomAlign;
+	        }
+	        else
+	        {
+	        	y = bm.top + paddingTop;	
+	        }
 	
 	        // Adjustments. These are required since the default halo
 	        // appearance has verticalGap and all margins set to -1
@@ -1237,8 +1375,8 @@ package ws.tink.flex.containers
 	        if (paddingRight < 0)
 	            adjContentWidth += paddingRight;
 			
-	        var n:int = numChildren;
-	        for (var i:int = 0; i < n; i++)
+	        n = numChildren;
+	        for ( i = 0; i < n; i++)
 	        {
 	            var header:SuperAccordionHeader = getHeaderAt( i );
 	            var content:IUIComponent = IUIComponent( getChildAt( i ) );
@@ -1474,7 +1612,7 @@ package ws.tink.flex.containers
 	     */
 	    public function loadState(state:Object):void
 	    {
-	        var newIndices:Array = state ? state.selectedIndices.split( "%2C" ) : null;
+	        var newIndices:Array = state ? state.selectedIndices.toString().split( "%2C" ) : null;
 	
 	        if( !newIndices ) newIndices = initialSelectedIndices;
 	
@@ -1726,31 +1864,48 @@ package ws.tink.flex.containers
 	            return;
 	        }
 	
+			
 			var i:int;
 			var numNewIndices:int;
-			var newIndices:Array = arrayStripDuplcates( proposedSelectedIndices );
+			var newIndices:Array = arrayStripDuplicates( proposedSelectedIndices );
+			// Strip invalid indices
+			newIndices = arrayStripBoundaries( newIndices );
 			newIndices.sort( Array.NUMERIC );
+			// Make sure we have at least one valid index
+			if( !newIndices.length ) newIndices.push( ( closable ) ? -1 : 0 );
+			
 	        proposedSelectedIndices = null;
 			
-	        // Ensure that the new index is in bounds.
-	        if( newIndices[ 0 ] < 0 ) newIndices[ 0 ] = 0;
+			if( _closable )
+			{
+		        
+		 	}
+		 	else
+		 	{
+		 		
+		        if( newIndices[ 0 ] < 0 ) newIndices[ 0 ] = 0;
+		 	}
+		 	
 	        if( newIndices[ newIndices.length - 1 ] > numChildren - 1 ) newIndices[ newIndices.length - 1 ] = numChildren - 1;
 	
 	        // Store the previous indices
 	        var prevIndices:Array = ( _selectedIndices ) ? _selectedIndices : new Array();
 			
-			var oldIndices:Array = new Array();
-			var numSelectedIndices:int = ( _selectedIndices ) ? _selectedIndices.length : 0;
-			numNewIndices = newIndices.length;
-			if( numNewIndices < numSelectedIndices )
+			var oldIndices:Array;
+			var numSelectedIndices:int 
+			var n:int;
+			var matchFound:Boolean;
+			var selectedIndex:int;
+			if( _closable )
 			{
-				var matchFound:Boolean;
-				var selectedIndex:int;
-				for( var s:int = 0; s < numSelectedIndices; s++ )
+		        oldIndices = new Array();
+				numSelectedIndices = ( _selectedIndices ) ? _selectedIndices.length : 0;
+				numNewIndices = newIndices.length;
+				for( i = 0; i < numSelectedIndices; i++ )
 				{
 					matchFound = false;
-					selectedIndex = int( _selectedIndices[ s ] );
-					for( var n:int = 0; n < numNewIndices; n++ )
+					selectedIndex = int( _selectedIndices[ i ] );
+					for( n = 0; n < numNewIndices; n++ )
 					{
 						if( int( newIndices[ n ] ) == selectedIndex )
 						{
@@ -1761,11 +1916,42 @@ package ws.tink.flex.containers
 					
 					if( !matchFound )
 					{
-						oldIndices.push( selectedIndex );
-						getHeaderAt( selectedIndex ).selected = false;
+						if( selectedIndex != -1 )
+						{
+							oldIndices.push( selectedIndex );
+							getHeaderAt( selectedIndex ).selected = false;
+						}
 					}
 				}
-			}
+		 	}
+		 	else
+		 	{
+				oldIndices = new Array();
+				numSelectedIndices = ( _selectedIndices ) ? _selectedIndices.length : 0;
+				numNewIndices = newIndices.length;
+				if( numNewIndices < numSelectedIndices )
+				{
+					for( i = 0; i < numSelectedIndices; i++ )
+					{
+						matchFound = false;
+						selectedIndex = int( _selectedIndices[ i ] );
+						for( n = 0; n < numNewIndices; n++ )
+						{
+							if( int( newIndices[ n ] ) == selectedIndex )
+							{
+								matchFound = true;
+								break;
+							}
+						}
+						
+						if( !matchFound )
+						{
+							oldIndices.push( selectedIndex );
+							getHeaderAt( selectedIndex ).selected = false;
+						}
+					}
+				}
+		 	}
 			
 			
 	        // If we are currently playing a Dissolve effect, end it and restart it again
@@ -1804,7 +1990,7 @@ package ws.tink.flex.containers
 			numNewIndices = newIndices.length;
 	        for( i = 0; i < numNewIndices; i++ )
 	        {
-	        	getHeaderAt( newIndices[ i ] ).selected = true;
+	        	if( newIndices[ i ] >= 0 ) 	getHeaderAt( newIndices[ i ] ).selected = true;
 	        }
 	        
 	        if( !arrayContains( newIndices, _focusedIndex ) )
@@ -1838,7 +2024,7 @@ package ws.tink.flex.containers
 	        }
 	        else
 	        {
-				if( tween ) tween.endTween();
+	        	if( tween ) tween.endTween();
 				startTween( oldIndices, prevIndices, newIndices );
 	        }
 	    }
@@ -1903,6 +2089,7 @@ package ws.tink.flex.containers
 	     */
 	    private function startTween( oldSelectedIndices:Array, prevSelectedIndices:Array, newSelectedIndices:Array ):void
 	    {
+	    	
 	        bSliding = true;
 	        
 	        var prevHeight:Number = calcContentHeight( prevSelectedIndices.length );
@@ -1986,12 +2173,70 @@ package ws.tink.flex.containers
 	        var content:Container;
 	        var targetContentHeight:Number;
 	        
+	        var n:int;
+	        var i:int;
+	        var childrenY:Number;
+	        if( _closable )
+	        {
+	        	var verticalAlignOffset:Number = getStyle( "verticalAlignOffset" )
+	        	if( _selectedIndices[ 0 ] == -1 )
+	        	{
+	        		verticalAlignOffset = verticalAlignOffset * value;
+	        	}
+	        	else
+	        	{
+	        		verticalAlignOffset = verticalAlignOffset * Math.abs( value - 1 );
+	        	}
+	        	
+		        var topAlign:Number = tweenViewMetrics.top;
+		        var bottomAlign:Number = height;
+	        	n = numChildren;
+	        	for ( i = 0; i < n; i++)
+	        	{
+	        		header = getHeaderAt( i );
+	        		bottomAlign -= header.height;
+	        		bottomAlign -= tweenHeightStarts[ i ] + ( tweenHeightDifferences[ i ] * value )
+	        	}
+			        	
+	        	switch( getStyle( "verticalAlign" ) )
+	        	{
+	        		case "middle" :
+	        		{
+	        			var contentHeight:Number = 0;
+			        	n = numChildren;
+			        	for ( i = 0; i < n; i++)
+			        	{
+			        		header = getHeaderAt( i );
+			        		contentHeight += header.height;
+			        		contentHeight += tweenHeightStarts[ i ] + ( tweenHeightDifferences[ i ] * value )
+			        	}
+			        	
+			        	childrenY = ( ( unscaledHeight - contentHeight ) / 2 ) + verticalAlignOffset;
+	        			break;
+	        		}
+	        		case "bottom" :
+	        		{
+	        			childrenY = bottomAlign + verticalAlignOffset;
+	        			break;
+	        		}
+	        		default :
+	        		{
+	        			childrenY = topAlign + verticalAlignOffset;
+	        		}
+	        	}
+	        	
+	        	if( childrenY < topAlign ) childrenY = topAlign;
+			    if( childrenY > bottomAlign ) childrenY = bottomAlign;
+	        }
+	        else
+	        {
+	        	childrenY = tweenViewMetrics.top;
+	        }
 	        
-	        var childrenY:Number = tweenViewMetrics.top;
 	        
 	        var verticalGap:Number = getStyle("verticalGap");
-	        var n:int = numChildren;
-	        for (var i:int = 0; i < n; i++)
+	        n = numChildren;
+	        for ( i = 0; i < n; i++)
 	        {
 	            header = getHeaderAt( i );
 	            header.$y = childrenY;
@@ -2023,12 +2268,70 @@ package ws.tink.flex.containers
 	        var verticalGap:Number = getStyle("verticalGap");
 	        var headerHeight:Number = getHeaderHeight();
 
-	        var childrenY:Number = tweenViewMetrics.top;
+	        var n:int;
+	        var i:int;
+	        var childrenY:Number;
+	        if( _closable )
+	        {
+	        	var verticalAlignOffset:Number = getStyle( "verticalAlignOffset" )
+	        	if( _selectedIndices[ 0 ] == -1 )
+	        	{
+	        		verticalAlignOffset = verticalAlignOffset * value;
+	        	}
+	        	else
+	        	{
+	        		verticalAlignOffset = verticalAlignOffset * Math.abs( value - 1 );
+	        	}
+	        	
+	        	var topAlign:Number = tweenViewMetrics.top;
+		        var bottomAlign:Number = height;
+	        	n = numChildren;
+	        	for ( i = 0; i < n; i++)
+	        	{
+	        		header = getHeaderAt( i );
+	        		bottomAlign -= header.height;
+	        		bottomAlign -= tweenHeightStarts[ i ] + ( tweenHeightDifferences[ i ] * value )
+	        	}
+	        	switch( getStyle( "verticalAlign" ) )
+	        	{
+	        		case "middle" :
+	        		{
+	        			var contentHeight:Number = 0;
+			        	n = numChildren;
+			        	for ( i = 0; i < n; i++)
+			        	{
+			        		header = getHeaderAt( i );
+			        		contentHeight += header.height;
+			        		contentHeight += tweenHeightStarts[ i ] + ( tweenHeightDifferences[ i ] * value )
+			        	}
+			        	
+			        	childrenY = ( ( unscaledHeight - contentHeight ) / 2 ) + verticalAlignOffset;
+	        			break;
+	        		}
+	        		case "bottom" :
+	        		{
+	        			childrenY = bottomAlign + verticalAlignOffset;
+	        			break;
+	        		}
+	        		default :
+	        		{
+	        			childrenY = topAlign + verticalAlignOffset;
+	        		}
+	        	}
+	        	
+	        	if( childrenY < topAlign ) childrenY = topAlign;
+			    if( childrenY > bottomAlign ) childrenY = bottomAlign;
+	        }
+	        else
+	        {
+	        	childrenY = tweenViewMetrics.top;
+	        }
+	        
 	        var content:Container;
 	
 			var header:SuperAccordionHeader;
-	        var n:int = numChildren;
-	        for (var i:int = 0; i < n; i++)
+	        n = numChildren;
+	        for ( i = 0; i < n; i++)
 	        {
 	           	header = getHeaderAt( i );
 	            header.$y = childrenY;
@@ -2443,7 +2746,7 @@ package ws.tink.flex.containers
 	    	return false;
 	    }
 	    
-	    private function arrayStripDuplcates( array:Array ):Array
+	    private function arrayStripDuplicates( array:Array ):Array
 	    {
 	    	var stripedArray:Array = new Array();
 	    	
@@ -2470,6 +2773,56 @@ package ws.tink.flex.containers
 	    	
 	    	return stripedArray;
 	    }
+	    
+	    private function arrayStripBoundaries( array:Array ):Array
+	    {
+	    	var returnArray:Array = array.concat();
+	    	
+	    	var numItems:int = returnArray.length;
+			for( var i:int = 0; i < numItems; i++ )
+	    	{
+				if( returnArray[ i ] < 0 ) returnArray.splice( 0, 1 );
+				if( returnArray[ i ] >= numChildren ) returnArray.splice( 0, 1 );
+			}
+			
+			return returnArray;
+	    }
+	    
+	    
+	    //--------------------------------------------------------------------------
+	    //
+	    //  Setup default styles.
+	    //
+	    //--------------------------------------------------------------------------
+	    
+	    private static var defaultStylesSet				: Boolean = setDefaultStyles();
+	    
+	    /**
+	     *  @private
+	     */
+	    private static function setDefaultStyles():Boolean
+		{
+			var styleDeclaration:String = StyleUtil.getDefaultStyleName( prototype );
+			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( styleDeclaration );
+			
+		    if( !style )
+		    {
+		        style = new CSSStyleDeclaration();
+		        StyleManager.setStyleDeclaration( styleDeclaration, style, true );
+		    }
+		    
+		    if( style.defaultFactory == null )
+	        {
+	        	style.defaultFactory = function():void
+	            {
+	            	// SuperAccordian defaults.
+	            	this.verticalAlign = "top";
+	            	this.verticalAlignOffset = 0;					
+	            };
+	        }
+
+		    return true;
+		}
 	}
 
 }
