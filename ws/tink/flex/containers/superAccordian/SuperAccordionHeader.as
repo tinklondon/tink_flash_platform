@@ -1,11 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
+/*
+Copyright (c) 2008 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 package ws.tink.flex.containers.superAccordion
 {
@@ -18,8 +27,14 @@ package ws.tink.flex.containers.superAccordion
 	import mx.controls.ButtonBar;
 	import mx.core.Container;
 	import mx.core.IDataRenderer;
-	import mx.events.ChildExistenceChangedEvent;
 	import mx.core.mx_internal;
+	import mx.events.ChildExistenceChangedEvent;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
+	
+	import ws.tink.flex.containers.SuperAccordion;
+	import ws.tink.flex.skins.halo.SuperAccordionHeaderSkin;
+	import ws.tink.flex.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	
@@ -35,14 +50,17 @@ package ws.tink.flex.containers.superAccordion
 	 */
 	public class SuperAccordionHeader extends ButtonBar implements IDataRenderer
 	{
-		private var _data				: Container;
-		private var _selected			: Boolean = false;
-		private var _selectedIndex		: int = 0;
-
+		private var _data					: Container;
+		private var _selected				: Boolean = false;
+		private var _selectedIndex			: int = 0;
+		private var _prevDisplayIndex		: int;
 		
 		public function SuperAccordionHeader()
 		{
 			super();
+			
+			addEventListener( MouseEvent.MOUSE_OVER, onMouseOver );
+			addEventListener( MouseEvent.MOUSE_OUT, onMouseOut );
 		}
 
     	
@@ -196,6 +214,111 @@ package ws.tink.flex.containers.superAccordion
 			{
 				Button( getChildAt( _selectedIndex ) ).selected = true;
 			}
+		}
+		
+		
+		/**
+		 *  @private
+		 */
+		private function onMouseOver( event:MouseEvent ):void
+		{
+			// The halo design specifies that accordion headers overlap
+			// by a pixel when layed out. In order for the border to be
+			// completely drawn on rollover, we need to set our index
+			// here to bring this header to the front.
+			var superAccordion:SuperAccordion = SuperAccordion( parent );
+			_prevDisplayIndex = superAccordion.rawChildren.getChildIndex( this );
+			if( superAccordion.enabled ) superAccordion.rawChildren.setChildIndex( this, superAccordion.rawChildren.numChildren - 1 );
+		}
+		
+		private function onMouseOut( event:MouseEvent ):void
+		{
+			// The halo design specifies that accordion headers overlap
+			// by a pixel when layed out. In order for the border to be
+			// completely drawn on rollover, we need to set our index
+			// here to bring this header to the front.
+			var superAccordion:SuperAccordion = SuperAccordion( parent );
+			if( superAccordion.enabled ) superAccordion.rawChildren.setChildIndex( this, _prevDisplayIndex );
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+	    //
+	    //  Setup default styles.
+	    //
+	    //--------------------------------------------------------------------------
+	    
+	    private static var defaultStylesSet				: Boolean = setDefaultStyles();
+	    
+	    /**
+	     *  @private
+	     */
+	    private static function setDefaultStyles():Boolean
+		{
+			var style:CSSStyleDeclaration
+			
+			style = StyleManager.getStyleDeclaration( ".superAccordionHeaderButtonStyleName" );
+			
+		    if( !style )
+		    {
+		        style = new CSSStyleDeclaration();
+		        StyleManager.setStyleDeclaration( ".superAccordionHeaderButtonStyleName", style, true );
+		    }
+		    
+		    if( style.defaultFactory == null )
+	        {
+	        	style.defaultFactory = function():void
+	            {
+//	            	this.selectedFillColors		= new Array( 0xFFFFFF, 0xFFFFFF );
+	            	this.fontSize				= 10;
+					this.fontWeight				= "bold";
+//					this.disabledIcon 			= null;
+					this.disabledSkin			= null;
+//					this.downIcon				= null;
+					this.downSkin				= null;
+					this.horizontalGap			= 2;
+//					this.overIcon				= null;
+					this.overSkin				= null;
+					this.paddingLeft			= 5;
+					this.paddingRight			= 5;
+					this.paddingBottom			= 0;
+					this.paddingTop				= 0;
+//					this.selectedDisabledIcon	= null;
+					this.selectedDisabledSkin	= null;
+//					this.selectedDownIcon		= null;
+					this.selectedDownSkin		= null;
+//					this.selectedOverIcon		= null;
+					this.selectedOverSkin		= null;
+//					this.selectedUpIcon			= null; 
+					this.selectedUpSkin			= null;
+					this.skin					= SuperAccordionHeaderSkin;
+					this.textAlign				= "center";
+//					this.upIcon					= null;
+					this.upSkin					= null;	
+	            };
+	        }
+	        
+			var styleDeclaration:String = StyleUtil.getDefaultStyleName( prototype );
+			style = StyleManager.getStyleDeclaration( styleDeclaration );
+			
+		    if( !style )
+		    {
+		        style = new CSSStyleDeclaration();
+		        StyleManager.setStyleDeclaration( styleDeclaration, style, true );
+		    }
+		    
+		    if( style.defaultFactory == null )
+	        {
+	        	style.defaultFactory = function():void
+	            {
+	            	this.buttonStyleName 		= "superAccordionHeaderButtonStyleName";
+	            	this.firstButtonStyleName 	= "superAccordionHeaderButtonStyleName";	
+	            	this.lastButtonStyleName 	= "superAccordionHeaderButtonStyleName";	
+	            };
+	        }
+
+		    return true;
 		}
 	}
 
