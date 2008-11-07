@@ -1,11 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
+/*
+Copyright (c) 2008 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 package ws.tink.flex.containers
 {
@@ -35,11 +44,11 @@ package ws.tink.flex.containers
 	import mx.effects.Tween;
 	import mx.events.ChildExistenceChangedEvent;
 	import mx.events.FlexEvent;
-	import mx.events.IndexChangedEvent;
 	import mx.graphics.RoundedRectangle;
 	import mx.managers.HistoryManager;
 	import mx.managers.IFocusManagerComponent;
 	import mx.managers.IHistoryManagerClient;
+	import mx.skins.halo.AccordionHeaderSkin;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
@@ -56,11 +65,9 @@ package ws.tink.flex.containers
 	/**
 	 *  Dispatched when the selected child container changes.
 	 *
-	 *  @eventType mx.events.IndexChangedEvent.CHANGE
-	 *  @helpid 3012
-	 *  @tiptext change event
+	 *  @eventType mx.events.IndicesChangedEvent.CHANGE
 	 */
-	[Event(name="change", type="mx.events.IndexChangedEvent")]
+	[Event(name="indicesChange", type="ws.tink.flex.events.IndicesChangedEvent")]
 	
 	// The fill related styles are applied to the children of the Accordion, ie: the AccordionHeaders
 	//include "../styles/metadata/FillStyles.as"
@@ -1719,7 +1726,6 @@ package ws.tink.flex.containers
 	        // If needed, the headers will be shuffled below.
 	        header = SuperAccordionHeader( headerRenderer.newInstance() );
 	        header.name = HEADER_NAME_BASE + ( numChildren - 1 );
-	        header.styleName = this;
 	        
 	        var headerStyleName:String = getStyle("headerStyleName");
 	        if (headerStyleName)
@@ -2816,8 +2822,16 @@ package ws.tink.flex.containers
 	        	style.defaultFactory = function():void
 	            {
 	            	// SuperAccordian defaults.
-	            	this.verticalAlign = "top";
-	            	this.verticalAlignOffset = 0;					
+	            	this.verticalAlign 			= "top";
+	            	this.verticalAlignOffset 	= 0;	
+	            	this.backgroundColor 		= 0xFFFFFF;
+					this.borderStyle 			= "solid";
+					this.headerHeight 			= 22; 
+					this.paddingBottom 			= -1;
+					this.paddingLeft 			= -1;
+					this.paddingRight 			= -1;
+					this.paddingTop 			= -1;
+					this.verticalGap 			= -1;	
 	            };
 	        }
 
