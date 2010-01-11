@@ -2134,6 +2134,14 @@ package ws.tink.mx.controls
 		{
 			super.textInput_changeHandler(event);
 			
+			if( !isShowingDropdown )
+			{
+				open();
+			}
+			else
+			{
+				dropdown.selectedIndex = -1;
+			}
 //			if( dropdown.selectedIndex != -1 ) dropdown.selectedIndex = -1;
 			
 //			_textInputChange = true;
@@ -2254,6 +2262,8 @@ package ws.tink.mx.controls
 					se.detail == ScrollEventDetail.LINE_UP ||
 					se.detail == ScrollEventDetail.LINE_DOWN)
 					dispatchEvent(se);
+				
+				onDropdownDataChange( new FlexEvent( FlexEvent.DATA_CHANGE ) );
 			}
 		}
 		
