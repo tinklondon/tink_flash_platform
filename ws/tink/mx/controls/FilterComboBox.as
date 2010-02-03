@@ -1,11 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  ADOBE SYSTEMS INCORPORATED
-//  Copyright 2002-2007 Adobe Systems Incorporated
-//  All Rights Reserved.
-//
-//  NOTICE: Adobe permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
+//	Copyright (c) 2010 Tink Ltd | http://www.tink.ws
+//	
+//	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+//	documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+//	to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//	
+//	The above copyright notice and this permission notice shall be included in all copies or substantial portions
+//	of the Software.
+//	
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+//	THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+//	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//	SOFTWARE.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -20,6 +29,7 @@ package ws.tink.mx.controls
 	import flash.events.TextEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	import flash.ui.Keyboard;
 	import flash.utils.getTimer;
@@ -635,6 +645,17 @@ package ws.tink.mx.controls
 	 */
 	[Style(name="textIndent", type="Number", format="Length", inherit="yes")]
 
+	/**
+	 *  The name of a CSS style declaration for controlling other aspects of
+	 *  the appearance of the column headers.
+	 *  @default "dataGridStyles"
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
+	 */
+	[Style(name="matchedTextStyleName", type="String", inherit="no")]
 	
 	//--------------------------------------
 	//  Other metadata
@@ -1517,11 +1538,31 @@ package ws.tink.mx.controls
 		/**
 		 *  @private
 		 */
-		override public function styleChanged(styleProp:String):void
+		override public function styleChanged( styleProp:String ):void
 		{
 			destroyDropdown();
 			
-			super.styleChanged(styleProp);
+			super.styleChanged( styleProp );
+			
+			if( !styleProp || styleProp == "styleName" || styleProp == "matchedTextStyleName" )
+			{
+				var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( "." + getStyle( "matchedTextStyleName" ) );
+				
+				if( style )
+				{
+					_highlightTextFormat = new TextFormat();
+					if( !isNaN( style.getStyle( "color" ) ) ) _highlightTextFormat.color = style.getStyle( "color" )
+					if( style.getStyle( "fontFamily" ) ) _highlightTextFormat.font = style.getStyle( "fontFamily" );
+					if( style.getStyle( "fontWeight" ) ) _highlightTextFormat.bold = style.getStyle( "fontWeight" );
+					if( style.getStyle( "fontSize" ) ) _highlightTextFormat.size = style.getStyle( "fontSize" );
+					if( style.getStyle( "fontStyle" ) ) _highlightTextFormat.italic = style.getStyle( "fontStyle" );
+					if( style.getStyle( "textDecoration" ) ) _highlightTextFormat.underline = style.getStyle( "textDecoration" );
+				}
+				else
+				{
+					_highlightTextFormat = null;
+				}
+			}
 		}
 		
 		/**
@@ -2526,8 +2567,6 @@ package ws.tink.mx.controls
 		
 		
 		
-		
-		
 		private static var defaultStylesSet				: Boolean = setDefaultStyles();
 		
 		/**
@@ -2557,6 +2596,7 @@ package ws.tink.mx.controls
 					this.paddingLeft = 5;
 					this.paddingRight = 5;
 					this.skin = ComboBoxArrowSkin;
+					this.matchedTextStyleName = null;
 				};
 			}
 			
@@ -2572,6 +2612,7 @@ package ws.tink.mx.controls
 		private var _filteredCollection		: ICollectionView;
 		
 		private var _caseSensitive			: Boolean;
+		private var _highlightTextFormat	: TextFormat;
 		
 		public function get filteredCollection():ICollectionView
 		{
@@ -2654,7 +2695,7 @@ package ws.tink.mx.controls
 		}
 		
 		
-		private function onDropdownDataChange( event:FlexEvent ):void
+		protected function onDropdownDataChange( event:FlexEvent ):void
 		{
 			var renderer:ListItemRenderer;
 			var index:int;
@@ -2673,9 +2714,9 @@ package ws.tink.mx.controls
 					{
 						label = renderer.getLabel();
 						label.setSelection( 0, 0 );
+						label.setTextFormat( label.defaultTextFormat );
 					}
 				}
-				
 				return;
 			}
 			
@@ -2684,12 +2725,33 @@ package ws.tink.mx.controls
 				renderer = ListItemRenderer( dropdown.rendererArray[ i ][ 0 ] );
 				if( renderer )
 				{
+					
 					label = renderer.getLabel();
 					label.alwaysShowSelection = true;
 					labelString = ( _caseSensitive ) ? label.text : label.text.toLowerCase();
-					index = labelString.indexOf( _filterString );
-					if( index != -1 ) label.setSelection( index, index + filterLength );
+					if( _highlightTextFormat )
+					{
+						label.setSelection( 0, 0 );
+						setHighlightTextFormatonLabel( label, labelString, 0, filterLength );
+					}
+					else
+					{
+						index = labelString.indexOf( _filterString );
+						if( index != -1 ) label.setSelection( index, index + filterLength );
+					}
+					
+					
 				}
+			}
+		}
+		
+		private function setHighlightTextFormatonLabel( label:IUITextField, labelString:String, startIndex:int, length:int ):void
+		{
+			var index:int = labelString.indexOf( _filterString, startIndex );
+			if( index != -1 )
+			{
+				label.setTextFormat( _highlightTextFormat, index, index + length );
+				setHighlightTextFormatonLabel( label, labelString, index + length, length );
 			}
 		}
 		
