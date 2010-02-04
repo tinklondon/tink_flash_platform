@@ -1770,7 +1770,6 @@ package ws.tink.mx.controls
 		 */
 		public function open():void
 		{
-			trace( "open" );
 			displayDropdown(true);
 		}
 		
@@ -2094,7 +2093,6 @@ package ws.tink.mx.controls
 			
 			if (event is CollectionEvent)
 			{
-				// trace("ListBase collectionEvent");
 				var ce:CollectionEvent = CollectionEvent(event);
 				
 				if (collection.length == 0)
@@ -2206,7 +2204,6 @@ package ws.tink.mx.controls
 		override protected function downArrowButton_buttonDownHandler(
 			event:FlexEvent):void
 		{
-			trace( "jjjjjjjjjjj", _showingDropdown );
 			// The down arrow should always toggle the visibility of the dropdown.
 			if (_showingDropdown)
 			{
@@ -2229,8 +2226,6 @@ package ws.tink.mx.controls
 		 */
 		private function dropdown_mouseOutsideHandler(event:Event):void
 		{
-			// trace("dropdown_mouseOutsideHandler: " + event);
-			
 			if (event is MouseEvent)
 			{
 				var mouseEvent:MouseEvent = MouseEvent(event);
@@ -2343,7 +2338,6 @@ package ws.tink.mx.controls
 		 */
 		private function dropdown_changeHandler(event:Event):void
 		{
-//			trace( "dropdown_changeHandler", _showingDropdown,bInKeyDown );
 			var prevValue:int = selectedIndex;
 			
 			// This assignment will also assign the label to the text field.
@@ -2718,9 +2712,9 @@ package ws.tink.mx.controls
 		
 		protected function onDropdownDataChange( event:FlexEvent ):void
 		{
-			updateHighlightedText();
-			
 			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
+			
+			updateHighlightedText();
 		}
 		
 		private function updateHighlightedText():void
