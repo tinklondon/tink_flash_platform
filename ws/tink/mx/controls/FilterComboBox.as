@@ -1770,6 +1770,7 @@ package ws.tink.mx.controls
 		 */
 		public function open():void
 		{
+			trace( "open" );
 			displayDropdown(true);
 		}
 		
@@ -1903,6 +1904,8 @@ package ws.tink.mx.controls
 		 */
 		private function displayDropdown(show:Boolean, trigger:Event = null):void
 		{
+			if( textInput.text == prompt ) textInput.text = "";
+			
 			if (!initialized || show == _showingDropdown)
 				return;
 			
@@ -2203,6 +2206,7 @@ package ws.tink.mx.controls
 		override protected function downArrowButton_buttonDownHandler(
 			event:FlexEvent):void
 		{
+			trace( "jjjjjjjjjjj", _showingDropdown );
 			// The down arrow should always toggle the visibility of the dropdown.
 			if (_showingDropdown)
 			{
@@ -2315,6 +2319,8 @@ package ws.tink.mx.controls
 		private function dropdown_itemRollOverHandler(event:Event):void
 		{
 			dispatchEvent(event);
+			
+			updateHighlightedText();
 		}
 		
 		/**
@@ -2323,11 +2329,13 @@ package ws.tink.mx.controls
 		private function dropdown_itemRollOutHandler(event:Event):void
 		{
 			dispatchEvent(event);
+			
+			updateHighlightedText();
 		}
 		
 		private function dropdown_valueCommitHandler(event:FlexEvent):void
 		{
-			trace( "dropdown_valueCommitHandler" );
+			
 		}
 		
 		/**
@@ -2620,6 +2628,7 @@ package ws.tink.mx.controls
 		private var _filteredCollection		: ICollectionView;
 		
 		private var _caseSensitive			: Boolean;
+		private var _selectSingleMatch		: Boolean;
 		private var _highlightTextFormat	: TextFormat;
 		
 		public function get filteredCollection():ICollectionView
@@ -2643,6 +2652,18 @@ package ws.tink.mx.controls
 			
 			_caseSensitive = value;
 			if( textInput.text != _prompt ) filterString = textInput.text;
+		}
+		
+		public function get selectSingleMatch():Boolean
+		{
+			return _selectSingleMatch;
+		}
+		public function set selectSingleMatch( value:Boolean ):void
+		{
+			if( _selectSingleMatch == value ) return;
+			
+			_selectSingleMatch = value;
+			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
 		}
 		
 		public function get filterString():String
@@ -2672,16 +2693,11 @@ package ws.tink.mx.controls
 			
 			textInput.addEventListener( FocusEvent.FOCUS_IN, onTextInputFocusIn, false, 0, true );
 			textInput.addEventListener( FocusEvent.FOCUS_OUT, onTextInputFocusOut, false, 0, true );
-			
-			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true );
+			textInput.addEventListener( MouseEvent.MOUSE_DOWN, onTextInputMouseDown, false, 0, true );
 		}
 		
 		private function onTextInputFocusIn( event:FocusEvent ):void
 		{
-			if( textInput.text == prompt )
-			{
-				textInput.text = "";
-			}
 			if( !isShowingDropdown ) open();
 		}
 		
@@ -2695,17 +2711,16 @@ package ws.tink.mx.controls
 			}
 		}
 		
-		private function onMouseDown( event:MouseEvent ):void
+		private function onTextInputMouseDown( event:MouseEvent ):void
 		{
-			if( textInput.text == prompt ) textInput.text = "";
-			
 			if( !isShowingDropdown ) open();
 		}
-		
 		
 		protected function onDropdownDataChange( event:FlexEvent ):void
 		{
 			updateHighlightedText();
+			
+			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
 		}
 		
 		private function updateHighlightedText():void
