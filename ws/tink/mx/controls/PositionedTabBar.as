@@ -35,6 +35,7 @@ package ws.tink.mx.controls
 	
 	[Style(name="position", type="String", enumeration="top,bottom,left,right", inherit="no")]
 	
+	[IconFile("PositionedTabBar.png")]
 	
 	public class PositionedTabBar extends TabBar
 	{
