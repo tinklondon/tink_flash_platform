@@ -671,7 +671,7 @@ package ws.tink.mx.controls
 	
 	[DefaultTriggerEvent("change")]
 	
-	//[IconFile("ComboBox.png")]
+	[IconFile("FilterComboBox.png")]
 	
 	/**
 	 *  The ComboBox control contains a drop-down list
