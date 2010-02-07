@@ -2501,6 +2501,8 @@ package ws.tink.mx.controls
 				PopUpManager.removePopUp(_dropdown);
 				_dropdown = null;
 				bRemoveDropdown = false;
+				
+				if( _removeFilterOnSelection ) filterString = "";
 			}
 			
 			UIComponent.resumeBackgroundProcessing();
@@ -2614,16 +2616,17 @@ package ws.tink.mx.controls
 		}
 		
 		
-		private var _filterChanged			: Boolean;
-		private var _filterString			: String;
-		private var _filterFunction			: Function;
-		private var _activeFilterFunction	: Function;
+		private var _filterChanged				: Boolean;
+		private var _filterString				: String;
+		private var _filterFunction				: Function;
+		private var _activeFilterFunction		: Function;
 		
-		private var _filteredCollection		: ICollectionView;
+		private var _filteredCollection			: ICollectionView;
 		
-		private var _caseSensitive			: Boolean;
-		private var _selectSingleMatch		: Boolean;
-		private var _highlightTextFormat	: TextFormat;
+		private var _caseSensitive				: Boolean;
+		private var _selectSingleMatch			: Boolean;
+		private var _removeFilterOnSelection	: Boolean;
+		private var _highlightTextFormat		: TextFormat;
 		
 		public function get filteredCollection():ICollectionView
 		{
@@ -2658,6 +2661,18 @@ package ws.tink.mx.controls
 			
 			_selectSingleMatch = value;
 			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
+		}
+		
+		public function get removeFilterOnSelection():Boolean
+		{
+			return _removeFilterOnSelection;
+		}
+		public function set removeFilterOnSelection( value:Boolean ):void
+		{
+			if( _removeFilterOnSelection == value ) return;
+			
+			_removeFilterOnSelection = value;
+			if( !dropdown && selectedIndex > -1 ) filterString = "";
 		}
 		
 		public function get filterString():String
