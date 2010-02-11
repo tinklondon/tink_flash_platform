@@ -2729,6 +2729,15 @@ package ws.tink.mx.controls
 		{
 			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
 			
+			if( !inTween && isShowingDropdown )
+			{
+				if( _dropdown.localToGlobal( new Point() ).y < localToGlobal( new Point() ).y )
+				{
+					var point:Point = localToGlobal(new Point() );
+					_dropdown.y = point.y-_dropdown.height;
+					trace( "move", _dropdown.localToGlobal( new Point() ).y );
+				}
+			}
 			updateHighlightedText();
 		}
 		
