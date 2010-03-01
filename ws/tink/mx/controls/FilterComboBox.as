@@ -844,6 +844,10 @@ package ws.tink.mx.controls
 			filterString = "";
 			_activeFilterFunction = filterDataFunction;
 			
+			_clearFilterOnSelection = true;
+			_clearInputOnFocusOut = true;
+			_selectSingleMatch = true;
+			
 			useFullDropdownSkin = true;
 			wrapDownArrowButton = false;
 			addEventListener("unload", unloadHandler);
@@ -1157,7 +1161,7 @@ package ws.tink.mx.controls
 			{
 				textInput.text = filterString = selectedLabel;
 			}
-			else if( textInput && prompt )
+			else if( textInput && prompt && ( ( _clearInputOnFocusOut || textInput.text == "" ) ) )
 			{
 				textInput.text = prompt;
 				filterString = "";
@@ -1205,7 +1209,7 @@ package ws.tink.mx.controls
 			{
 				textInput.text = filterString = selectedLabel;
 			}
-			else if( textInput && prompt )
+			else if( textInput && prompt && ( _clearInputOnFocusOut || textInput.text == "" ) )
 			{
 				textInput.text = prompt;
 				filterString = "";
@@ -1516,7 +1520,6 @@ package ws.tink.mx.controls
 		public function get selectedLabel():String
 		{
 			var item:Object = selectedItem;
-			
 			return itemToLabel(item);
 		}
 		
@@ -1639,20 +1642,21 @@ package ws.tink.mx.controls
 			{
 				if (!textChanged)
 				{
-					if (selectedIndex == -1 && prompt)
-						textInput.text = prompt;
-					else if (!explicitText)
+					if( selectedIndex == -1 && prompt )
+					{
+						if( _clearInputOnFocusOut || textInput.text == "" ) textInput.text = prompt;
+					}
+					else if( !explicitText )
+					{
 						textInput.text = selectedLabel;
+					}
 				}
 				
 				textInput.invalidateDisplayList();
 				textInput.validateNow();
 				
-				if (editable)
-				{
-					textInput.getTextField().setSelection(0, textInput.text.length);
-					textInput.getTextField().scrollH = 0;
-				}
+				textInput.getTextField().setSelection(0, textInput.text.length);
+				textInput.getTextField().scrollH = 0;
 				
 				if (_dropdown)
 					_dropdown.selectedIndex = selectedIndex;
@@ -1873,10 +1877,11 @@ package ws.tink.mx.controls
 				
 				_dropdown.addEventListener("change", dropdown_changeHandler);
 				_dropdown.addEventListener( FlexEvent.VALUE_COMMIT, dropdown_valueCommitHandler);
-				_dropdown.addEventListener(ScrollEvent.SCROLL, dropdown_scrollHandler);
-				_dropdown.addEventListener(ListEvent.ITEM_ROLL_OVER, dropdown_itemRollOverHandler);
-				_dropdown.addEventListener(ListEvent.ITEM_ROLL_OUT, dropdown_itemRollOutHandler);
+				_dropdown.addEventListener( ScrollEvent.SCROLL, dropdown_scrollHandler);
+				_dropdown.addEventListener( ListEvent.ITEM_ROLL_OVER, dropdown_itemRollOverHandler);
+				_dropdown.addEventListener( ListEvent.ITEM_ROLL_OUT, dropdown_itemRollOutHandler);
 				_dropdown.addEventListener( FlexEvent.UPDATE_COMPLETE, onDropdownDataChange, false, 0, true );
+				_dropdown.addEventListener( MouseEvent.MOUSE_OUT, onDropDownMouseOut, false, 0, true );
 				
 				// the drop down should close if the user clicks on any item.
 				// add a handler to detect a click in the list
@@ -1901,12 +1906,11 @@ package ws.tink.mx.controls
 		/**
 		 *  @private
 		 */
-		private function displayDropdown(show:Boolean, trigger:Event = null):void
+		private function displayDropdown( show:Boolean, trigger:Event = null ):void
 		{
-			if( textInput.text == prompt ) textInput.text = "";
+			if( textInput.text == prompt && show ) textInput.text = "";
 			
-			if (!initialized || show == _showingDropdown)
-				return;
+			if( !initialized || show == _showingDropdown ) return;
 			
 			// Subclasses may extend to do pre-processing
 			// before the dropdown is displayed
@@ -2156,6 +2160,7 @@ package ws.tink.mx.controls
 				
 				_filteredCollection = new ListCollectionView( ListCollectionView( collection ) );
 				_filteredCollection.filterFunction = _activeFilterFunction;
+				_filteredCollection.refresh();
 				
 				invalidateDisplayList();
 				
@@ -2185,14 +2190,8 @@ package ws.tink.mx.controls
 			{
 				dropdown.selectedIndex = -1;
 			}
-//			if( dropdown.selectedIndex != -1 ) dropdown.selectedIndex = -1;
-			
-//			_textInputChange = true;
-			filterString = ( _caseSensitive ) ? textInput.text : textInput.text.toLowerCase();
-			
-//			_filteredCollection.refresh();
-//			
-//			if( !isShowingDropdown ) open();
+
+			filterString = textInput.text;
 			
 			// Force a change event to be dispatched
 			dispatchChangeEvent(event, -1, -2);
@@ -2321,7 +2320,7 @@ package ws.tink.mx.controls
 		/**
 		 *  @private
 		 */
-		private function dropdown_itemRollOutHandler(event:Event):void
+		private function dropdown_itemRollOutHandler(event:ListEvent):void
 		{
 			dispatchEvent(event);
 			
@@ -2502,7 +2501,7 @@ package ws.tink.mx.controls
 				_dropdown = null;
 				bRemoveDropdown = false;
 				
-				if( _removeFilterOnSelection ) filterString = "";
+				if( _clearFilterOnSelection && selectedIndex != -1 ) filterString = "";
 			}
 			
 			UIComponent.resumeBackgroundProcessing();
@@ -2625,7 +2624,8 @@ package ws.tink.mx.controls
 		
 		private var _caseSensitive				: Boolean;
 		private var _selectSingleMatch			: Boolean;
-		private var _removeFilterOnSelection	: Boolean;
+		private var _clearFilterOnSelection	: Boolean;
+		private var _clearInputOnFocusOut		: Boolean;
 		private var _highlightTextFormat		: TextFormat;
 		
 		public function get filteredCollection():ICollectionView
@@ -2663,16 +2663,27 @@ package ws.tink.mx.controls
 			if( _filteredCollection.length == 1 && _selectSingleMatch ) dropdown.selectedIndex = 0;
 		}
 		
-		public function get removeFilterOnSelection():Boolean
+		public function get clearFilterOnSelection():Boolean
 		{
-			return _removeFilterOnSelection;
+			return _clearFilterOnSelection;
 		}
-		public function set removeFilterOnSelection( value:Boolean ):void
+		public function set clearFilterOnSelection( value:Boolean ):void
 		{
-			if( _removeFilterOnSelection == value ) return;
+			if( _clearFilterOnSelection == value ) return;
 			
-			_removeFilterOnSelection = value;
+			_clearFilterOnSelection = value;
 			if( !dropdown && selectedIndex > -1 ) filterString = "";
+		}
+		
+		public function get clearInputOnFocusOut():Boolean
+		{
+			return _clearInputOnFocusOut;
+		}
+		public function set clearInputOnFocusOut( value:Boolean ):void
+		{
+			if( _clearInputOnFocusOut == value ) return;
+			
+			_clearInputOnFocusOut = value;
 		}
 		
 		public function get filterString():String
@@ -2687,6 +2698,11 @@ package ws.tink.mx.controls
 			_filterString = newFilter;
 			_filteredCollection.refresh();
 			if( _dropdown ) _dropdown.rowCount = rowCount;
+			
+			if( textInput && value != "" )
+			{
+				if( textInput.text != value ) textInput.text = value;
+			}
 		}
 		
 		override public function set editable( value:Boolean ):void
@@ -2700,15 +2716,15 @@ package ws.tink.mx.controls
 			
 			super.createChildren();
 			
-			textInput.addEventListener( FocusEvent.FOCUS_IN, onTextInputFocusIn, false, 0, true );
+//			textInput.addEventListener( FocusEvent.FOCUS_IN, onTextInputFocusIn, false, 0, true );
 			textInput.addEventListener( FocusEvent.FOCUS_OUT, onTextInputFocusOut, false, 0, true );
 			textInput.addEventListener( MouseEvent.MOUSE_DOWN, onTextInputMouseDown, false, 0, true );
 		}
 		
-		private function onTextInputFocusIn( event:FocusEvent ):void
-		{
-			if( !isShowingDropdown ) open();
-		}
+//		private function onTextInputFocusIn( event:FocusEvent ):void
+//		{
+//			if( !isShowingDropdown ) open();
+//		}
 		
 		private function onTextInputFocusOut( event:FocusEvent ):void
 		{
@@ -2735,9 +2751,9 @@ package ws.tink.mx.controls
 				{
 					var point:Point = localToGlobal(new Point() );
 					_dropdown.y = point.y-_dropdown.height;
-					trace( "move", _dropdown.localToGlobal( new Point() ).y );
 				}
 			}
+			
 			updateHighlightedText();
 		}
 		
@@ -2827,6 +2843,11 @@ package ws.tink.mx.controls
 					}
 				}
 			}
+		}
+		
+		private function onDropDownMouseOut( event:MouseEvent ):void
+		{
+			updateHighlightedText();
 		}
 		
 		
