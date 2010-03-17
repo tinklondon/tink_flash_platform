@@ -225,38 +225,26 @@ package ws.tink.spark.components
 		 *  @param title Text string that appears in the title bar. 
 		 *  This text is left justified.
 		 *
-		 *  @param flags Which buttons to place in the Alert control.
-		 *  Valid values are <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
-		 *  <code>Alert.YES</code>, and <code>Alert.NO</code>.
-		 *  The default value is <code>Alert.OK</code>.
-		 *  Use the bitwise OR operator to display more than one button. 
-		 *  For example, passing <code>(Alert.YES | Alert.NO)</code>
-		 *  displays Yes and No buttons.
-		 *  Regardless of the order that you specify buttons,
-		 *  they always appear in the following order from left to right:
-		 *  OK, Yes, No, Cancel.
+		 *  @param buttonLabels The labels to display on the controls buttons.
 		 *
 		 *  @param parent Object upon which the Alert control centers itself.
 		 *
 		 *  @param closeHandler Event handler that is called when any button
 		 *  on the Alert control is pressed.
 		 *  The event object passed to this handler is an instance of CloseEvent;
-		 *  the <code>detail</code> property of this object contains the value
-		 *  <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
-		 *  <code>Alert.YES</code>, or <code>Alert.NO</code>.
+		 *  the <code>detail</code> property of this object contains the index
+		 *  of the button that was pressed
 		 *
-		 *  @param iconClass Class of the icon that is placed to the left
-		 *  of the text in the Alert control.
+		 *  @param iconClass Class of the icon.
 		 *
-		 *  @param defaultButtonFlag A bitflag that specifies the default button.
-		 *  You can specify one and only one of
-		 *  <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
-		 *  <code>Alert.YES</code>, or <code>Alert.NO</code>.
-		 *  The default value is <code>Alert.OK</code>.
+		 *  @param defaultButtonFlag The index of the default button.
+		 *  The default value is <code>0</code>.
 		 *  Pressing the Enter key triggers the default button
 		 *  just as if you clicked it. Pressing Escape triggers the Cancel
 		 *  or No button just as if you selected it.
 		 *
+		 *  @param modal Whether the Alert is modal.
+		 * 
 		 *  @param moduleFactory The moduleFactory where this Alert should look for
 		 *  its embedded fonts and style manager.
 		 * 
