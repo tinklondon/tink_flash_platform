@@ -48,8 +48,8 @@
 	
 	<fx:Script fb:purpose="styling">
 		/* Define the skin elements that should not be colorized. 
-		For panel, border and title background are skinned, but the content area and title text are not. */
-		static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup"];
+		For Alert, border and title background are skinned, but the content area and title text are not. */
+		static private const exclusions:Array = ["background", "titleDisplay", "messageDisplay", "icongroup", "buttonGroup", "controlBarGroup"];
 		
 		/**
 		 * @private
@@ -233,23 +233,16 @@
 				</s:Label>
 			</s:Group>
 			
-			<!--
-			Note: setting the minimum size to 0 here so that changes to the host component's
-			size will not be thwarted by this skin part's minimum size.   This is a compromise,
-			more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
-			-->
-			<!--- @copy spark.components.SkinnableContainer#contentGroup -->
-			<!--<s:Group id="contentGroup" width="100%" height="100%" minWidth="0" minHeight="0">
-			</s:Group>-->
 			<s:HGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Group id="iconGroup">
-					
-				</s:Group>
+				<!--- @copy ws.tink.spark.components.Alert#iconGroup -->
+				<s:Group id="iconGroup"/>
 				<s:VGroup width="100%" height="100%" paddingLeft="5" paddingRight="5" paddingBottom="5"
 						  verticalAlign="middle" horizontalAlign="center">
+					<!--- @copy ws.tink.spark.components.Alert#messageDisplay -->
 					<s:Label id="messageDisplay"
 							 left="9" right="3" top="1" bottom="0" minHeight="30"
 							 verticalAlign="middle"/>
+					<!--- @copy ws.tink.spark.components.Alert#buttonGroup -->
 					<s:HGroup id="buttonGroup" width="100%" minWidth="0" minHeight="0"
 							   horizontalAlign="center"/>
 				</s:VGroup>
