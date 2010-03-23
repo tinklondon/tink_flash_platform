@@ -1,23 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//      Copyright (c) 2010 Tink Ltd | http://www.tink.ws
-//      
-//      Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-//      documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
-//      the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
-//      to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-//      
-//      The above copyright notice and this permission notice shall be included in all copies or substantial portions
-//      of the Software.
-//      
-//      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
-//      THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-//      TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//      SOFTWARE.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package ws.tink.spark.layouts
 {
 	import flash.display.BitmapData;
@@ -35,6 +15,8 @@ package ws.tink.spark.layouts
 	import mx.effects.IEffectInstance;
 	import mx.events.EffectEvent;
 	
+	import spark.components.DataGroup;
+	import spark.components.Group;
 	import spark.components.Scroller;
 	import spark.components.supportClasses.GroupBase;
 	import spark.effects.Fade;
@@ -44,6 +26,7 @@ package ws.tink.spark.layouts
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.utils.BitmapUtil;
 	
+	import ws.tink.spark.components.Navigator;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 
 	use namespace mx_internal;
@@ -51,7 +34,7 @@ package ws.tink.spark.layouts
 	/**
 	 * Flex 4 Time Machine Layout
 	 */
-	[Event(name="change", type="flash.events.Event")]
+	[Event(name="blah", type="flash.events.Event")]
 	public class StackLayout extends NavigatorLayoutBase
 	{
 		
@@ -68,6 +51,7 @@ package ws.tink.spark.layouts
 		
 		private var _elementMaxDimensions		: ElementMaxDimensions;
 		
+		private var _targetChanged				: Boolean;
 
 		private var _verticalAlign:String = VerticalAlign.TOP;
 		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="top")]
@@ -83,6 +67,7 @@ package ws.tink.spark.layouts
 			
 			invalidateTargetDisplayList();
 		}
+		
 		
 		
 		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
@@ -106,6 +91,7 @@ package ws.tink.spark.layouts
 			
 			super.target = value;
 			
+			_targetChanged = true;
 			_elementMaxDimensions = new ElementMaxDimensions();
 		}
 		
@@ -121,13 +107,61 @@ package ws.tink.spark.layouts
 			invalidateTargetDisplayList();
 		}
 
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			if( _effectInstance ) _effectInstance.end();
 			
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
-//			target.setContentSize( _selectedElement.width, _selectedElement.height );
+			if( _targetChanged )
+			{
+				var i:int;
+				_targetChanged = false;
+				
+				if( target is DataGroup )
+				{
+					var dataGroup:DataGroup = DataGroup( target );
+					// If we are adding children and not using an ItemRenderer
+					
+					if( !dataGroup.itemRenderer )
+					{
+						for( i = 0; i < numElementsInLayout; i++ )
+						{
+							if( i != selectedIndex )
+								IVisualElement( dataGroup.dataProvider.getItemAt( indicesInLayout[ i ] ) ).visible = false;
+						}
+					}
+				}
+				else
+				{
+					var content:Array;
+					
+					if( target is Navigator )
+					{
+						content = Navigator( target ).toArray();
+					}
+					else
+					{
+						content = Group( target ).getMXMLContent();
+					}
+					
+					for( i = 0; i < numElementsInLayout; i++ )
+					{
+						if( i != selectedIndex )
+							IVisualElement( content[ indicesInLayout[ i ] ] ).visible = false;
+					}
+				}
+			}
+			
+			
 			
 			if( _stackIndex != selectedIndex )
 			{
@@ -150,16 +184,28 @@ package ws.tink.spark.layouts
 			}
 		}
 		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override protected function updateDisplayListVirtual():void
 		{
 			super.updateDisplayListVirtual();
 			
 			if( _selectedElement ) _selectedElement.visible = false;
 			
+			if( target.numElements == 0 ) return;
+			
 			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ? Math.max( 0, unscaledWidth ) : NaN;
 			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ? Math.max( 0, unscaledHeight ) : NaN;; 
 			
-			_selectedElement = target.getVirtualElementAt( firstIndexInView, eltWidth, eltHeight );
+			_selectedElement = target.getVirtualElementAt( indicesInLayout[ firstIndexInView ], eltWidth, eltHeight );
+			
+			if( !_selectedElement ) return;
 			_selectedElement.visible = true;
 		
 			_elementMaxDimensions.update( _selectedElement );
@@ -168,7 +214,49 @@ package ws.tink.spark.layouts
 				calculateElementWidth( _selectedElement, unscaledWidth, _elementMaxDimensions.width ),
 				calculateElementHeight( _selectedElement, unscaledHeight, _elementMaxDimensions.height ) );
 			
-			dispatchEvent( new Event( "change" ) );
+			updateDepths( null );
+		}
+		
+		
+		/**
+		 *	@private
+		 * 
+		 *	Sets the depth of elements inlcuded in the layout at depths
+		 *	to display correctly for the z position set with transformAround.
+		 * 
+		 *	Also sets the depth of elements that are not included in the layout.
+		 *	The depth of these is dependent on whether their element index is before
+		 *	or after the index of the selected element.
+		 */
+		private function updateDepths( depths:Vector.<int> ):void
+		{
+			var element:IVisualElement;
+			var i:int;
+			var numElementsNotInLayout:int = indicesNotInLayout.length;
+			for( i = 0; i < numElementsNotInLayout; i++ )
+			{
+				element = target.getElementAt( indicesNotInLayout[ i ] );
+				element.depth = indicesNotInLayout[ i ];
+			}
+			
+			//FIXME tink, -1 to allow for bug
+			_selectedElement.depth = ( indicesInLayout[ selectedIndex ] == 0 ) ? -1 : indicesInLayout[ selectedIndex ];
+		}
+		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function restoreElement( element:IVisualElement ):void
+		{
+			super.restoreElement( element );
+			
+			element.visible = true;
 		}
 		
 		/**
