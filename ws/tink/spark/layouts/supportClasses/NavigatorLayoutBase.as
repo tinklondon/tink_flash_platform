@@ -27,7 +27,7 @@ package ws.tink.spark.layouts.supportClasses
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.primitives.supportClasses.GraphicElement;
 	
-	import ws.tink.spark.components.Navigator;
+	import ws.tink.spark.components.NavigatorOLD;
 	
 	use namespace mx_internal;
 	
@@ -43,12 +43,14 @@ package ws.tink.spark.layouts.supportClasses
 		private var _selectedIndex			: int = -1;
 		private var _selectedIndexChanged	: Boolean;
 		
+		private var _elementsChanged		: Boolean;
 		
 		private var _firstIndexInView		: int;
 		private var _lastIndexInView		: int;
 		private var _numIndicesInView		: int;
 		
 		private var _numElementsInLayout	: int;
+		private var _numElementsNotInLayout	: int;
 //		private var _elementsInLayout		: Vector.<IVisualElement>;
 //		private var _stepScrollBar			: Boolean = true;
 		
@@ -245,6 +247,23 @@ package ws.tink.spark.layouts.supportClasses
 			return _numElementsInLayout;
 		}
 		
+		
+		/**
+		 *  Returns an <code>int</code> specifying number of elements not included in the layout.
+		 * 
+		 *  @see mx.core.UIComponent#includeInLayout
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get numElementsNotInLayout():int
+		{
+			return _numElementsNotInLayout;
+		}
+		
+		
 		/**
 		 *  A convenience method for determining the elements included in the layout.
 		 * 
@@ -313,12 +332,27 @@ package ws.tink.spark.layouts.supportClasses
 		private var _unscaledWidth	: Number;
 		private var _unscaledHeight	: Number;
 		
+		//TODO tink comment and implement properly
+		protected var _elements	: Vector.<IVisualElement>;
+		public function get elements():Vector.<IVisualElement>
+		{
+			return _elements;
+		}
+		
 		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
 			_unscaledWidth = unscaledWidth;
 			_unscaledHeight = unscaledHeight;
+			
+			
+			
+			if( _elementsChanged || _targetChanged )
+			{
+				_elementsChanged = false;
+				updateElements();
+			}
 			
 			//TODO support includeInLayout
 			updateElementsInLayout();
@@ -363,65 +397,54 @@ package ws.tink.spark.layouts.supportClasses
 			}
 		}
 		
+		protected function updateElements():void
+		{
+			var elts:Array;
+			if( target is DataGroup )
+			{
+				var dataGroup:DataGroup = DataGroup( target );
+				if( !dataGroup.itemRenderer && dataGroup.itemRendererFunction == null ) elts = dataGroup.dataProvider.toArray();
+			}
+			else
+			{
+				try
+				{
+					elts = target[ "getMXMLContent" ]();
+				}
+				catch( e:Error )
+				{
+					elts = target[ "toArray" ]();
+				}
+				catch( e:Error )
+				{
+					throw new Error( "NavigatorLayoutBase is not about to be used as a layout for this kind of container" );
+					elts = new Array();
+				}
+			}
+			
+			_elements = Vector.<IVisualElement>( elts );
+		}
+		
 		protected function updateElementsInLayout():void
 		{
 			_indicesInLayout = new Vector.<int>();
 			_indicesNotInLayout = new Vector.<int>();
-				
+			
 			var i:int;
-			var numElements:int = target.numElements;
-			if( target is DataGroup )
+			var numElements:int = _elements.length;
+			for( i = 0; i < numElements; i++ )
 			{
-				var dataGroup:DataGroup = DataGroup( target );
-				// If we are adding children and not using an ItemRenderer
-				
-				for( i = 0; i < numElements; i++ )
+				if( _elements[ i ].includeInLayout )
 				{
-					if( !dataGroup.itemRenderer )
-					{
-						if( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ).includeInLayout )
-						{
-//							elementsInLayout++;
-							_indicesInLayout.push( i );
-						}
-						else
-						{
-							_indicesNotInLayout.push( i );
-						}
-					}
-					else
-					{
-						_indicesInLayout.push( i );
-					}
-				}
-			}
-			else
-			{
-				var content:Array;
-				
-				if( target is Navigator )
-				{
-					content = Navigator( target ).toArray();
+					_indicesInLayout.push( i );
 				}
 				else
 				{
-					content = Group( target ).getMXMLContent();
-				}
-				
-				for( i = 0; i < numElements; i++ )
-				{
-					if( IVisualElement( content[ i ] ).includeInLayout )
-					{
-						_indicesInLayout.push( i );
-					}
-					else
-					{
-						_indicesNotInLayout.push( i );
-					}
+					_indicesNotInLayout.push( i );
 				}
 			}
-			
 			_numElementsInLayout = _indicesInLayout.length;
+			_numElementsNotInLayout = _indicesNotInLayout.length;
 		}
 		
 		protected function updateScrollerForNavigation():void
@@ -581,6 +604,7 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			super.elementAdded( index );
 			
+			_elementsChanged = true;
 			//TODO maybe add a listener here for "includeInLayoutChanged"
 			// not implement due to risk of not being able to remove the listener
 			// (https://bugs.adobe.com/jira/browse/SDK-25896)
@@ -598,6 +622,7 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			super.elementRemoved( index );
 			
+			_elementsChanged = true;
 			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
 		}
 		
