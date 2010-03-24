@@ -26,7 +26,7 @@ package ws.tink.spark.layouts
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.utils.BitmapUtil;
 	
-	import ws.tink.spark.components.Navigator;
+	import ws.tink.spark.components.NavigatorOLD;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 
 	use namespace mx_internal;
@@ -43,7 +43,7 @@ package ws.tink.spark.layouts
 		
 		private var _stackIndex		: int = -2;
 		
-		private var _numVirtualItems	: int = 1;
+//		private var _numVirtualItems	: int = 1;
 		
 		public var effect			: IEffect;
 		private var _effectInstance		: EffectInstance;
@@ -51,7 +51,12 @@ package ws.tink.spark.layouts
 		
 		private var _elementMaxDimensions		: ElementMaxDimensions;
 		
-		private var _targetChanged				: Boolean;
+//		private var _targetChanged				: Boolean;
+		
+		private var _numElementsInLayout		: int;
+		private var _numElementsNotInLayout		: int;
+		
+		
 
 		private var _verticalAlign:String = VerticalAlign.TOP;
 		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="top")]
@@ -91,21 +96,21 @@ package ws.tink.spark.layouts
 			
 			super.target = value;
 			
-			_targetChanged = true;
+//			_targetChanged = true;
 			_elementMaxDimensions = new ElementMaxDimensions();
 		}
 		
-		public function get numVirtualItems():int
-		{
-			return _numVirtualItems;
-		}
-		public function set numVirtualItems( value:int ) : void
-		{
-			if( _numVirtualItems == value ) return;
-			
-			_numVirtualItems = value;
-			invalidateTargetDisplayList();
-		}
+//		public function get numVirtualItems():int
+//		{
+//			return _numVirtualItems;
+//		}
+//		public function set numVirtualItems( value:int ) : void
+//		{
+//			if( _numVirtualItems == value ) return;
+//			
+//			_numVirtualItems = value;
+//			invalidateTargetDisplayList();
+//		}
 
 		/**
 		 *  @inheritDoc
@@ -121,47 +126,25 @@ package ws.tink.spark.layouts
 			
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
-			if( _targetChanged )
+			var i:int;
+			
+			if( _numElementsInLayout != numElementsInLayout )
 			{
-				var i:int;
-				_targetChanged = false;
-				
-				if( target is DataGroup )
+				_numElementsInLayout = numElementsInLayout;
+				for( i = 0; i < _numElementsInLayout; i++ )
 				{
-					var dataGroup:DataGroup = DataGroup( target );
-					// If we are adding children and not using an ItemRenderer
-					
-					if( !dataGroup.itemRenderer )
-					{
-						for( i = 0; i < numElementsInLayout; i++ )
-						{
-							if( i != selectedIndex )
-								IVisualElement( dataGroup.dataProvider.getItemAt( indicesInLayout[ i ] ) ).visible = false;
-						}
-					}
-				}
-				else
-				{
-					var content:Array;
-					
-					if( target is Navigator )
-					{
-						content = Navigator( target ).toArray();
-					}
-					else
-					{
-						content = Group( target ).getMXMLContent();
-					}
-					
-					for( i = 0; i < numElementsInLayout; i++ )
-					{
-						if( i != selectedIndex )
-							IVisualElement( content[ indicesInLayout[ i ] ] ).visible = false;
-					}
+					elements[ indicesInLayout[ i ] ].visible = ( i == selectedIndex );
 				}
 			}
 			
-			
+			if( _numElementsNotInLayout != numElementsNotInLayout )
+			{
+				_numElementsNotInLayout = numElementsNotInLayout;
+				for( i = 0; i < _numElementsNotInLayout; i++ )
+				{
+					elements[ indicesInLayout[ i ] ].visible = true;
+				}
+			}
 			
 			if( _stackIndex != selectedIndex )
 			{
@@ -206,17 +189,58 @@ package ws.tink.spark.layouts
 			_selectedElement = target.getVirtualElementAt( indicesInLayout[ firstIndexInView ], eltWidth, eltHeight );
 			
 			if( !_selectedElement ) return;
-			_selectedElement.visible = true;
 		
 			_elementMaxDimensions.update( _selectedElement );
-				
-			_selectedElement.setLayoutBoundsSize( 
-				calculateElementWidth( _selectedElement, unscaledWidth, _elementMaxDimensions.width ),
-				calculateElementHeight( _selectedElement, unscaledHeight, _elementMaxDimensions.height ) );
+			
+			updateSelectedElementSizeAndPosition();
+			_selectedElement.visible = true;
 			
 			updateDepths( null );
 		}
 		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function updateDisplayListReal():void
+		{
+			super.updateDisplayListReal();
+			
+			if( _selectedElement ) _selectedElement.visible = false;
+			
+			if( target.numElements == 0 ) return;
+			
+			var element:IVisualElement;
+			for( var i:int = 0; i < numElementsInLayout; i++ )
+			{
+				element = target.getElementAt( indicesInLayout[ i ] );
+				if( i == firstIndexInView ) _selectedElement = element;
+				
+				_elementMaxDimensions.update( element );
+			}
+			
+			if( !_selectedElement ) return;
+			
+			updateSelectedElementSizeAndPosition();
+			_selectedElement.visible = true;
+			
+			updateDepths( null );
+		}
+		
+		
+		private function updateSelectedElementSizeAndPosition():void
+		{
+			var w:Number = calculateElementWidth( _selectedElement, unscaledWidth, _elementMaxDimensions.width );
+			var h:Number = calculateElementHeight( _selectedElement, unscaledHeight, _elementMaxDimensions.height );
+			
+			_selectedElement.setLayoutBoundsSize( w, h );
+			_selectedElement.setLayoutBoundsPosition( calculateElementX( w ), calculateElementY( h ) )
+		}
 		
 		/**
 		 *	@private
@@ -285,7 +309,7 @@ package ws.tink.spark.layouts
 					return Math.max( element.getPreferredBoundsWidth(), containerWidth );
 				}
 			}
-			return NaN;  // not constrained
+			return element.getPreferredBoundsWidth();  // not constrained
 		}
 		
 		/**
@@ -314,7 +338,53 @@ package ws.tink.spark.layouts
 					return Math.max( element.getPreferredBoundsHeight(), containerHeight );
 				}
 			}
-			return NaN;  // not constrained
+			return element.getPreferredBoundsHeight();  // not constrained
+		}
+		
+		
+		/**
+		 *  @private
+		 */
+		private function calculateElementX( w:Number ):Number
+		{
+			switch( horizontalAlign )
+			{
+				case HorizontalAlign.RIGHT :
+				{
+					return unscaledWidth - w;
+				}
+				case HorizontalAlign.CENTER :
+				{
+					return ( unscaledWidth - w ) / 2;
+				}
+				default :
+				{
+					return 0;
+				}
+			}
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function calculateElementY( h:Number ):Number
+		{
+			trace( verticalAlign, h, unscaledHeight );
+			switch( verticalAlign )
+			{
+				case VerticalAlign.BOTTOM :
+				{
+					return unscaledHeight - h;
+				}
+				case VerticalAlign.MIDDLE :
+				{
+					return ( unscaledHeight - h ) / 2;
+				}
+				default :
+				{
+					return 0;
+				}
+			}
 		}
 		
 		
