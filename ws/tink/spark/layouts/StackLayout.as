@@ -15,9 +15,6 @@ package ws.tink.spark.layouts
 	import mx.effects.IEffectInstance;
 	import mx.events.EffectEvent;
 	
-	import spark.components.DataGroup;
-	import spark.components.Group;
-	import spark.components.Scroller;
 	import spark.components.supportClasses.GroupBase;
 	import spark.effects.Fade;
 	import spark.effects.Move;
@@ -26,7 +23,6 @@ package ws.tink.spark.layouts
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.utils.BitmapUtil;
 	
-	import ws.tink.spark.components.NavigatorOLD;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 
 	use namespace mx_internal;
@@ -34,7 +30,6 @@ package ws.tink.spark.layouts
 	/**
 	 * Flex 4 Time Machine Layout
 	 */
-	[Event(name="blah", type="flash.events.Event")]
 	public class StackLayout extends NavigatorLayoutBase
 	{
 		
@@ -179,6 +174,8 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
+			trace( "updateDisplayListVirtual" );
+			
 			if( _selectedElement ) _selectedElement.visible = false;
 			
 			if( target.numElements == 0 ) return;
@@ -210,7 +207,7 @@ package ws.tink.spark.layouts
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
-			
+
 			if( _selectedElement ) _selectedElement.visible = false;
 			
 			if( target.numElements == 0 ) return;
