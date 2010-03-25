@@ -1,4 +1,4 @@
-package ws.tink.spark.components
+package ws.tink.spark.containers
 {
 	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
@@ -947,32 +947,35 @@ package ws.tink.spark.components
 			var len:int = numElements; 
 			for (var i:int = 0; i < len; i++)
 			{  
-				var item:IVisualElement = getElementAt(i);
+				var item:IVisualElement = _mxmlContent[ i ];
 				
-				if (layeringMode != ITEM_ORDERED_LAYERING)
+				if( super.contains( DisplayObject( item ) ) )
 				{
-					var layer:Number = item.depth;
-					if (layer != 0)
-					{               
-						if (layer > 0)
-						{
-							if (topLayerItems == null) topLayerItems = new Vector.<IVisualElement>();
-							topLayerItems.push(item);
-							continue;                   
-						}
-						else
-						{
-							if (bottomLayerItems == null) bottomLayerItems = new Vector.<IVisualElement>();
-							bottomLayerItems.push(item);
-							continue;                   
+					if (layeringMode != ITEM_ORDERED_LAYERING)
+					{
+						var layer:Number = item.depth;
+						if (layer != 0)
+						{               
+							if (layer > 0)
+							{
+								if (topLayerItems == null) topLayerItems = new Vector.<IVisualElement>();
+								topLayerItems.push(item);
+								continue;                   
+							}
+							else
+							{
+								if (bottomLayerItems == null) bottomLayerItems = new Vector.<IVisualElement>();
+								bottomLayerItems.push(item);
+								continue;                   
+							}
 						}
 					}
-				}
 				
-				// this should only get called if layer == 0, or we don't care
-				// about layering (layeringMode == ITEM_ORDERED_LAYERING)
-				insertIndex = assignDisplayObjectTo(item, prevItem, insertIndex);
-				prevItem = item;
+					// this should only get called if layer == 0, or we don't care
+					// about layering (layeringMode == ITEM_ORDERED_LAYERING)
+					insertIndex = assignDisplayObjectTo(item, prevItem, insertIndex);
+					prevItem = item;
+				}
 			}
 			
 			// we've done all layer == 0 items. 

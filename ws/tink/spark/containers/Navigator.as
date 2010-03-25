@@ -1,4 +1,4 @@
-package ws.tink.spark.components
+package ws.tink.spark.containers
 {
 	import mx.core.ISelectableList;
 	import mx.core.IVisualElement;
@@ -43,6 +43,7 @@ package ws.tink.spark.components
 		override protected function createChildren():void
 		{
 			if( !layout ) layout = new StackLayout();
+			layout.useVirtualLayout = true;
 			
 			super.createChildren();
 		}
