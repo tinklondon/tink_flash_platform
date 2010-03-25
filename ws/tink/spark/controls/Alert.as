@@ -1,24 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//      Copyright (c) 2010 Tink Ltd | http://www.tink.ws
-//      
-//      Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-//      documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
-//      the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
-//      to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-//      
-//      The above copyright notice and this permission notice shall be included in all copies or substantial portions
-//      of the Software.
-//      
-//      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
-//      THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-//      TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//      SOFTWARE.
+//  ADOBE SYSTEMS INCORPORATED
+//  Copyright 2003-2007 Adobe Systems Incorporated
+//  All Rights Reserved.
+//
+//  NOTICE: Adobe permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package ws.tink.spark.components
+package ws.tink.spark.controls
 {
 	
 	
@@ -62,12 +53,12 @@ package ws.tink.spark.components
 	 *  Name of the CSS style declaration that specifies 
 	 *  styles for the Alert buttons. 
 	 * 
-	 *  @default undefined
+	 *  @default "alertButtonStyle"
 	 *  
 	 *  @langversion 3.0
-     *  @playerversion Flash 10
-     *  @playerversion AIR 1.5
-     *  @productversion Flex 4
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
 	 */
 	[Style(name="buttonStyleName", type="String", inherit="no")]
 	
@@ -83,9 +74,9 @@ package ws.tink.spark.components
 	 *  @default undefined
 	 *  
 	 *  @langversion 3.0
-     *  @playerversion Flash 10
-     *  @playerversion AIR 1.5
-     *  @productversion Flex 4
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
 	 */
 	[Style(name="messageStyleName", type="String", inherit="no")]
 	
@@ -98,12 +89,12 @@ package ws.tink.spark.components
 	 *  If you set it on a specific instance of the Alert control, it can cause the control to 
 	 *  size itself incorrectly.</p>
 	 * 
-	 *  @default undefined 
+	 *  @default "windowStyles" 
 	 *  
 	 *  @langversion 3.0
-     *  @playerversion Flash 10
-     *  @playerversion AIR 1.5
-     *  @productversion Flex 4
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
 	 */
 	[Style(name="titleStyleName", type="String", inherit="no")]
 	
@@ -135,9 +126,9 @@ package ws.tink.spark.components
 	 *  @see mx.managers.PopUpManager
 	 *  
 	 *  @langversion 3.0
-     *  @playerversion Flash 10
-     *  @playerversion AIR 1.5
-     *  @productversion Flex 4
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
 	 */
 	
 	
@@ -183,11 +174,11 @@ package ws.tink.spark.components
 		 *  @default 22
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
-		public static var buttonHeight:Number = 21;
+		public static var buttonHeight:Number = 50;
 		
 		//----------------------------------
 		//  buttonWidth
@@ -202,9 +193,9 @@ package ws.tink.spark.components
 		 *  @default 60
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		public static var buttonWidth:Number = 65;
 		
@@ -225,26 +216,38 @@ package ws.tink.spark.components
 		 *  @param title Text string that appears in the title bar. 
 		 *  This text is left justified.
 		 *
-		 *  @param buttonLabels The labels to display on the controls buttons.
+		 *  @param flags Which buttons to place in the Alert control.
+		 *  Valid values are <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
+		 *  <code>Alert.YES</code>, and <code>Alert.NO</code>.
+		 *  The default value is <code>Alert.OK</code>.
+		 *  Use the bitwise OR operator to display more than one button. 
+		 *  For example, passing <code>(Alert.YES | Alert.NO)</code>
+		 *  displays Yes and No buttons.
+		 *  Regardless of the order that you specify buttons,
+		 *  they always appear in the following order from left to right:
+		 *  OK, Yes, No, Cancel.
 		 *
 		 *  @param parent Object upon which the Alert control centers itself.
 		 *
 		 *  @param closeHandler Event handler that is called when any button
 		 *  on the Alert control is pressed.
 		 *  The event object passed to this handler is an instance of CloseEvent;
-		 *  the <code>detail</code> property of this object contains the index
-		 *  of the button that was pressed
+		 *  the <code>detail</code> property of this object contains the value
+		 *  <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
+		 *  <code>Alert.YES</code>, or <code>Alert.NO</code>.
 		 *
-		 *  @param iconClass Class of the icon.
+		 *  @param iconClass Class of the icon that is placed to the left
+		 *  of the text in the Alert control.
 		 *
-		 *  @param defaultButtonFlag The index of the default button.
-		 *  The default value is <code>0</code>.
+		 *  @param defaultButtonFlag A bitflag that specifies the default button.
+		 *  You can specify one and only one of
+		 *  <code>Alert.OK</code>, <code>Alert.CANCEL</code>,
+		 *  <code>Alert.YES</code>, or <code>Alert.NO</code>.
+		 *  The default value is <code>Alert.OK</code>.
 		 *  Pressing the Enter key triggers the default button
 		 *  just as if you clicked it. Pressing Escape triggers the Cancel
 		 *  or No button just as if you selected it.
 		 *
-		 *  @param modal Whether the Alert is modal.
-		 * 
 		 *  @param moduleFactory The moduleFactory where this Alert should look for
 		 *  its embedded fonts and style manager.
 		 * 
@@ -253,16 +256,16 @@ package ws.tink.spark.components
 		 *  @see mx.events.CloseEvent
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		public static function show(message:String = "", title:String = "",
-									buttonLabels:Vector.<String> = null,
+									buttonLabels:Vector.<String> = null /* Alert.OK */, 
 									parent:Sprite = null, 
 									closeHandler:Function = null, 
 									iconClass:Class = null, 
-									defaultButtonIndex:uint = 0,
+									defaultButtonIndex:uint = 0 /* Alert.OK */,
 									modal:Boolean = true,
 									moduleFactory:IFlexModuleFactory = null):Alert
 		{
@@ -349,14 +352,14 @@ package ws.tink.spark.components
 		 *  Constructor.
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		public function Alert()
 		{
 			super();
-
+			trace( "alert" );
 			// Panel properties.
 			title = "";
 			message = "";
@@ -390,14 +393,16 @@ package ws.tink.spark.components
 		//----------------------------------
 		
 		/**
-		 *  A list that contains the buttons labels for the Alert control.
+		 *  A bitmask that contains <code>Alert.OK</code>, <code>Alert.CANCEL</code>, 
+		 *  <code>Alert.YES</code>, and/or <code>Alert.NO</code> indicating
+		 *  the buttons available in the Alert control.
 		 *
 		 *  @default Alert.OK
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		protected var _buttonLabelsChanged:Boolean;
 		protected var _buttonLabels:Vector.<String>;
@@ -422,14 +427,16 @@ package ws.tink.spark.components
 		[Inspectable(category="General")]
 		
 		/**
-		 *  The index to use as the default button.
+		 *  A bitflag that contains either <code>Alert.OK</code>, 
+		 *  <code>Alert.CANCEL</code>, <code>Alert.YES</code>, 
+		 *  or <code>Alert.NO</code> to specify the default button.
 		 *
-		 *  @default 0
+		 *  @default Alert.OK
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		private var _defaultButtonIndex:uint = 0;
 		private var _defaultButtonChanged:Boolean;
@@ -462,9 +469,9 @@ package ws.tink.spark.components
 		 *  @default null
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		protected var _iconClassChanged:Boolean;
 		private var _iconClass:Class;
@@ -495,9 +502,9 @@ package ws.tink.spark.components
 		 *  @default ""
 		 *  
 		 *  @langversion 3.0
-	     *  @playerversion Flash 10
-	     *  @playerversion AIR 1.5
-	     *  @productversion Flex 4
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
 		 */
 		protected var _message:String;
 		
@@ -707,64 +714,22 @@ package ws.tink.spark.components
 			_defaultButtonChanged = false;
 			if( _buttons )
 			{
-				if( _defaultButtonIndex >= 0 && _defaultButtonIndex <= _buttons.length - 1 )
+				if( _defaultButtonIndex >= 0 && _defaultButtonIndex < _buttons.length - 1 )
 				{
 					_buttons[ _defaultButtonIndex ].setFocus();
 					_buttons[ _defaultButtonIndex ].drawFocus( true );
-					;
 				}
 			}
 		}
 		
 		
 		[SkinPart(required="false")]
-		
-		/**
-		 *  The skin part that defines the appearance of the 
-		 *  message text in the Alert control.
-		 *
-		 *  @see ws.tink.spark.skins.AlertSkin
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
 		public var messageDisplay	: TextBase;
 		
-		
 		[SkinPart(required="false")]
-		/**
-		 *  The skin part that defines the appearance of the 
-		 *  button area of the control.
-		 *  By default, the AlertSkin class defines the button area to appear on the right 
-		 *  of the Alert control with a grey background. 
-		 *
-		 *  @see ws.tink.spark.skins.AlertSkin
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
 		public var buttonGroup:Group;
 		
-		
 		[SkinPart(required="false")]
-		
-		/**
-		 *  The skin part that defines the appearance of the 
-		 *  icon area of the control.
-		 *  By default, the AlertSkin class defines the button area to appear on the left 
-		 *  of the Alert control with a grey background. 
-		 *
-		 *  @see ws.tink.spark.skins.AlertSkin
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
 		public var iconGroup:Group;
 		
 		
