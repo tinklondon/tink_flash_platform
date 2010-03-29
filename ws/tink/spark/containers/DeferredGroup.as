@@ -1045,9 +1045,9 @@ package ws.tink.spark.containers
 											   prevElement:IVisualElement,
 											   insertIndex:int):int
 		{
-			if (curElement is DisplayObject)
+			if( curElement is DisplayObject )
 			{
-				super.setChildIndex(curElement as DisplayObject, insertIndex++);
+				if( curElement.parent ) super.setChildIndex(curElement as DisplayObject, insertIndex++);
 			}
 			//FIXME tink no support for IGraphicElement
 //			else if (curElement is IGraphicElement)
