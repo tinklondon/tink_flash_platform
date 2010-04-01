@@ -123,21 +123,24 @@ package ws.tink.spark.layouts
 			
 			var i:int;
 			
-			if( _numElementsInLayout != numElementsInLayout )
+			if( !renderingData )
 			{
-				_numElementsInLayout = numElementsInLayout;
-				for( i = 0; i < _numElementsInLayout; i++ )
+				if( _numElementsInLayout != numElementsInLayout )
 				{
-					elements[ indicesInLayout[ i ] ].visible = ( i == selectedIndex );
+					_numElementsInLayout = numElementsInLayout;
+					for( i = 0; i < _numElementsInLayout; i++ )
+					{
+						elements[ indicesInLayout[ i ] ].visible = ( i == selectedIndex );
+					}
 				}
-			}
-			
-			if( _numElementsNotInLayout != numElementsNotInLayout )
-			{
-				_numElementsNotInLayout = numElementsNotInLayout;
-				for( i = 0; i < _numElementsNotInLayout; i++ )
+				
+				if( _numElementsNotInLayout != numElementsNotInLayout )
 				{
-					elements[ indicesInLayout[ i ] ].visible = true;
+					_numElementsNotInLayout = numElementsNotInLayout;
+					for( i = 0; i < _numElementsNotInLayout; i++ )
+					{
+						elements[ indicesInLayout[ i ] ].visible = true;
+					}
 				}
 			}
 			
@@ -174,14 +177,15 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
-			trace( "updateDisplayListVirtual" );
-			
 			if( _selectedElement ) _selectedElement.visible = false;
 			
-			if( target.numElements == 0 ) return;
+			if( numElementsInLayout == 0 ) return;
 			
 			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ? Math.max( 0, unscaledWidth ) : NaN;
 			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ? Math.max( 0, unscaledHeight ) : NaN;; 
+			
+			
+			if( !indicesInLayout.length ) return;
 			
 			_selectedElement = target.getVirtualElementAt( indicesInLayout[ firstIndexInView ], eltWidth, eltHeight );
 			
@@ -366,7 +370,6 @@ package ws.tink.spark.layouts
 		 */
 		private function calculateElementY( h:Number ):Number
 		{
-			trace( verticalAlign, h, unscaledHeight );
 			switch( verticalAlign )
 			{
 				case VerticalAlign.BOTTOM :

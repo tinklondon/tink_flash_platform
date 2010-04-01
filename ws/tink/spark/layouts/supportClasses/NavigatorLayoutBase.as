@@ -4,6 +4,7 @@ package ws.tink.spark.layouts.supportClasses
 	import flash.events.Event;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
+	import flash.net.DatagramSocket;
 	
 	import mx.controls.DataGrid;
 	import mx.controls.scrollClasses.ScrollBar;
@@ -22,6 +23,7 @@ package ws.tink.spark.layouts.supportClasses
 	import spark.components.supportClasses.GroupBase;
 	import spark.components.supportClasses.ScrollBarBase;
 	import spark.core.NavigationUnit;
+	import spark.events.IndexChangeEvent;
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.VerticalAlign;
 	import spark.layouts.supportClasses.LayoutBase;
@@ -31,7 +33,7 @@ package ws.tink.spark.layouts.supportClasses
 	
 	use namespace mx_internal;
 	
-	[Event(name="change", type="flash.events.Event")]
+	[Event(name="change", type="spark.events.IndexChangeEvent")]
 	
 	public class NavigatorLayoutBase extends LayoutBase implements INavigatorLayout
 	{
@@ -91,6 +93,16 @@ package ws.tink.spark.layouts.supportClasses
 		}	
 		
 		
+		public function get renderingData():Boolean
+		{
+			if( target is DataGroup )
+			{
+				var dataGroup:DataGroup = DataGroup( target );
+				if( dataGroup.itemRenderer || dataGroup.itemRendererFunction != null ) return true;
+			}
+			
+			return false;
+		}
 		
 //		[Inspectable(category="General", enumeration="false,true", defaultValue="true")]
 //		public function get stepScrollBar():Boolean
@@ -393,7 +405,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( _selectedIndexChanged )
 			{
 				_selectedIndexChanged = false;
-				dispatchEvent( new Event( Event.CHANGE ) );
+				dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGE ) );
 			}
 		}
 		
@@ -422,7 +434,7 @@ package ws.tink.spark.layouts.supportClasses
 				}
 			}
 			
-			_elements = Vector.<IVisualElement>( elts );
+			_elements = ( elts ) ? Vector.<IVisualElement>( elts ) : new Vector.<IVisualElement>();
 		}
 		
 		protected function updateElementsInLayout():void
@@ -431,7 +443,22 @@ package ws.tink.spark.layouts.supportClasses
 			_indicesNotInLayout = new Vector.<int>();
 			
 			var i:int;
-			var numElements:int = _elements.length;
+			var numElements:int;
+			
+			if( renderingData )
+			{
+				numElements = target.numElements;
+				for( i = 0; i < numElements; i++ )
+				{
+					_indicesInLayout.push( i );
+				}
+					
+				_numElementsInLayout = _indicesInLayout.length;
+				_numElementsNotInLayout = _indicesNotInLayout.length;
+				return;
+			}
+			
+			numElements = _elements.length;
 			for( i = 0; i < numElements; i++ )
 			{
 				if( _elements[ i ].includeInLayout )
@@ -449,6 +476,8 @@ package ws.tink.spark.layouts.supportClasses
 		
 		protected function updateScrollerForNavigation():void
 		{
+			if( !target ) return;
+			
 			var scroller:Scroller = getScroller();
 			switch( scrollBarDirection )
 			{
@@ -527,6 +556,8 @@ package ws.tink.spark.layouts.supportClasses
 		
 		protected function updateScrollBar( index:int, offset:Number ):void
 		{
+			if( !target ) return;
+			
 			var scroller:Scroller = getScroller();
 			switch( scrollBarDirection )
 			{
@@ -589,6 +620,7 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function getScroller():Scroller
 		{
+			if( !target ) return null;
 			return target.parent.parent as Scroller;
 		}
 		
