@@ -4,7 +4,6 @@ package ws.tink.spark.layouts.supportClasses
 	import flash.events.Event;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
-	import flash.net.DatagramSocket;
 	
 	import mx.controls.DataGrid;
 	import mx.controls.scrollClasses.ScrollBar;
