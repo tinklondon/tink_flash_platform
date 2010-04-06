@@ -166,12 +166,12 @@ package ws.tink.spark.layouts
 		}
 		
 		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @inheritDoc
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		override protected function updateDisplayListVirtual():void
 		{
@@ -179,21 +179,21 @@ package ws.tink.spark.layouts
 			
 			if( _selectedElement ) _selectedElement.visible = false;
 			
-			if( numElementsInLayout == 0 ) return;
+			if( target.numElements == 0 ) return;
 			
-			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ? Math.max( 0, unscaledWidth ) : NaN;
-			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ? Math.max( 0, unscaledHeight ) : NaN;; 
+			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
+				Math.max( 0, unscaledWidth ) : NaN;
+			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ?
+				Math.max( 0, unscaledHeight ) : NaN;;
 			
-			
-			if( !indicesInLayout.length ) return;
-			
-			_selectedElement = target.getVirtualElementAt( indicesInLayout[ firstIndexInView ], eltWidth, eltHeight );
+			_selectedElement = target.getVirtualElementAt( indicesInLayout[
+				firstIndexInView ], eltWidth, eltHeight );
 			
 			if( !_selectedElement ) return;
-		
+			
 			_elementMaxDimensions.update( _selectedElement );
 			
-			updateSelectedElementSizeAndPosition();
+			updateSelectedElementSizeAndPosition( _selectedElement );
 			_selectedElement.visible = true;
 			
 			updateDepths( null );
@@ -201,46 +201,51 @@ package ws.tink.spark.layouts
 		
 		
 		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @inheritDoc
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
-
+			
 			if( _selectedElement ) _selectedElement.visible = false;
 			
 			if( target.numElements == 0 ) return;
 			
+			var i:int;
 			var element:IVisualElement;
-			for( var i:int = 0; i < numElementsInLayout; i++ )
+			for( i = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
+				element.visible = false;
 				if( i == firstIndexInView ) _selectedElement = element;
 				
 				_elementMaxDimensions.update( element );
 			}
 			
-			if( !_selectedElement ) return;
+			for( i = 0; i < numElementsInLayout; i++ )
+			{
+				element = target.getElementAt( indicesInLayout[ i ] );
+				updateSelectedElementSizeAndPosition( element );
+			}
 			
-			updateSelectedElementSizeAndPosition();
-			_selectedElement.visible = true;
+			if( _selectedElement ) _selectedElement.visible = true;
 			
 			updateDepths( null );
 		}
 		
 		
-		private function updateSelectedElementSizeAndPosition():void
+		private function updateSelectedElementSizeAndPosition( element:IVisualElement ):void
 		{
-			var w:Number = calculateElementWidth( _selectedElement, unscaledWidth, _elementMaxDimensions.width );
-			var h:Number = calculateElementHeight( _selectedElement, unscaledHeight, _elementMaxDimensions.height );
+			var w:Number = calculateElementWidth( element, unscaledWidth, _elementMaxDimensions.width );
+			var h:Number = calculateElementHeight( element, unscaledHeight, _elementMaxDimensions.height );
 			
-			_selectedElement.setLayoutBoundsSize( w, h );
-			_selectedElement.setLayoutBoundsPosition( calculateElementX( w ), calculateElementY( h ) )
+			element.setLayoutBoundsSize( w, h );
+			element.setLayoutBoundsPosition( calculateElementX( w ), calculateElementY( h ) );
 		}
 		
 		/**
