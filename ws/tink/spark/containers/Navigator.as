@@ -43,8 +43,8 @@ package ws.tink.spark.containers
 		override protected function createChildren():void
 		{
 			if( !layout ) layout = new StackLayout();
-			layout.useVirtualLayout = true;
-			
+			layout.useVirtualLayout = useVirtualLayout;
+			if( _selectedIndex != -1 ) selectedIndex = _selectedIndex;
 			super.createChildren();
 		}
 //		
@@ -111,7 +111,7 @@ package ws.tink.spark.containers
 //			stackLayout.horizontalAlign = value;
 //		}
 		
-		
+		private var _selectedIndex		: int = -1;
 		/**
 		 *  @private
 		 *  IList implementation of selectedIndex sets
@@ -119,7 +119,8 @@ package ws.tink.spark.containers
 		 */
 		public function set selectedIndex( value:int ):void
 		{
-			StackLayout( layout ).selectedIndex = value;
+			_selectedIndex = value;
+			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
 		}
 		
 		/**
@@ -129,7 +130,7 @@ package ws.tink.spark.containers
 		 */
 		public function get selectedIndex():int
 		{
-			return StackLayout( layout ).selectedIndex;
+			return ( layout ) ? INavigatorLayout( layout ).selectedIndex : _selectedIndex;
 		}
 		
 		/**
