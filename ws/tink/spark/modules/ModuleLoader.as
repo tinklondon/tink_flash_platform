@@ -9,6 +9,7 @@ package ws.tink.spark.modules
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	import mx.events.ModuleEvent;
+	import mx.modules.IModule;
 	import mx.modules.IModuleInfo;
 	import mx.modules.ModuleManager;
 	
@@ -423,7 +424,7 @@ package ws.tink.spark.modules
 		 */
 		private function moduleReadyHandler( event:ModuleEvent ):void
 		{
-			_loadedModule = module.factory.create() as Module;
+			_loadedModule = module.factory.create() as IModule;
 			
 			if( _loadedModule ) addElement( IVisualElement( _loadedModule ) );
 			
@@ -450,7 +451,7 @@ package ws.tink.spark.modules
 		
 		private var _urlChanged				: Boolean;
 		
-		private var _loadedModule			: Module;
+		private var _loadedModule			: IModule;
 		
 		
 	}
