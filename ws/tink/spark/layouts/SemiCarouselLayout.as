@@ -1067,7 +1067,15 @@ internal class TransformValues
 		var index:Number = ( i - _index ) - _indexOffset;
 		
 		var indexx:Number = ( Math.abs( index ) > _ni ) ? ( i - _index ) + _indexOffset : index;
+		
+		
+		
+		
 		_x = _cx + ( ( _rx / _ni ) * indexx );
+		
+		trace( i, _x );
+		
+		
 		_y = _cy + ( ( _ry / _ni ) * indexx );
 		_z = ( _rz / _ni ) * Math.abs( index );
 		
