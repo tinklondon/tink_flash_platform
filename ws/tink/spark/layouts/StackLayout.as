@@ -91,22 +91,9 @@ package ws.tink.spark.layouts
 			
 			super.target = value;
 			
-//			_targetChanged = true;
 			_elementMaxDimensions = new ElementMaxDimensions();
 		}
 		
-//		public function get numVirtualItems():int
-//		{
-//			return _numVirtualItems;
-//		}
-//		public function set numVirtualItems( value:int ) : void
-//		{
-//			if( _numVirtualItems == value ) return;
-//			
-//			_numVirtualItems = value;
-//			invalidateTargetDisplayList();
-//		}
-
 		/**
 		 *  @inheritDoc
 		 *  
