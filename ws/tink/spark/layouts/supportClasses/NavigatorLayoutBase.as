@@ -28,8 +28,6 @@ package ws.tink.spark.layouts.supportClasses
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.primitives.supportClasses.GraphicElement;
 	
-	import ws.tink.spark.containers.Navigator;
-	
 	use namespace mx_internal;
 	
 	[Event(name="change", type="spark.events.IndexChangeEvent")]
