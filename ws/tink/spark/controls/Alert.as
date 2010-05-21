@@ -41,8 +41,6 @@ package ws.tink.spark.controls
 	import spark.components.Panel;
 	import spark.components.supportClasses.TextBase;
 	
-	import ws.tink.spark.skins.AlertSkin;
-	
 	use namespace mx_internal;
 	
 	//--------------------------------------
@@ -734,38 +732,6 @@ package ws.tink.spark.controls
 		
 		
 		private var _icon	: UIComponent;
-
-
-		private static var defaultStylesSet                : Boolean;
-		
-		/**
-		 *  @private
-		 */
-		private static function setDefaultStyles( factory:IFlexModuleFactory ):void
-		{
-			if( defaultStylesSet ) return;
-			
-			defaultStylesSet = true
-			
-			var defaultStyleName:String = getQualifiedClassName( prototype.constructor ).replace( /::/, "." );
-			var styleManager:IStyleManager2 = StyleManager.getStyleManager( factory );
-			var style:CSSStyleDeclaration = styleManager.getStyleDeclaration( defaultStyleName );
-			
-			if( !style )
-			{
-				style = new CSSStyleDeclaration();
-				styleManager.setStyleDeclaration( defaultStyleName, style, true );
-			}
-			
-			if( style.defaultFactory == null )
-			{
-				style.defaultFactory = function():void
-				{
-					this.skinClass = AlertSkin;
-				};
-			}
-		}
-		
 
 	}
 	
