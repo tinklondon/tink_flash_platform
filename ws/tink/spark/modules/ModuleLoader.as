@@ -156,7 +156,7 @@ package ws.tink.spark.modules
 		/**
 		 *  @private
 		 */
-		private var module:IModuleInfo;
+		private var _moduleInfo:IModuleInfo;
 		
 		/**
 		 *  @private
@@ -173,7 +173,7 @@ package ws.tink.spark.modules
 		//----------------------------------
 		
 		/**
-		 *  The application domain to load your module into.
+		 *  The application domain to load your _moduleInfo into.
 		 *  Application domains are used to partition classes that are in the same 
 		 *  security domain. They allow multiple definitions of the same class to 
 		 *  exist and allow children to reuse parent definitions.
@@ -183,14 +183,14 @@ package ws.tink.spark.modules
 		 */
 		public var applicationDomain:ApplicationDomain;
 		
-		//----------------------------------
-		//  child
-		//----------------------------------
-		
-		/**
-		 *  The DisplayObject created from the module factory.
-		 */
-		public var child:DisplayObject;
+//		//----------------------------------
+//		//  child
+//		//----------------------------------
+//		
+//		/**
+//		 *  The DisplayObject created from the _moduleInfo factory.
+//		 */
+//		public var child:DisplayObject;
 		
 		//----------------------------------
 		//  url
@@ -203,7 +203,7 @@ package ws.tink.spark.modules
 		private var _url:String = null;
 		
 		/**
-		 *  The location of the module, expressed as a URL.
+		 *  The location of the _moduleInfo, expressed as a URL.
 		 */
 		public function get url():String
 		{
@@ -215,26 +215,25 @@ package ws.tink.spark.modules
 		 */
 		public function set url(value:String):void
 		{
-			if (value == _url)
-				return;
+			if( value == _url ) return;
 			
 			_urlChanged = true;
 			
-			if (module)
+			if( _moduleInfo )
 			{
-				module.removeEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
-				module.removeEventListener( ModuleEvent.SETUP, moduleSetupHandler );
-				module.removeEventListener( ModuleEvent.READY, moduleReadyHandler );
-				module.removeEventListener( ModuleEvent.ERROR, moduleErrorHandler );
-				module.removeEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.SETUP, moduleSetupHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.READY, moduleReadyHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.ERROR, moduleErrorHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
 				
-				module.release();
-				module = null;
+				_moduleInfo.release();
+				_moduleInfo = null;
 				
-				if (child)
+				if( _module )
 				{
-					removeChild(child);
-					child = null;
+					removeElement( IVisualElement( _module ) );
+					_module = null;
 				}
 			}
 			
@@ -246,17 +245,25 @@ package ws.tink.spark.modules
 		}
 		
 		
+		//----------------------------------
+		//  loadPolicy
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the loadPolicy property.
+		 */
 		private var _loadPolicy	: String = ModuleLoadPolicy.ADDED_TO_STAGE;
 		
 		[Inspectable(enumeration="added,addedToStage,immediate,none", defaultValue="addedToStage")]
 		
 		/**
-		 *  Delay loading the module until it is needed.
+		 *  Delay loading the _moduleInfo until it is needed.
 		 * 
-		 * 	<p><code>ModuleLoadPolicy.AUTO</code> will load the content when the module
+		 * 	<p><code>ModuleLoadPolicy.AUTO</code> will load the content when the _moduleInfo
 		 * 	is added to the stage, <code>ModuleLoadPolicy.IMMEDIATE</code> will load
-		 * 	the module as soon as the Module is passed a URL or <code>ModuleLoadPolicy.INVOKED</code>
-		 * 	will only load the module when the loadModule method is invoked.
+		 * 	the _moduleInfo as soon as the Module is passed a URL or <code>ModuleLoadPolicy.INVOKED</code>
+		 * 	will only load the _moduleInfo when the loadModule method is invoked.</p>
 		 *
 		 *  @default auto
 		 * 
@@ -284,6 +291,59 @@ package ws.tink.spark.modules
 		}
 		
 		
+		//----------------------------------
+		//  status
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the status property.
+		 */
+		private var _status	: String = ModuleLoaderStatus.UNLOADED;
+		
+		/**
+		 *  The status of the <code>ModuleLoader</code>. The status values can be 
+		 *  <code>ModuleLoaderStatus.UNLOADED</code>, <code>ModuleLoaderStatus.LOADING</code>
+		 *  and <code>ModuleLoaderStatus.LOADED</code>
+		 * 
+		 * 	@see ws.tink.spark.modules.ModuleLoaderStatus
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get status():String
+		{
+			return _status;
+		}
+		
+		/**
+		 *  @private
+		 */
+		private var _module	: IModule;
+		
+		/**
+		 *  The loaded module.
+		 *  Storage for the module property.
+		 */
+		public function get module():IModule
+		{
+			switch( _status )
+			{
+				case ModuleLoaderStatus.LOADING :
+				case ModuleLoaderStatus.UNLOADED :
+				{
+					return null;
+				}
+				default :
+				{
+					return _module;
+				}
+			}
+		}
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -291,14 +351,14 @@ package ws.tink.spark.modules
 		//--------------------------------------------------------------------------
 		
 		/**
-		 *  Loads the module. When the module is finished loading, the ModuleLoader adds
+		 *  Loads the _moduleInfo. When the _moduleInfo is finished loading, the ModuleLoader adds
 		 *  it as a child with the <code>addChild()</code> method. This is normally 
 		 *  triggered with deferred instantiation.
 		 *  
-		 *  <p>If the module has already been loaded, this method does nothing. It does
-		 *  not load the module a second time.</p>
+		 *  <p>If the _moduleInfo has already been loaded, this method does nothing. It does
+		 *  not load the _moduleInfo a second time.</p>
 		 * 
-		 *  @param url The location of the module, expressed as a URL. This is an  
+		 *  @param url The location of the _moduleInfo, expressed as a URL. This is an  
 		 *  optional parameter. If this parameter is null the value of the
 		 *  <code>url</code> property will be used. If the url parameter is provided
 		 *  the <code>url</code> property will be updated to the value of the url.
@@ -306,35 +366,47 @@ package ws.tink.spark.modules
 		 *  @param bytes A ByteArray object. The ByteArray is expected to contain 
 		 *  the bytes of a SWF file that represents a compiled Module. The ByteArray
 		 *  object can be obtained by using the URLLoader class. If this parameter
-		 *  is specified the module will be loaded from the ByteArray and the url 
-		 *  parameter will be used to identify the module in the 
+		 *  is specified the _moduleInfo will be loaded from the ByteArray and the url 
+		 *  parameter will be used to identify the _moduleInfo in the 
 		 *  <code>ModuleManager.getModule()</code> method and must be non-null. If
-		 *  this parameter is null the module will be load from the url, either 
+		 *  this parameter is null the _moduleInfo will be load from the url, either 
 		 *  the url parameter if it is non-null, or the url property as a fallback.
 		 */
 		public function loadModule( url:String = null, bytes:ByteArray = null ):void
 		{
 			_urlChanged = false;
 			
-			if( url != null ) _url = url;
+			if( url != null )
+			{
+				if( url != _url )
+				{
+					unloadModule();
+					_url = url;
+				}
+				else
+				{
+					if( _status != ModuleLoaderStatus.UNLOADED ) return;
+				}
+			}
+			else
+			{
+				if( _status != ModuleLoaderStatus.UNLOADED ) return;
+			}
 			
 			if( _url == null ) return;
 			
-			if( child ) return;
-			
-			if( module )return;
-			
+			_status = ModuleLoaderStatus.LOADING;
 			dispatchEvent( new FlexEvent( FlexEvent.LOADING ) );
 			
-			module = ModuleManager.getModule( _url );
+			_moduleInfo = ModuleManager.getModule( _url );
 			
-			module.addEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
-			module.addEventListener( ModuleEvent.SETUP, moduleSetupHandler );
-			module.addEventListener( ModuleEvent.READY, moduleReadyHandler );
-			module.addEventListener( ModuleEvent.ERROR, moduleErrorHandler );
-			module.addEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
+			_moduleInfo.addEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
+			_moduleInfo.addEventListener( ModuleEvent.SETUP, moduleSetupHandler );
+			_moduleInfo.addEventListener( ModuleEvent.READY, moduleReadyHandler );
+			_moduleInfo.addEventListener( ModuleEvent.ERROR, moduleErrorHandler );
+			_moduleInfo.addEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
 			
-			module.load( applicationDomain, null, bytes );
+			_moduleInfo.load( applicationDomain, null, bytes );
 		}
 		
 		protected function load():void
@@ -368,30 +440,32 @@ package ws.tink.spark.modules
 		
 		
 		/**
-		 *  Unloads the module and sets it to <code>null</code>.
-		 *  If an instance of the module was previously added as a child,
+		 *  Unloads the _moduleInfo and sets it to <code>null</code>.
+		 *  If an instance of the _moduleInfo was previously added as a child,
 		 *  this method calls the <code>removeChild()</code> method on the child. 
-		 *  <p>If the module does not exist or has already been unloaded, this method does
+		 *  <p>If the _moduleInfo does not exist or has already been unloaded, this method does
 		 *  nothing.</p>
 		 */
 		public function unloadModule():void
 		{
-			if (child)
+			_status = ModuleLoaderStatus.UNLOADED;
+			
+			if( _module )
 			{
-				removeChild(child);
-				child = null;
+				removeElement( IVisualElement( _module ) );
+				_module = null;
 			}
 			
-			if (module)
+			if( _moduleInfo )
 			{
-				module.removeEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
-				module.removeEventListener( ModuleEvent.SETUP, moduleSetupHandler );
-				module.removeEventListener( ModuleEvent.READY, moduleReadyHandler );
-				module.removeEventListener( ModuleEvent.ERROR, moduleErrorHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.PROGRESS, moduleProgressHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.SETUP, moduleSetupHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.READY, moduleReadyHandler );
+				_moduleInfo.removeEventListener( ModuleEvent.ERROR, moduleErrorHandler );
 				
-				module.unload();
-				module.removeEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
-				module = null;
+				_moduleInfo.unload();
+				_moduleInfo.removeEventListener( ModuleEvent.UNLOAD, moduleUnloadHandler );
+				_moduleInfo = null;
 			}
 		}
 		
@@ -415,7 +489,6 @@ package ws.tink.spark.modules
 		private function moduleSetupHandler( event:ModuleEvent ):void
 		{
 			// Not ready for creation yet, but can call factory.info().
-			
 			dispatchEvent(event);
 		}
 		
@@ -424,9 +497,11 @@ package ws.tink.spark.modules
 		 */
 		private function moduleReadyHandler( event:ModuleEvent ):void
 		{
-			_loadedModule = module.factory.create() as IModule;
+			_module = _moduleInfo.factory.create() as IModule;
 			
-			if( _loadedModule ) addElement( IVisualElement( _loadedModule ) );
+			if( _module ) addElement( IVisualElement( _module ) );
+			
+			_status = ModuleLoaderStatus.READY;
 			
 			dispatchEvent( event );
 		}
@@ -450,9 +525,6 @@ package ws.tink.spark.modules
 		
 		
 		private var _urlChanged				: Boolean;
-		
-		private var _loadedModule			: IModule;
-		
 		
 	}
 }
