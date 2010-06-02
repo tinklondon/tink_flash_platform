@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<componentPackage>
+
+	<!-- containers -->
+	<component id="DeferredGroup" class="ws.tink.spark.containers.DeferredGroup"/>
+	<component id="Navigator" class="ws.tink.spark.containers.Navigator"/>
+	<component id="NavigatorGroup" class="ws.tink.spark.containers.NavigatorGroup"/>
+	
+	<!-- controls -->
+	<component id="Alert" class="ws.tink.spark.controls.Alert"/>
+	<component id="BorderDataNavigator" class="ws.tink.spark.controls.BorderDataNavigator"/>
+	<component id="DataNavigator" class="ws.tink.spark.controls.DataNavigator"/>
+	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
+	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
+	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
+	
+	<!-- layouts -->
+	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
+	<component id="SemiCarouselLayout" class="ws.tink.spark.layouts.SemiCarouselLayout"/>
+	<component id="RolodexLayout" class="ws.tink.spark.layouts.RolodexLayout"/>
+	
+	<!-- modules -->
+	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>
+	<component id="Module" class="ws.tink.spark.modules.Module"/>
+	
+</componentPackage>

@@ -1,0 +1,30 @@
+/* CSS file */
+@namespace "library://ns.tink.ws/flex/spark";
+
+Alert
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.AlertSkin");
+}
+
+BorderDataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.BorderDataNavigatorSkin");
+}
+
+MultipleSelectionButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBar");
+}
+
+DataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.DataNavigatorSkin");
+}
+
+Navigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.containers.NavigatorSkin");
+}
+
+
+
