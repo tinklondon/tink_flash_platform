@@ -18,9 +18,13 @@
 	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="SemiCarouselLayout" class="ws.tink.spark.layouts.SemiCarouselLayout"/>
 	<component id="RolodexLayout" class="ws.tink.spark.layouts.RolodexLayout"/>
+	<component id="TimeMachineLayout" class="ws.tink.spark.layouts.TimeMachineLayout"/>
 	
 	<!-- modules -->
 	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>
 	<component id="Module" class="ws.tink.spark.modules.Module"/>
+	
+	<component id="Cross" class="ws.tink.spark.primatives.Cross"/>
+	<component id="Rect" class="ws.tink.spark.primatives.Rect"/>
 	
 </componentPackage>
