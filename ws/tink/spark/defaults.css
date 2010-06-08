@@ -13,7 +13,7 @@ BorderDataNavigator
 
 MultipleSelectionButtonBar
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBar");
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBarSkin");
 }
 
 DataNavigator
