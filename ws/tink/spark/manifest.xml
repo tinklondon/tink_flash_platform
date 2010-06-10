@@ -15,6 +15,9 @@
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
     
+    <!-- graphics -->
+	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
+	
 	<!-- layouts -->
 	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="SemiCarouselLayout" class="ws.tink.spark.layouts.SemiCarouselLayout"/>
