@@ -85,7 +85,6 @@ package ws.tink.spark.controls
 			{
 				var scale:Number = ( _viewportHeight ) ? _trackSize / _viewportHeight : 1;
 				
-				trace( _viewportHeight, "scroll", scale );
 				var elements:Array = new Array();;
 				var element:ILayoutElement
 				
