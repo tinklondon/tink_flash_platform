@@ -34,7 +34,6 @@ package ws.tink.mx.containers
 
 	use namespace mx_internal;
 	
-	[IconFile("DataStack.png")]
 
 	//--------------------------------------
 	//  Events
@@ -101,7 +100,7 @@ package ws.tink.mx.containers
 	//  Other metadata
 	//--------------------------------------
 	
-	[IconFile("ViewStack.png")]
+	[IconFile("DataStack.png")]
 	
 	/**
 	 *  A ViewStack navigator container consists of a collection of child
