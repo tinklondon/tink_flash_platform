@@ -1,63 +1,121 @@
 package ws.tink.spark.itemRenderers
 {
+	import mx.controls.RadioButton;
+	
 	import spark.components.CheckBox;
 	import spark.components.IItemRenderer;
-	import spark.components.RadioButton;
 	
 	public class RadioButtonItemRenderer extends RadioButton implements IItemRenderer
 	{
+		
+		
 		
 		public function RadioButtonItemRenderer()
 		{
 			super();
 		}
 		
-		private var _itemIndex	: int;
+		//--------------------------------------------------------------------------
+		//
+		//  Public Properties 
+		//
+		//--------------------------------------------------------------------------
+		
+		
+		//----------------------------------
+		//  itemIndex
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  storage for the itemIndex property 
+		 */    
+		private var _itemIndex:int;
+		
+		/**
+		 *  @inheritDoc 
+		 *
+		 *  @default 0
+		 */    
 		public function get itemIndex():int
 		{
 			return _itemIndex;
 		}
-		public function set itemIndex( value:int ):void
+		
+		/**
+		 *  @private
+		 */    
+		public function set itemIndex(value:int):void
 		{
+			if (value == _itemIndex)
+				return;
+			
 			_itemIndex = value;
+			invalidateDisplayList();
 		}
 		
-		private var _dragging	: Boolean;
-		public function get dragging():Boolean
-		{
-			return _dragging;
-		}
-		public function set dragging(value:Boolean):void
-		{
-			_dragging = value;
-		}
 		
-		private var _showsCaret	: Boolean;
+		//----------------------------------
+		//  showsCaret
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the showsCaret property 
+		 */
+		private var _showsCaret:Boolean = false;
+		
+		/**
+		 *  @inheritDoc 
+		 *
+		 *  @default false  
+		 */    
 		public function get showsCaret():Boolean
 		{
 			return _showsCaret;
 		}
-		public function set showsCaret( value:Boolean ):void
+		
+		/**
+		 *  @private
+		 */    
+		public function set showsCaret(value:Boolean):void
 		{
+			if (value == _showsCaret)
+				return;
+			
 			_showsCaret = value;
+			invalidateDisplayList();
 		}
 		
-		private var _data	: Object;
-		public function get data():Object
+		
+		//----------------------------------
+		//  dragging
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the dragging property. 
+		 */
+		private var _dragging:Boolean = false;
+		
+		/**
+		 *  @inheritDoc  
+		 */
+		public function get dragging():Boolean
 		{
-			return _data;
+			return _dragging;
 		}
-		public function set data(value:Object):void
+		
+		/**
+		 *  @private  
+		 */
+		public function set dragging(value:Boolean):void
 		{
-			_data = value;
+			if (value == _dragging)
+				return;
+			
+			_dragging = value;
 		}
-		
-//		override public function set selected(value:Boolean):void
-//		{
-////			super.selected = value;
-//		}
-		
-		
 		
 	}
 }
