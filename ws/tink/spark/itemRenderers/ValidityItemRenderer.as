@@ -22,6 +22,7 @@ package ws.tink.spark.itemRenderers
 {
 	import flash.events.Event;
 	
+	import mx.containers.Form;
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
@@ -41,6 +42,7 @@ package ws.tink.spark.itemRenderers
 		}
 		
 		private var _element	: UIComponent;
+		private var _scale		: Number;
 		private var _data	: Object;
 		public function get data():Object
 		{
@@ -51,13 +53,25 @@ package ws.tink.spark.itemRenderers
 		{
 			if( _data == value ) return;
 			
+			var newValid:Boolean;
 			if( value )
 			{
 				_data = value;
 				if( _data.element == _element )
 				{
-					_valid = getValidityOfElement();
-					invalidateSize();
+					newValid = getValidityOfElement();
+					if( newValid != _valid )
+					{
+						_validChanged = true;
+						_valid = newValid;
+						invalidateSize();
+					}
+					
+					if( Number( _data.scale ) != _scale )
+					{
+						_scale = Number( _data.scale );
+						invalidateSize();
+					}
 					return;
 				}
 			}
@@ -78,13 +92,22 @@ package ws.tink.spark.itemRenderers
 					_element = UIComponent( _data.element );
 					_element.addEventListener( "validChange", onElementValidChange, false, 0, true );
 				}
+				
+				_scale = Number( _data.scale );
+			}
+			else
+			{
+				_scale = 0;
 			}
 			
-			_valid = getValidityOfElement();
+			newValid = getValidityOfElement();
+			if( newValid != _valid )
+			{
+				_validChanged = true;
+				_valid = newValid;
+			}
 			
-			errorString = "yeah this could work";
 			invalidateSize();
-			
 		}
 		
 		protected function getValidityOfElement():Boolean
@@ -111,7 +134,8 @@ package ws.tink.spark.itemRenderers
 		{
 			if( _data )
 			{
-				var h:Number = IVisualElement( _data.element ).getLayoutBoundsHeight() * Number( _data.scale );
+				var h:Number = IVisualElement( _data.element ).getLayoutBoundsHeight() * _scale;
+				
 				measuredHeight = h;
 				measuredWidth = 10;
 				measuredMinHeight = h;
@@ -130,23 +154,79 @@ package ws.tink.spark.itemRenderers
 		{
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
-			graphics.clear();
+			if( _validChanged )
+			{
+				_validChanged = false;
+				if( !_valid )
+				{
+					var errorStrings:Array = getErrorStrings();
+					errorString = ( errorStrings ) ? errorStrings.join( "\n" ) : null;
+				}
+				else
+				{
+					errorString = null;
+				}
+			}
 			
+			graphics.clear();
 			
 			if( !_valid )
 			{
-				trace( "invalidating", _valid, unscaledWidth, unscaledHeight, _data.scale );
 				graphics.beginFill( 0xFF0000, 1 );
 				graphics.drawRect( 0, 0, unscaledWidth, unscaledHeight );
 				graphics.endFill();
 			}
 		}
 		
+		private function getErrorStrings():Array
+		{
+			var uiComponent:UIComponent;
+			
+			if( _element is FormItem )
+			{
+				var errorStrings:Array = new Array();
+				
+				var e:IVisualElement;
+				var formItem:FormItem = FormItem( _element );
+				var numItems:int = formItem.numElements;
+				for( var i:int = 0; i < numItems; i++ )
+				{
+					e = formItem.getElementAt( i );
+					if( e is UIComponent )
+					{
+						uiComponent = UIComponent( e );
+						if( uiComponent.errorString )
+						{
+							if( uiComponent.errorString.length ) errorStrings.push( uiComponent.errorString )
+						}
+					}
+				}
+				
+				return errorStrings.length ? errorStrings : null;;
+			}
+			else if( _element is UIComponent )
+			{
+				uiComponent = UIComponent( _element );
+				if( uiComponent.errorString )
+				{
+					if( uiComponent.errorString.length ) return [ uiComponent.errorString ];
+				}
+			}
+			
+			return null;
+		}
+		
+		private var _validChanged:Boolean = true;
 		private var _valid:Boolean = true;
 		private function onElementValidChange( event:Event ):void
 		{
-			_valid = getValidityOfElement();
-			invalidateDisplayList();
+			var newValid:Boolean = getValidityOfElement();
+			if( newValid != _valid )
+			{
+				_validChanged = true;
+				_valid = newValid;
+				invalidateSize();
+			}
 		}
 		
 		private var _itemIndex	: int;
@@ -198,5 +278,6 @@ package ws.tink.spark.itemRenderers
 		public function set showsCaret(value:Boolean):void
 		{
 		}
+		
 	}
 }
