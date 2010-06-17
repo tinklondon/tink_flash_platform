@@ -3,6 +3,8 @@
 
 	<!-- containers -->
 	<component id="DeferredGroup" class="ws.tink.spark.containers.DeferredGroup"/>
+	<component id="Form" class="ws.tink.spark.containers.Form"/>
+	<component id="FormItem" class="ws.tink.spark.containers.FormItem"/>
 	<component id="Navigator" class="ws.tink.spark.containers.Navigator"/>
 	<component id="NavigatorGroup" class="ws.tink.spark.containers.NavigatorGroup"/>
 	
@@ -17,6 +19,11 @@
     
     <!-- graphics -->
 	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
+	
+	<!-- itemRenderers -->
+	<component id="CheckBoxItemRenderer" class="ws.tink.spark.itemRenderers.CheckBoxItemRenderer"/>
+	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
+	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
 	
 	<!-- layouts -->
 	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
