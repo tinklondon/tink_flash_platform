@@ -11,14 +11,24 @@ BorderDataNavigator
 	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.BorderDataNavigatorSkin");
 }
 
-MultipleSelectionButtonBar
-{
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBarSkin");
-}
-
 DataNavigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.DataNavigatorSkin");
+}
+
+Form
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormSkin" );
+}
+
+FormItem
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormItemSkin" );
+}
+
+MultipleSelectionButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBarSkin");
 }
 
 Navigator
@@ -26,5 +36,14 @@ Navigator
 	skinClass: ClassReference("ws.tink.spark.skins.spark.containers.NavigatorSkin");
 }
 
+RadioButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
+}
+
+ValidityVScrollBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
+}
 
 
