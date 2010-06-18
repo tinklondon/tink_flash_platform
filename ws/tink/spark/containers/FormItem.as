@@ -167,9 +167,7 @@ package ws.tink.spark.containers
 		{
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
-			labelDisplay.width = calculateLabelWidth();
-			
-			if( !_valid ) trace( unscaledWidth, unscaledHeight );
+			if( labelDisplay ) labelDisplay.width = calculateLabelWidth();
 		}
 		
 //		private var _errorStringChanged:Boolean;
@@ -211,7 +209,7 @@ package ws.tink.spark.containers
 		 */
 		internal function getPreferredLabelWidth():Number
 		{
-			if (!label || label == "")
+			if (!label || label == "" || !labelDisplay)
 				return 0;
 			
 			if (isNaN(labelDisplay.measuredWidth))
@@ -324,6 +322,9 @@ package ws.tink.spark.containers
 		{
 			_validChanged = true;
 			invalidateProperties();
+			// Hack to get around commitProperties not getting called due to it
+			// being ran when the component was disabled.
+			if( !enabled ) callLater( invalidateProperties );
 		}
 			
 		override protected function commitProperties():void
@@ -359,7 +360,10 @@ package ws.tink.spark.containers
 					for( var i:int = 0; i < numItems; i++ )
 					{
 						element = contentGroup.getElementAt( i );
-						if( element is UIComponent ) UIComponent( element ).enabled = enabled;
+						if( element is UIComponent )
+						{
+							UIComponent( element ).enabled = enabled;
+						}
 					}
 				}
 			}
@@ -389,7 +393,6 @@ package ws.tink.spark.containers
 			
 			if( _valid != newValid )
 			{
-				trace( "yeah should dispatch" );
 				_valid = newValid;
 				dispatchEvent( new FlexEvent( _valid ? FlexEvent.VALID : FlexEvent.INVALID ) );
 				dispatchEvent( new Event( "validChange" ) );
