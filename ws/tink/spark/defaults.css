@@ -3,17 +3,17 @@
 
 Alert
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.AlertSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.AlertSkin");
 }
 
 BorderDataNavigator
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.BorderDataNavigatorSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.BorderDataNavigatorSkin");
 }
 
 DataNavigator
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.DataNavigatorSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
 }
 
 Form
@@ -28,12 +28,12 @@ FormItem
 
 MultipleSelectionButtonBar
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.controls.MultipleSelectionButtonBarSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
 }
 
 Navigator
 {
-	skinClass: ClassReference("ws.tink.spark.skins.spark.containers.NavigatorSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.containers.NavigatorSkin");
 }
 
 RadioButtonBar
