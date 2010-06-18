@@ -335,7 +335,9 @@ package ws.tink.mx.validators
 		{
 			if( _validator == value ) return;
 			
+			removeTriggerListener();
 			_validator = value;
+			invalidate();
 		}
 		
 		
@@ -358,7 +360,6 @@ package ws.tink.mx.validators
 			
 			var resultEvent:ValidationResultEvent;
 			var results:Array = new Array();
-//			var r:Array;
 			
 			if( doValidation )
 			{
@@ -438,17 +439,15 @@ package ws.tink.mx.validators
 					
 					if( currentTarget is UIComponent ) UIComponent( currentTarget ).callLater( UIComponent( currentTarget ).invalidateProperties );
 					
-					if( results.length > 0 )
+					if( results )
 					{
-						resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
+						if( results.length > 0 )
+						{
+							resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
+							dispatchEvent( resultEvent );
+							return resultEvent;
+						}
 					}
-					else
-					{
-						resultEvent = new ValidationResultEvent( ValidationResultEvent.VALID );
-					}
-					
-					dispatchEvent( resultEvent );
-					return resultEvent;
 				}
 			}
 			
