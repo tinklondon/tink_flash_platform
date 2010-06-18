@@ -1,13 +1,22 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  ADOBE SYSTEMS INCORPORATED
-//  Copyright 2008 Adobe Systems Incorporated
-//  All Rights Reserved.
-//
-//  NOTICE: Adobe permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
+/*
+
+Copyright (c) 2010 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
 
 package ws.tink.spark.containers
 {
@@ -397,7 +406,7 @@ package ws.tink.spark.containers
 		// Used to hold the content until the contentGroup is created. 
 		private var _placeHolderGroup:NavigatorGroup;
 		
-		mx_internal function get currentNavigator():NavigatorGroup
+		mx_internal function get currentnavigatorGroup():NavigatorGroup
 		{          
 			createContentIfNeeded();
 			
@@ -575,7 +584,28 @@ package ws.tink.spark.containers
 			}
 			else
 			{
-				throw new Error( "Layout must implement INavigatorLayout" );
+				throw new Error( "Layout must implement InavigatorGroupLayout" );
+			}
+		}
+		
+		
+		public function get useVirtualLayout():Boolean
+		{
+			return ( contentGroup) ? contentGroup.useVirtualLayout : contentGroupProperties.useVirtualLayout;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set useVirtualLayout( value:Boolean ):void
+		{
+			if( contentGroup )
+			{
+				contentGroup.useVirtualLayout = value;
+			}
+			else
+			{
+				contentGroupProperties.useVirtualLayout = value;
 			}
 		}
 		
@@ -677,7 +707,7 @@ package ws.tink.spark.containers
 		 */
 		public function get numElements():int
 		{
-			return currentNavigator.numElements;
+			return currentnavigatorGroup.numElements;
 		}
 		
 		/**
@@ -690,7 +720,7 @@ package ws.tink.spark.containers
 		 */
 		public function getElementAt(index:int):IVisualElement
 		{
-			return currentNavigator.getElementAt(index);
+			return currentnavigatorGroup.getElementAt(index);
 		}
 		
 		
@@ -704,7 +734,7 @@ package ws.tink.spark.containers
 		 */
 		public function getElementIndex(element:IVisualElement):int
 		{
-			return currentNavigator.getElementIndex(element);
+			return currentnavigatorGroup.getElementIndex(element);
 		}
 		
 		/**
@@ -718,7 +748,7 @@ package ws.tink.spark.containers
 		public function addElement(element:IVisualElement):IVisualElement
 		{
 			_contentModified = true;
-			return currentNavigator.addElement(element);
+			return currentnavigatorGroup.addElement(element);
 		}
 		
 		/**
@@ -732,7 +762,7 @@ package ws.tink.spark.containers
 		public function addElementAt(element:IVisualElement, index:int):IVisualElement
 		{
 			_contentModified = true;
-			return currentNavigator.addElementAt(element, index);
+			return currentnavigatorGroup.addElementAt(element, index);
 		}
 		
 		/**
@@ -746,7 +776,7 @@ package ws.tink.spark.containers
 		public function removeElement(element:IVisualElement):IVisualElement
 		{
 			_contentModified = true;
-			return currentNavigator.removeElement(element);
+			return currentnavigatorGroup.removeElement(element);
 		}
 		
 		/**
@@ -760,7 +790,7 @@ package ws.tink.spark.containers
 		public function removeElementAt(index:int):IVisualElement
 		{
 			_contentModified = true;
-			return currentNavigator.removeElementAt(index);
+			return currentnavigatorGroup.removeElementAt(index);
 		}
 		
 		/**
@@ -774,7 +804,7 @@ package ws.tink.spark.containers
 		public function removeAllElements():void
 		{
 			_contentModified = true;
-			currentNavigator.removeAllElements();
+			currentnavigatorGroup.removeAllElements();
 		}
 		
 		/**
@@ -783,7 +813,7 @@ package ws.tink.spark.containers
 		public function setElementIndex(element:IVisualElement, index:int):void
 		{
 			_contentModified = true;
-			currentNavigator.setElementIndex(element, index);
+			currentnavigatorGroup.setElementIndex(element, index);
 		}
 		
 		/**
@@ -801,7 +831,7 @@ package ws.tink.spark.containers
 			// TODO tink swapElements
 			swapElementsAt( getElementIndex( element1 ), getElementIndex( element1 ) )
 			
-			//currentNavigator.swapElements(element1, element2);
+			//currentnavigatorGroup.swapElements(element1, element2);
 		}
 		
 		/**
@@ -815,7 +845,7 @@ package ws.tink.spark.containers
 		public function swapElementsAt(index1:int, index2:int):void
 		{
 			_contentModified = true;
-			currentNavigator.swapElementsAt(index1, index2);
+			currentnavigatorGroup.swapElementsAt(index1, index2);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -1054,6 +1084,23 @@ package ws.tink.spark.containers
 		}
 		
 		
+		public function set selectedElement( value:IVisualElement ):void
+		{
+			selectedIndex = getItemIndex( value );
+//			_selectedIndex = value;
+//			if( layout ) InavigatorGroupLayout( layout ).selectedIndex = _selectedIndex;
+		}
+		
+		/**
+		 *  @private
+		 *  IList implementation of selectedIndex returns
+		 *  StackLayout( layout ).focusedIndex
+		 */
+		public function get selectedElement():IVisualElement
+		{
+			return IVisualElement( getItemAt( selectedIndex ) );
+		}
+		
 		
 		/**
 		 *  @private
@@ -1192,7 +1239,7 @@ package ws.tink.spark.containers
 				return _mxmlContent;
 			}
 			
-//			return ( !_mxmlContent ) ? null : _mxmlContent;
+			return _mxmlContent;
 		}
 	}
 	
