@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <componentPackage>
-
-	<component id="ChartToolTipSync" class="ws.tink.mx.charts.chartClasses.ChartToolTipSync"/>
 	
  	<component id="HReverseBox" class="ws.tink.mx.containers.HReverseBox"/>
  	<component id="ReverseBox" class="ws.tink.mx.containers.ReverseBox"/>
