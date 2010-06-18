@@ -15,7 +15,10 @@
 	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
 	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
+	<component id="PartitionDataGroup" class="ws.tink.spark.controls.PartitionDataGroup"/>
+	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
+	<component id="ValidityVScrollBar" class="ws.tink.spark.controls.ValidityVScrollBar"/>
     
     <!-- graphics -->
 	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
