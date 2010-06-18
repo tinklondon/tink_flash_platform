@@ -20,6 +20,7 @@ SOFTWARE.
 
 package ws.tink.mx.validators
 {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	
@@ -186,6 +187,7 @@ package ws.tink.mx.validators
 		//----------------------------------
 		//  triggerEvent
 		//----------------------------------
+		private var _triggerEvent:String;
 		
 		/** 
 		 *  @copy mx.effects.IEffect#target
@@ -197,9 +199,7 @@ package ws.tink.mx.validators
 		 */
 		public function get triggerEvent():String
 		{
-			if( _triggerEvents.length > 0 ) return String( _triggerEvents[ 0 ] ); 
-			
-			return null;
+			return ( _triggerEvent ) ? _triggerEvent : ( validator ) ? validator.triggerEvent : _triggerEvent;
 		}
 		
 		/**
@@ -207,53 +207,22 @@ package ws.tink.mx.validators
 		 */
 		public function set triggerEvent( value:String ):void
 		{
-			triggerEvents = [ value ];
-		}
-		
-		
-		
-		//----------------------------------
-		//  triggerEvents
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 *  Storage for the targets property.
-		 */
-		private var _triggerEvents:Array = [];
-		
-		[Inspectable(arrayType="String")]
-		[ArrayElementType("String")]
-		
-		/**
-		 *  @copy mx.effects.IEffect#targets
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 9
-		 *  @playerversion AIR 1.1
-		 *  @productversion Flex 3
-		 */
-		public function get triggerEvents():Array
-		{
-			return _triggerEvents;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set triggerEvents( value:Array ):void
-		{
-			removeTriggerListeners();
-			_triggerEvents = value;
+			if( _triggerEvent == value ) return;
+			
+			removeTriggerListener();
+			_triggerEvent = value
 			invalidate();
 		}
+		
+		
+		
 		
 		
 		
 		//----------------------------------
 		//  property
 		//----------------------------------
-		
+		private var _property	: String;
 		/** 
 		 *  @copy mx.effects.IEffect#target
 		 *  
@@ -264,9 +233,7 @@ package ws.tink.mx.validators
 		 */
 		public function get property():String
 		{
-			if( _properties.length > 0 ) return String( _properties[ 0 ] ); 
-			
-			return null;
+			return ( _property ) ? _property : ( validator ) ? validator.property : _property;
 		}
 		
 		/**
@@ -274,50 +241,14 @@ package ws.tink.mx.validators
 		 */
 		public function set property( value:String ):void
 		{
-			properties = [ value ];
+			_property = value;
 		}
-		
-		
-		
-		//----------------------------------
-		//  properties
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 *  Storage for the targets property.
-		 */
-		private var _properties:Array = [];
-		
-		[Inspectable(arrayType="String")]
-		[ArrayElementType("String")]
-		
-		/**
-		 *  @copy mx.effects.IEffect#targets
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 9
-		 *  @playerversion AIR 1.1
-		 *  @productversion Flex 3
-		 */
-		public function get properties():Array
-		{
-			return _properties;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set properties( value:Array ):void
-		{
-			_properties = value;
-		}
-		
 		
 		
 		//----------------------------------
 		//  target
 		//----------------------------------
+		private var _target		: IEventDispatcher;
 		
 		/** 
 		 *  @copy mx.effects.IEffect#target
@@ -329,9 +260,7 @@ package ws.tink.mx.validators
 		 */
 		public function get target():IEventDispatcher
 		{
-			if( _targets.length > 0 ) return IEventDispatcher( _targets[ 0 ] ); 
-			
-			return null;
+			return ( _target ) ? _target : ( validator ) ? IEventDispatcher( validator.source ) : _target;
 		}
 		
 		/**
@@ -339,54 +268,19 @@ package ws.tink.mx.validators
 		 */
 		public function set target( value:IEventDispatcher ):void
 		{
-			targets = [ value ];
-		}
-		
-		
-		
-		//----------------------------------
-		//  targets
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 *  Storage for the targets property.
-		 */
-		private var _targets:Array = [];
-		
-		[Inspectable(arrayType="IEventDispatcher")]
-		[ArrayElementType("flash.events.IEventDispatcher")]
-		
-		/**
-		 *  @copy mx.effects.IEffect#targets
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 9
-		 *  @playerversion AIR 1.1
-		 *  @productversion Flex 3
-		 */
-		public function get targets():Array
-		{
-			return _targets;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set targets( value:Array ):void
-		{
-			removeTriggerListeners();
+			if( _target == value ) return;
 			
-			_targets = value;
+			removeTriggerListener();
+			_target = value
 			invalidate();
 		}
 		
-		
+				
 		
 		//----------------------------------
 		//  listener
 		//----------------------------------
-		
+		private var _listener	: IValidatorListener;
 		/** 
 		 *  @copy mx.effects.IEffect#target
 		 *  
@@ -397,9 +291,7 @@ package ws.tink.mx.validators
 		 */
 		public function get listener():IValidatorListener
 		{
-			if( _listeners.length > 0 ) return IValidatorListener( _listeners[ 0 ] ); 
-			
-			return null;
+			return ( _listener ) ? _listener : IValidatorListener( target );
 		}
 		
 		/**
@@ -407,44 +299,9 @@ package ws.tink.mx.validators
 		 */
 		public function set listener( value:IValidatorListener ):void
 		{
-			listeners = [ value ];
+			_listener = value;
 		}
 		
-		
-		
-		//----------------------------------
-		//  listeners
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 *  Storage for the listeners property.
-		 */
-		private var _listeners:Array = [];
-		
-		[Inspectable(arrayType="IValidatorListener")]
-		[ArrayElementType("mx.validators.IValidatorListener")]
-		
-		/**
-		 *  @copy mx.effects.IEffect#targets
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 9
-		 *  @playerversion AIR 1.1
-		 *  @productversion Flex 3
-		 */
-		public function get listeners():Array
-		{
-			return _listeners;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set listeners( value:Array ):void
-		{
-			_listeners = value;
-		}
 		
 		
 		
@@ -497,124 +354,217 @@ package ws.tink.mx.validators
 		{
 			var doValidation:Boolean = true;
 			
-			if( !_enabled || !_targets || !_properties ) doValidation = false;
-			if( !_properties.length ) doValidation = false;
+			if( !_enabled || !target || !validator ) doValidation = false;
 			
+			var resultEvent:ValidationResultEvent;
 			var results:Array = new Array();
-			var r:Array;
+//			var r:Array;
 			
 			if( doValidation )
 			{
-				var numTargets:int = _targets.length;
-				for ( var i:int = 0; i < numTargets; i++ )
+				var currentTarget:IEventDispatcher = target;
+				if( currentTarget )
 				{
-					r = validateIndex( i, true );
-					if( r ) results.concat( r );
+					var fakeValidated:Boolean;
+					
+					if( "enabled" in currentTarget && !_validateDisabledTargets )
+					{
+						fakeValidated = !currentTarget[ "enabled" ];
+					}
+					
+					if( currentTarget is DisplayObject && _validateDisabledTargets )
+					{
+						fakeValidated = DisplayObject( currentTarget ).stage == null;
+					}
+					
+					var previousTarget:IEventDispatcher = IEventDispatcher( validator.source );
+					
+					var currentListener:IValidatorListener = listener;
+					var previousListener:IValidatorListener = IValidatorListener( validator.listener );
+					
+					var currentProperty:String = property;
+					var previousProperty:String = validator.property;
+					
+					var errorSet:Object;
+					var previousErrorSet:Object = new Object();
+					
+					var prop:String;
+					for( prop in _errorSet )
+					{
+						try
+						{
+							previousErrorSet[ prop ] = validator[ prop ];
+							validator[ prop ] = _errorSet[ prop ];
+						}
+						catch( e:Error )
+						{
+							
+						}
+						
+					}
+					
+					validator.property = currentProperty;
+					validator.listener = currentListener;
+					validator.source = currentTarget;
+					
+					// fake a validation result to make sure the target is valid
+					// because we don't want disabled targets staying invalid when disabled
+					// if _validateDisabledTargets is false
+					if( fakeValidated )
+					{
+						validator.dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
+					}
+						// Carry out the proper validation
+					else
+					{
+						results = validator.validate().results;
+					}
+					
+					for( prop in previousErrorSet )
+					{
+						try
+						{
+							validator[ prop ] = previousErrorSet[ prop ];
+						}
+						catch( e:Error )
+						{
+							
+						}
+						
+					}
+					validator.source = previousTarget;
+					validator.property = previousProperty;
+					validator.listener = previousListener;
+					
+					if( currentTarget is UIComponent ) UIComponent( currentTarget ).callLater( UIComponent( currentTarget ).invalidateProperties );
+					
+					if( results.length > 0 )
+					{
+						resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
+					}
+					else
+					{
+						resultEvent = new ValidationResultEvent( ValidationResultEvent.VALID );
+					}
+					
+					dispatchEvent( resultEvent );
+					return resultEvent;
 				}
 			}
 			
-			var resultEvent:ValidationResultEvent;
-			
-			if( results.length > 0 )
-			{
-				resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
-			}
-			else
-			{
-				resultEvent = new ValidationResultEvent( ValidationResultEvent.VALID );
-			}
-			
+			resultEvent = new ValidationResultEvent( ValidationResultEvent.VALID );
 			dispatchEvent( resultEvent );
 			return resultEvent;
 		}
 		
-		protected function validateIndex( i:int, surpressEvents:Boolean = false ):Array
-		{
-			var t:IEventDispatcher = getTargetByIndex( i, _targets );
-			
-			if( "enabled" in t && !_validateDisabledTargets )
-			{
-				if( !t[ "enabled" ] ) return null;
-			}
-			
-			var results:Array;
-			
-			if( t )
-			{
-				validator.property = getPropertyByIndex( i );
-				validator.listener = getListenerByIndex( i );
-				validator.source = t;
-				results = validator.validate().results;
-			}
-			
-			validator.source = null;
-			validator.property = null;
-			validator.listener = null;
-			
-			if( t is UIComponent ) UIComponent( t ).callLater( UIComponent( t ).invalidateProperties );
-		
-			if( !surpressEvents )
-			{
-				var resultEvent:ValidationResultEvent;
-				
-				if( results )
-				{
-					if( results.length > 0 )
-					{
-						dispatchEvent( new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results ) );
-						return results;
-					}
-				}
-				
-				dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
-			}
-			
-			return results;
-		}
+//		protected function validateIndex( i:int, surpressEvents:Boolean = false ):Array
+//		{
+//			var t:IEventDispatcher = getTargetByIndex( i, _targets );
+//			
+//			var results:Array;
+//			
+//			
+//			if( t )
+//			{
+//				if( "enabled" in t && !_validateDisabledTargets )
+//				{
+//					if( !t[ "enabled" ] ) return null;
+//				}
+//				
+//				var listener:IValidatorListener;
+//				var errorSet:Object;
+//				var previousErrorSet:Object = new Object();
+//				
+//				var prop:String;
+//				errorSet = getErrorSetByIndex( i );
+//				for( prop in errorSet )
+//				{
+//					try
+//					{
+//						previousErrorSet[ prop ] = validator[ prop ];
+//						validator[ prop ] = errorSet[ prop ];
+//					}
+//					catch( e:Error )
+//					{
+//						
+//					}
+//					
+//				}
+//				
+//				listener = getListenerByIndex( i );
+//				validator.property = getPropertyByIndex( i );
+//				validator.listener = ( listener ) ? listener : t;
+//				validator.source = t;
+//				results = validator.validate().results;
+//				
+//				for( prop in previousErrorSet )
+//				{
+//					try
+//					{
+//						validator[ prop ] = previousErrorSet[ prop ];
+//					}
+//					catch( e:Error )
+//					{
+//						
+//					}
+//					
+//				}
+//				validator.source = null;
+//				validator.property = null;
+//				validator.listener = null;
+//				
+//				if( t is UIComponent ) UIComponent( t ).callLater( UIComponent( t ).invalidateProperties );
+//				
+//				if( !surpressEvents )
+//				{
+//					var resultEvent:ValidationResultEvent;
+//					
+//					if( results )
+//					{
+//						if( results.length > 0 )
+//						{
+//							dispatchEvent( new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results ) );
+//							return results;
+//						}
+//					}
+//					
+//					dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
+//				}
+//			}
+//			
+//			
+//			return results;
+//		}
 	
 		
 		
-		private var _activeTriggerEvents:Array;
-		private var _activeTargets:Array;
+		private var _activeTriggerEvent:String;
+		private var _activeTarget:IEventDispatcher;
 		
 		/**
 		 *  @private
 		 */
-		private function addTriggerListeners():void
+		private function addTriggerListener():void
 		{
-			
-			if( _targets )
+			if( target )
 			{
-				_activeTriggerEvents = _triggerEvents.concat();
-				_activeTargets = _targets.concat();
+				_activeTriggerEvent = triggerEvent;
+				_activeTarget = target;
 					
-				var target:IEventDispatcher;
-				var numTargets:int = _activeTargets.length;
-				for ( var i:int = 0; i < numTargets; i++ )
-				{
-					target = getTargetByIndex( i, _activeTargets );
-					if( target ) target.addEventListener( getTriggerEventByIndex( i, _activeTriggerEvents ), onSourceTrigger, false );
-				}
+				_activeTarget.addEventListener( _activeTriggerEvent, onSourceTrigger, false );
 			}
 		}
 		
 		/**
 		 *  @private
 		 */
-		private function removeTriggerListeners():void
+		private function removeTriggerListener():void
 		{
-			if( _activeTargets )
+			if( _activeTarget )
 			{
-				var target:IEventDispatcher;
-				var numTargets:int = _activeTargets.length;
-				for ( var i:int = 0; i < numTargets; i++ )
-				{
-					target = getTargetByIndex( i, _activeTargets );
-					if( target ) target.removeEventListener( getTriggerEventByIndex( i, _activeTriggerEvents ), onSourceTrigger, false );
-				}
-				
-				_activeTriggerEvents = null;
-				_activeTargets = null;
+				_activeTarget.removeEventListener( _activeTriggerEvent, onSourceTrigger, false );
+				_activeTriggerEvent = null;
+				_activeTarget = null;
 			}
 		}
 		
@@ -625,111 +575,158 @@ package ws.tink.mx.validators
 		{
 			if( _enabled && _validateOnTrigger && !_neverValidateOnTrigger )
 			{
-				validateIndex( getIndexByTarget( IEventDispatcher( event.currentTarget ) ) );
+				validate();
 			}
 		}
 		
 		/**
 		 *  @private
 		 */
-		private function getPropertyByIndex( i:int ):String
-		{
-			if( _properties )
-			{
-				if( _properties.length > 0 )
-				{
-					if( _properties.length >= i + 1 )
-					{
-						return String( _properties[ i ] ? _properties[ i ] : _properties[ 0 ] );
-					}
-					else
-					{
-						return String( _properties[ 0 ] );
-					}
-				}
-			}
-			
-			return null;
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function getListenerByIndex( i:int ):IValidatorListener
-		{
-			if( _listeners )
-			{
-				if( _listeners.length > 0 )
-				{
-					if( _listeners.length >= i + 1 )
-					{
-						return IValidatorListener( _listeners[ i ] ? _listeners[ i ] : _listeners[ 0 ] );
-					}
-					else
-					{
-						return IValidatorListener( _listeners[ 0 ] );
-					}
-				}
-			}
-			
-			return null;
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function getTriggerEventByIndex( i:int, items:Array ):String
-		{
-			if( items )
-			{
-				if( items.length > 0 )
-				{
-					if( items.length >= i + 1 )
-					{
-						return String( items[ i ] ? items[ i ] : items[ 0 ] );
-					}
-					else
-					{
-						return String( items[ 0 ] );
-					}
-				}
-			}
-			
-			return FlexEvent.VALUE_COMMIT;
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function getTargetByIndex( i:int, items:Array ):IEventDispatcher
-		{
-			if( i < 0 || i > items.length - 1 ) return null;
-			return IEventDispatcher( items[ i ] );
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function getIndexByTarget( t:IEventDispatcher ):int
-		{
-			var numTargets:int = _targets.length;
-			for ( var i:int = 0; i < numTargets; i++ )
-			{
-				if( IEventDispatcher( _targets[ i ] ) == t ) return i;
-			}
-			
-			return -1;
-		}
+//		private function getPropertyByIndex( i:int ):String
+//		{
+//			if( _properties )
+//			{
+//				if( _properties.length > 0 )
+//				{
+//					if( _properties.length >= i + 1 )
+//					{
+//						return String( _properties[ i ] ? _properties[ i ] : _properties[ 0 ] );
+//					}
+//					else
+//					{
+//						return String( _properties[ 0 ] );
+//					}
+//				}
+//			}
+//			
+//			return null;
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function getListenerByIndex( i:int ):IValidatorListener
+//		{
+//			if( _listeners )
+//			{
+//				if( _listeners.length > 0 )
+//				{
+//					if( _listeners.length >= i + 1 )
+//					{
+//						return IValidatorListener( _listeners[ i ] ? _listeners[ i ] : _listeners[ 0 ] );
+//					}
+//					else
+//					{
+//						return IValidatorListener( _listeners[ 0 ] );
+//					}
+//				}
+//			}
+//			
+//			return null;
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function getErrorSetByIndex( i:int ):Object
+//		{
+//			if( _errorSets )
+//			{
+//				if( _errorSets.length > 0 )
+//				{
+//					if( _errorSets.length >= i + 1 )
+//					{
+//						if( _errorSets[ i ] ) return _errorSets[ i ];
+//					}
+//				}
+//			}
+//			
+//			return null;
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function getTriggerEventByIndex( i:int, items:Array ):String
+//		{
+//			if( items )
+//			{
+//				if( items.length > 0 )
+//				{
+//					if( items.length >= i + 1 )
+//					{
+//						return String( items[ i ] ? items[ i ] : items[ 0 ] );
+//					}
+//					else
+//					{
+//						return String( items[ 0 ] );
+//					}
+//				}
+//			}
+//			
+//			return FlexEvent.VALUE_COMMIT;
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function getTargetByIndex( i:int, items:Array ):IEventDispatcher
+//		{
+//			if( i < 0 || i > items.length - 1 ) return null;
+//			return IEventDispatcher( items[ i ] );
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function getIndexByTarget( t:IEventDispatcher ):int
+//		{
+//			var numTargets:int = _targets.length;
+//			for ( var i:int = 0; i < numTargets; i++ )
+//			{
+//				if( IEventDispatcher( _targets[ i ] ) == t ) return i;
+//			}
+//			
+//			return -1;
+//		}
 		
 		/**
 		 *  @private
 		 */
 		override protected function commit():void
 		{
-			if( !_activeTargets ) addTriggerListeners();
+			if( !_activeTarget ) addTriggerListener();
 		}
 		
 		
-	
+		
+		
+		
+		//----------------------------------
+		//  errorSet
+		//----------------------------------
+		private var _errorSet	: Object;
+		/** 
+		 *  @copy mx.effects.IEffect#target
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get errorSet():Object
+		{
+			return _errorSet;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set errorSet( value:Object ):void
+		{
+			_errorSet = value;
+		}
+		
+		
 	}
 }
