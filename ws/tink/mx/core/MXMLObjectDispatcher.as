@@ -87,7 +87,7 @@ package ws.tink.mx.core
 		
 		private function commitValidation():void
 		{
-			_invalidateFlag = true;
+			_invalidateFlag = false;
 			commit();
 		}
 		
