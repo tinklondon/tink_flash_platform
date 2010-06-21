@@ -268,10 +268,15 @@ package ws.tink.mx.validators
 		 */
 		public function set target( value:IEventDispatcher ):void
 		{
+			trace( value, "set", _target );
 			if( _target == value ) return;
+			
+			
 			
 			removeTriggerListener();
 			_target = value
+				
+			trace( value, "set2", _target );
 			invalidate();
 		}
 		
@@ -354,6 +359,7 @@ package ws.tink.mx.validators
 		 */
 		public function validate():ValidationResultEvent
 		{
+			trace( "validate", _target );
 			var doValidation:Boolean = true;
 			
 			if( !_enabled || !target || !validator ) doValidation = false;
@@ -545,8 +551,10 @@ package ws.tink.mx.validators
 		 */
 		private function addTriggerListener():void
 		{
+			trace( "addTriggerListener1" );
 			if( target )
 			{
+				trace( "addTriggerListener", target );
 				_activeTriggerEvent = triggerEvent;
 				_activeTarget = target;
 					
@@ -694,6 +702,7 @@ package ws.tink.mx.validators
 		 */
 		override protected function commit():void
 		{
+			trace( "doing commit", _activeTarget );
 			if( !_activeTarget ) addTriggerListener();
 		}
 		
