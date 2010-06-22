@@ -75,7 +75,7 @@ SOFTWARE.
 	</s:states>
 	
 	<!-- SkinParts
-	name=contentGroup, type=spark.components.Group, required=false
+	name=contentGroup, type=ws.tink.spark.containers.NavigatorGroup, required=false
 	-->
 	
 	<!--- Defines the appearance of the Navigator class's background. -->
