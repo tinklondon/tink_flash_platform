@@ -22,61 +22,69 @@ package ws.tink.mx.validators
 {
 	import mx.core.IMXMLObject;
 	
+	import ws.tink.mx.core.MXMLObject;
+	
 
-	public class ValidationGroup implements IMXMLObject
+	public class ValidationGroup extends MXMLObject
 	{
 		public function ValidationGroup()
 		{
 		}
 		
 		
-		private var _document:Object;
-		/**
-		 *  Called automatically by the MXML compiler when the Validator
-		 *  is created using an MXML tag.  
-		 *
-		 *  @param document The MXML document containing this Validator.
-		 *
-		 *  @param id Ignored.
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 9
-		 *  @playerversion AIR 1.1
-		 *  @productversion Flex 3
-		 */
-		public function initialized(document:Object, id:String):void
+//		private var _document:Object;
+//		/**
+//		 *  Called automatically by the MXML compiler when the Validator
+//		 *  is created using an MXML tag.  
+//		 *
+//		 *  @param document The MXML document containing this Validator.
+//		 *
+//		 *  @param id Ignored.
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 9
+//		 *  @playerversion AIR 1.1
+//		 *  @productversion Flex 3
+//		 */
+//		public function initialized(document:Object, id:String):void
+//		{
+//			_document = document;
+//		}
+		
+		private var _validateOnTriggerAfterValidate:Boolean = true;
+		public function get validateOnTriggerAfterValidate():Boolean
 		{
-			_document = document;
+			return _validateOnTriggerAfterValidate;
+		}
+		public function set validateOnTriggerAfterValidate( value:Boolean ):void
+		{
+			_validateOnTriggerAfterValidate = value;
 		}
 		
 		
-		
-		private var _validateOnTrigger:Boolean = true;
+		private var _validateOnTrigger:Boolean = false;
 		public function get validateOnTrigger():Boolean
 		{
 			return _validateOnTrigger;
 		}
 		public function set validateOnTrigger( value:Boolean ):void
 		{
-			if( _validateOnTrigger == value ) return;
-			
 			_validateOnTrigger = value;
-			commitValidateOnTrigger( _validators );
+			invalidate();
 		}
 		
 		private var _validators:Array;
 		[ArrayElementType("ws.tink.mx.validators.IValidationItem")]
-		public function get validators():Array
+		public function get validationItems():Array
 		{
 			return _validators;
 		}
-		public function set validators( value:Array ):void
+		public function set validationItems( value:Array ):void
 		{
 			if( _validators == value )return;
 			
 			_validators = value;
-			
-			commitValidateOnTrigger( _validators );
+			invalidate();
 		}
 		
 		
@@ -103,11 +111,15 @@ package ws.tink.mx.validators
 			{
 				v.validate();
 			}
+			
+			if( _validateOnTriggerAfterValidate ) validateOnTrigger = true;
 		}
 		
-		private function commitValidateOnTrigger( v:Array ):void
+		override protected function commit():void
 		{
-			for each( var validatorItem:IValidationItem in v )
+			super.commit();
+			
+			for each( var validatorItem:IValidationItem in _validators )
 			{
 				validatorItem.validateOnTrigger = _validateOnTrigger;
 			} 

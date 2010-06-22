@@ -62,6 +62,14 @@ package ws.tink.mx.validators
 		 *  Storage for the neverValidateOnTrigger property.
 		 */
 		private var _neverValidateOnTrigger:Boolean = false;
+		
+		/**
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public function get neverValidateOnTrigger():Boolean
 		{
 			return _neverValidateOnTrigger;
@@ -80,7 +88,7 @@ package ws.tink.mx.validators
 		
 		
 		//----------------------------------
-		//  validateDisabledTargets
+		//  validateOnTrigger
 		//----------------------------------
 		
 		/**
@@ -113,16 +121,119 @@ package ws.tink.mx.validators
 		}
 		
 		
+		//----------------------------------
+		//  validateOnTriggerAfterShown
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the validateOnTriggerAfterShown property.
+		 */
+		private var _validateOnTriggerAfterShown:Boolean = false;
+		
+		/**
+		 *  @copy ws.tink.mx.validators.IValidationItem#validateOnTriggerAfterEnabled
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get validateOnTriggerAfterShown():Boolean
+		{
+			return _validateOnTriggerAfterShown;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set validateOnTriggerAfterShown( value:Boolean ):void
+		{
+			if( _validateOnTriggerAfterShown == value ) return;
+			
+			_validateOnTriggerAfterShown = value;
+		}
+		
 		
 		//----------------------------------
-		//  validateDisabledTargets
+		//  validateOnTriggerAfterEnabled
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the validateOnTrigger property.
+		 */
+		private var _validateOnTriggerAfterEnabled:Boolean = false;
+		
+		/**
+		 *  @copy ws.tink.mx.validators.IValidationItem#validateOnTriggerAfterEnabled
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get validateOnTriggerAfterEnabled():Boolean
+		{
+			return _validateOnTriggerAfterEnabled;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set validateOnTriggerAfterEnabled( value:Boolean ):void
+		{
+			if( _validateOnTriggerAfterEnabled == value ) return;
+			
+			_validateOnTriggerAfterEnabled = value;
+		}
+		
+		
+		
+		//----------------------------------
+		//  validateOnTriggerAfterAddedToDisplayList
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the validateOnTrigger property.
+		 */
+		private var _validateOnTriggerAfterAddedToDisplayList:Boolean = false;
+		
+		/**
+		 *  @copy ws.tink.mx.validators.IValidationItem#validateOnTriggerAfterAddedToDisplayList
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get validateOnTriggerAfterAddedToDisplayList():Boolean
+		{
+			return _validateOnTriggerAfterAddedToDisplayList;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set validateOnTriggerAfterAddedToDisplayList( value:Boolean ):void
+		{
+			if( _validateOnTriggerAfterAddedToDisplayList == value ) return;
+			
+			_validateOnTriggerAfterAddedToDisplayList = value;
+		}
+		
+		
+		
+		//----------------------------------
+		//  validateDisabledTarget
 		//----------------------------------
 		
 		/**
 		 *  @private
 		 *  Storage for the validateDisabledTargets property.
 		 */
-		private var _validateDisabledTargets:Boolean = false;
+		private var _validateDisabledTarget:Boolean = false;
 		
 		/** 
 		 *  
@@ -132,19 +243,90 @@ package ws.tink.mx.validators
 		 *  @playerversion AIR 1.1
 		 *  @productversion Flex 3
 		 */
-		public function get validateDisabledTargets():Boolean
+		public function get validateDisabledTarget():Boolean
 		{
-			return _validateDisabledTargets;
+			return _validateDisabledTarget;
 		}
 		
 		/**
 		 *  @private
 		 */
-		public function set validateDisabledTargets( value:Boolean ):void
+		public function set validateDisabledTarget( value:Boolean ):void
 		{
-			if( _validateOnTrigger == value ) return;
+			if( _validateDisabledTarget == value ) return;
 			
-			_validateDisabledTargets = value;
+			_validateDisabledTarget = value;
+		}
+		
+		
+		
+		//----------------------------------
+		//  validateNoneVisibleTarget
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the validateNoneVisibleTarget property.
+		 */
+		private var _validateNoneVisibleTarget:Boolean = false;
+		
+		/** 
+		 *  
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get validateNoneVisibleTarget():Boolean
+		{
+			return _validateNoneVisibleTarget;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set validateNoneVisibleTarget( value:Boolean ):void
+		{
+			if( _validateNoneVisibleTarget == value ) return;
+			
+			_validateNoneVisibleTarget = value;
+		}
+		
+		
+		
+		
+		//----------------------------------
+		//  validateDisabledTarget
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the validateDisabledTargets property.
+		 */
+		private var _validateNoneDisplayedTarget:Boolean = false;
+		
+		/** 
+		 *  
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function get validateNoneDisplayedTarget():Boolean
+		{
+			return _validateNoneDisplayedTarget;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set validateNoneDisplayedTarget( value:Boolean ):void
+		{
+			if( _validateNoneDisplayedTarget == value ) return;
+			
+			_validateNoneDisplayedTarget = value;
 		}
 		
 		
@@ -209,7 +391,7 @@ package ws.tink.mx.validators
 		{
 			if( _triggerEvent == value ) return;
 			
-			removeTriggerListener();
+//			removeTriggerListener();
 			_triggerEvent = value
 			invalidate();
 		}
@@ -268,15 +450,14 @@ package ws.tink.mx.validators
 		 */
 		public function set target( value:IEventDispatcher ):void
 		{
-			trace( value, "set", _target );
-			if( _target == value ) return;
+			// If value is null we let invalidation
+			// take place as it may have a valid value
+			// on the next frame.
+			if( _target == value && value != null ) return;
 			
 			
-			
-			removeTriggerListener();
 			_target = value
 				
-			trace( value, "set2", _target );
 			invalidate();
 		}
 		
@@ -340,12 +521,10 @@ package ws.tink.mx.validators
 		{
 			if( _validator == value ) return;
 			
-			removeTriggerListener();
+//			removeTriggerListener();
 			_validator = value;
 			invalidate();
 		}
-		
-		
 		
 		
 		
@@ -359,7 +538,6 @@ package ws.tink.mx.validators
 		 */
 		public function validate():ValidationResultEvent
 		{
-			trace( "validate", _target );
 			var doValidation:Boolean = true;
 			
 			if( !_enabled || !target || !validator ) doValidation = false;
@@ -372,87 +550,76 @@ package ws.tink.mx.validators
 				var currentTarget:IEventDispatcher = target;
 				if( currentTarget )
 				{
-					var fakeValidated:Boolean;
+					if( !_isEnabled && !_validateDisabledTarget ) doValidation = false;
+					if( !_isDisplayed && !_validateNoneDisplayedTarget ) doValidation = false;
+					if( !_isVisible && !_validateNoneVisibleTarget ) doValidation = false;
+				}
+				else
+				{
+					doValidation = false;
+				}
+			}
+			
+			if( doValidation )
+			{
 					
-					if( "enabled" in currentTarget && !_validateDisabledTargets )
+				var previousTarget:IEventDispatcher = IEventDispatcher( validator.source );
+				
+				var currentListener:IValidatorListener = listener;
+				var previousListener:IValidatorListener = IValidatorListener( validator.listener );
+				
+				var currentProperty:String = property;
+				var previousProperty:String = validator.property;
+				
+				var errorSet:Object;
+				var previousErrorSet:Object = new Object();
+				
+				var prop:String;
+				for( prop in _errorSet )
+				{
+					try
 					{
-						fakeValidated = !currentTarget[ "enabled" ];
+						previousErrorSet[ prop ] = validator[ prop ];
+						validator[ prop ] = _errorSet[ prop ];
 					}
-					
-					if( currentTarget is DisplayObject && _validateDisabledTargets )
+					catch( e:Error )
 					{
-						fakeValidated = DisplayObject( currentTarget ).stage == null;
-					}
-					
-					var previousTarget:IEventDispatcher = IEventDispatcher( validator.source );
-					
-					var currentListener:IValidatorListener = listener;
-					var previousListener:IValidatorListener = IValidatorListener( validator.listener );
-					
-					var currentProperty:String = property;
-					var previousProperty:String = validator.property;
-					
-					var errorSet:Object;
-					var previousErrorSet:Object = new Object();
-					
-					var prop:String;
-					for( prop in _errorSet )
-					{
-						try
-						{
-							previousErrorSet[ prop ] = validator[ prop ];
-							validator[ prop ] = _errorSet[ prop ];
-						}
-						catch( e:Error )
-						{
-							
-						}
 						
 					}
 					
-					validator.property = currentProperty;
-					validator.listener = currentListener;
-					validator.source = currentTarget;
-					
-					// fake a validation result to make sure the target is valid
-					// because we don't want disabled targets staying invalid when disabled
-					// if _validateDisabledTargets is false
-					if( fakeValidated )
+				}
+				
+				validator.property = currentProperty;
+				validator.listener = currentListener;
+				validator.source = currentTarget;
+				
+				results = validator.validate().results;
+				
+				for( prop in previousErrorSet )
+				{
+					try
 					{
-						validator.dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
+						validator[ prop ] = previousErrorSet[ prop ];
 					}
-						// Carry out the proper validation
-					else
+					catch( e:Error )
 					{
-						results = validator.validate().results;
-					}
-					
-					for( prop in previousErrorSet )
-					{
-						try
-						{
-							validator[ prop ] = previousErrorSet[ prop ];
-						}
-						catch( e:Error )
-						{
-							
-						}
 						
 					}
-					validator.source = previousTarget;
-					validator.property = previousProperty;
-					validator.listener = previousListener;
 					
-					if( currentTarget is UIComponent ) UIComponent( currentTarget ).callLater( UIComponent( currentTarget ).invalidateProperties );
-					
-					if( results )
+				}
+				validator.source = previousTarget;
+				validator.property = previousProperty;
+				validator.listener = previousListener;
+				
+				if( currentTarget is UIComponent ) UIComponent( currentTarget ).callLater( UIComponent( currentTarget ).invalidateProperties );
+				
+				if( results )
+				{
+					if( results.length > 0 )
 					{
-						if( results.length > 0 )
-						{
-							resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
-							dispatchEvent( resultEvent );
-							return resultEvent;
-						}
+						resultEvent = new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results );
+						dispatchEvent( resultEvent );
+						return resultEvent;
 					}
 				}
 			}
@@ -461,104 +628,43 @@ package ws.tink.mx.validators
 			dispatchEvent( resultEvent );
 			return resultEvent;
 		}
-		
-//		protected function validateIndex( i:int, surpressEvents:Boolean = false ):Array
-//		{
-//			var t:IEventDispatcher = getTargetByIndex( i, _targets );
-//			
-//			var results:Array;
-//			
-//			
-//			if( t )
-//			{
-//				if( "enabled" in t && !_validateDisabledTargets )
-//				{
-//					if( !t[ "enabled" ] ) return null;
-//				}
-//				
-//				var listener:IValidatorListener;
-//				var errorSet:Object;
-//				var previousErrorSet:Object = new Object();
-//				
-//				var prop:String;
-//				errorSet = getErrorSetByIndex( i );
-//				for( prop in errorSet )
-//				{
-//					try
-//					{
-//						previousErrorSet[ prop ] = validator[ prop ];
-//						validator[ prop ] = errorSet[ prop ];
-//					}
-//					catch( e:Error )
-//					{
-//						
-//					}
-//					
-//				}
-//				
-//				listener = getListenerByIndex( i );
-//				validator.property = getPropertyByIndex( i );
-//				validator.listener = ( listener ) ? listener : t;
-//				validator.source = t;
-//				results = validator.validate().results;
-//				
-//				for( prop in previousErrorSet )
-//				{
-//					try
-//					{
-//						validator[ prop ] = previousErrorSet[ prop ];
-//					}
-//					catch( e:Error )
-//					{
-//						
-//					}
-//					
-//				}
-//				validator.source = null;
-//				validator.property = null;
-//				validator.listener = null;
-//				
-//				if( t is UIComponent ) UIComponent( t ).callLater( UIComponent( t ).invalidateProperties );
-//				
-//				if( !surpressEvents )
-//				{
-//					var resultEvent:ValidationResultEvent;
-//					
-//					if( results )
-//					{
-//						if( results.length > 0 )
-//						{
-//							dispatchEvent( new ValidationResultEvent( ValidationResultEvent.INVALID, false, false, null, results ) );
-//							return results;
-//						}
-//					}
-//					
-//					dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
-//				}
-//			}
-//			
-//			
-//			return results;
-//		}
-	
-		
+				
 		
 		private var _activeTriggerEvent:String;
 		private var _activeTarget:IEventDispatcher;
+		private var _isDisplayed:Boolean;
+		private var _isEnabled:Boolean;
+		private var _isVisible:Boolean;
 		
 		/**
 		 *  @private
 		 */
 		private function addTriggerListener():void
 		{
-			trace( "addTriggerListener1" );
 			if( target )
 			{
-				trace( "addTriggerListener", target );
 				_activeTriggerEvent = triggerEvent;
 				_activeTarget = target;
+				
+//				if( _activeTarget is DisplayObject )
+//				{
+//					_isDisplayed = DisplayObject( _activeTarget ).stage != null;
+//				}
+//				else
+//				{
+//					_isDisplayed = false;
+//				}
+				
+				_isDisplayed = isTargetDisplayed( _activeTarget );
+				_isEnabled = isTargetEnabled( _activeTarget );
+				_isVisible = isTargetVisible( _activeTarget );
 					
-				_activeTarget.addEventListener( _activeTriggerEvent, onSourceTrigger, false );
+				_activeTarget.addEventListener( _activeTriggerEvent, onTargetTrigger, false );
+				_activeTarget.addEventListener( "enabledChanged", onTargetEnabledChange, false, 0, true );
+				_activeTarget.addEventListener( Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true );
+				_activeTarget.addEventListener( Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true );
+				_activeTarget.addEventListener( FlexEvent.SHOW, onShow, false, 0, true );
+				_activeTarget.addEventListener( FlexEvent.HIDE, onHide, false, 0, true );
 			}
 		}
 		
@@ -569,141 +675,129 @@ package ws.tink.mx.validators
 		{
 			if( _activeTarget )
 			{
-				_activeTarget.removeEventListener( _activeTriggerEvent, onSourceTrigger, false );
+				_activeTarget.removeEventListener( _activeTriggerEvent, onTargetTrigger, false );
+				_activeTarget.removeEventListener( "enabledChanged", onTargetEnabledChange, false );
+				_activeTarget.removeEventListener( Event.REMOVED_FROM_STAGE, onRemovedFromStage, false );
+				_activeTarget.removeEventListener( Event.ADDED_TO_STAGE, onAddedToStage, false );
+				_activeTarget.removeEventListener( FlexEvent.SHOW, onShow, false );
+				_activeTarget.removeEventListener( FlexEvent.HIDE, onHide, false );
+				
 				_activeTriggerEvent = null;
 				_activeTarget = null;
 			}
 		}
 		
-		/**
-		 *  @private
-		 */
-		private function onSourceTrigger( event:Event ):void
+		private function fakeValid():void
 		{
-			if( _enabled && _validateOnTrigger && !_neverValidateOnTrigger )
+			var currentTarget:IEventDispatcher = target;
+			if( currentTarget )
 			{
-				validate();
+				var previousTarget:IEventDispatcher = IEventDispatcher( validator.source );
+				var previousListener:IValidatorListener = IValidatorListener( validator.listener );
+				
+				validator.source = currentTarget;
+				validator.listener = listener;
+				validator.dispatchEvent( new ValidationResultEvent( ValidationResultEvent.VALID ) );
+				
+				validator.source = previousTarget;
+				validator.listener = previousListener;
 			}
 		}
 		
 		/**
 		 *  @private
 		 */
-//		private function getPropertyByIndex( i:int ):String
-//		{
-//			if( _properties )
-//			{
-//				if( _properties.length > 0 )
-//				{
-//					if( _properties.length >= i + 1 )
-//					{
-//						return String( _properties[ i ] ? _properties[ i ] : _properties[ 0 ] );
-//					}
-//					else
-//					{
-//						return String( _properties[ 0 ] );
-//					}
-//				}
-//			}
-//			
-//			return null;
-//		}
-//		
-//		/**
-//		 *  @private
-//		 */
-//		private function getListenerByIndex( i:int ):IValidatorListener
-//		{
-//			if( _listeners )
-//			{
-//				if( _listeners.length > 0 )
-//				{
-//					if( _listeners.length >= i + 1 )
-//					{
-//						return IValidatorListener( _listeners[ i ] ? _listeners[ i ] : _listeners[ 0 ] );
-//					}
-//					else
-//					{
-//						return IValidatorListener( _listeners[ 0 ] );
-//					}
-//				}
-//			}
-//			
-//			return null;
-//		}
-//		
-//		/**
-//		 *  @private
-//		 */
-//		private function getErrorSetByIndex( i:int ):Object
-//		{
-//			if( _errorSets )
-//			{
-//				if( _errorSets.length > 0 )
-//				{
-//					if( _errorSets.length >= i + 1 )
-//					{
-//						if( _errorSets[ i ] ) return _errorSets[ i ];
-//					}
-//				}
-//			}
-//			
-//			return null;
-//		}
-//		
-//		/**
-//		 *  @private
-//		 */
-//		private function getTriggerEventByIndex( i:int, items:Array ):String
-//		{
-//			if( items )
-//			{
-//				if( items.length > 0 )
-//				{
-//					if( items.length >= i + 1 )
-//					{
-//						return String( items[ i ] ? items[ i ] : items[ 0 ] );
-//					}
-//					else
-//					{
-//						return String( items[ 0 ] );
-//					}
-//				}
-//			}
-//			
-//			return FlexEvent.VALUE_COMMIT;
-//		}
-//		
-//		/**
-//		 *  @private
-//		 */
-//		private function getTargetByIndex( i:int, items:Array ):IEventDispatcher
-//		{
-//			if( i < 0 || i > items.length - 1 ) return null;
-//			return IEventDispatcher( items[ i ] );
-//		}
-//		
-//		/**
-//		 *  @private
-//		 */
-//		private function getIndexByTarget( t:IEventDispatcher ):int
-//		{
-//			var numTargets:int = _targets.length;
-//			for ( var i:int = 0; i < numTargets; i++ )
-//			{
-//				if( IEventDispatcher( _targets[ i ] ) == t ) return i;
-//			}
-//			
-//			return -1;
-//		}
+		private function onTargetTrigger( event:Event ):void
+		{
+			if( _validateOnTrigger && !_neverValidateOnTrigger )
+			{
+				_validateRequired = true;
+				invalidate();
+			}
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function onTargetEnabledChange( event:Event ):void
+		{
+			_isEnabled = isTargetEnabled( event.currentTarget );
+			if( _isEnabled )
+			{
+				_validateOnTrigger = _validateOnTriggerAfterEnabled;
+			}
+			else
+			{
+				if( !_validateNoneVisibleTarget )
+				{
+					_fakeValidateRequired = true;
+					invalidate();
+				}
+			}
+		}
+		
+		private function onShow( event:FlexEvent ):void
+		{
+			_isVisible = true;
+			_validateOnTrigger = _validateOnTriggerAfterShown;
+			
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function onHide( event:FlexEvent ):void
+		{
+			_isVisible = false;
+			if( !_validateNoneVisibleTarget )
+			{
+				_fakeValidateRequired = true;
+				invalidate();
+			}
+		}
+		
+		private function onAddedToStage( event:Event ):void
+		{
+			_isDisplayed = true;
+			_validateOnTrigger = _validateOnTriggerAfterAddedToDisplayList;
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function onRemovedFromStage( event:Event ):void
+		{
+			_isDisplayed = false;
+			
+			if( !_validateNoneDisplayedTarget )
+			{
+				_fakeValidateRequired = true;
+				invalidate();
+			}
+		}
+		
+		private var _validateRequired		: Boolean;
+		private var _fakeValidateRequired	: Boolean;
 		
 		/**
 		 *  @private
 		 */
 		override protected function commit():void
 		{
-			trace( "doing commit", _activeTarget );
-			if( !_activeTarget ) addTriggerListener();
+			removeTriggerListener();
+			addTriggerListener();
+			
+			if( _validateRequired )
+			{
+				_validateRequired = false;
+				validate();
+			}
+			
+			if( _fakeValidateRequired )
+			{
+				_fakeValidateRequired = false;
+				fakeValid();
+			}
 		}
 		
 		
@@ -735,6 +829,37 @@ package ws.tink.mx.validators
 			_errorSet = value;
 		}
 		
+		
+		
+		private function isTargetEnabled( t:Object ):Boolean
+		{
+			if( "enabled" in t )
+			{
+				return t[ "enabled" ];
+			}
+			
+			return false;
+		}
+		
+		private function isTargetVisible( t:Object ):Boolean
+		{
+			if( "visible" in t )
+			{
+				return t[ "visible" ];
+			}
+			
+			return false;
+		}
+		
+		private function isTargetDisplayed( t:Object ):Boolean
+		{
+			if( _activeTarget is DisplayObject )
+			{
+				return DisplayObject( _activeTarget ).stage != null;
+			}
+			
+			return false;
+		}
 		
 	}
 }
