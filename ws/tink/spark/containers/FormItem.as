@@ -49,6 +49,9 @@ package ws.tink.spark.containers
 	public class FormItem extends SkinnableContainer
 	{
 		
+		
+		
+		
 		[SkinPart( required="false" )]
 		
 		/**
@@ -169,29 +172,6 @@ package ws.tink.spark.containers
 			
 			if( labelDisplay ) labelDisplay.width = calculateLabelWidth();
 		}
-		
-//		private var _errorStringChanged:Boolean;
-//		override public function set errorString( value:String ):void
-//		{
-//			if( value == errorString ) return;
-//			
-//			super.errorString = value;
-//			
-//			_errorStringChanged = true;
-//			invalidateSkinState();
-//			invalidateProperties();
-//		}
-		
-//		override public function validationResultHandler(event:ValidationResultEvent):void
-//		{
-//			super.validationResultHandler( event );
-//			
-//			for each( var v:ValidationResult in event.results )
-//			{
-//				trace( "form item", v.errorMessage, v.errorCode, v.isError );
-//			}
-//		}
-		
 		
 		override protected function getCurrentSkinState():String
 		{

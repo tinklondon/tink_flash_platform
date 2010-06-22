@@ -23,7 +23,6 @@ package ws.tink.spark.containers
 	import mx.core.IInvalidating;
 	import mx.core.IUIComponent;
 	import mx.core.IVisualElement;
-	import mx.validators.Validator;
 	
 	import spark.components.Label;
 	import spark.components.SkinnableContainer;
@@ -33,6 +32,7 @@ package ws.tink.spark.containers
 	
 	public class Form extends SkinnableContainer
 	{
+		
 		
 		/**
 		 *  @private
@@ -54,6 +54,8 @@ package ws.tink.spark.containers
 			
 		}
 		
+		
+		
 		override public function set mxmlContent(value:Array):void
 		{
 			for each( var element:IVisualElement in value )
@@ -74,7 +76,6 @@ package ws.tink.spark.containers
 			element.owner = this;
 			return super.addElementAt( element, index );
 		}
-		
 		
 		override protected function measure():void
 		{
@@ -158,7 +159,7 @@ package ws.tink.spark.containers
 					labelWidthSet = true;
 				}
 				
-//				IInvalidating( child ).invalidateDisplayList();
+				IInvalidating( child ).invalidateDisplayList();
 			}
 			
 			if (labelWidthSet)
