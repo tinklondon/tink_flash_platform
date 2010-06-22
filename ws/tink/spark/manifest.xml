@@ -7,10 +7,13 @@
 	<component id="FormItem" class="ws.tink.spark.containers.FormItem"/>
 	<component id="Navigator" class="ws.tink.spark.containers.Navigator"/>
 	<component id="NavigatorGroup" class="ws.tink.spark.containers.NavigatorGroup"/>
+	<component id="ValidationForm" class="ws.tink.spark.containers.ValidationForm"/>
+	<component id="ValidationFormItem" class="ws.tink.spark.containers.ValidationFormItem"/>
 	
 	<!-- controls -->
 	<component id="Alert" class="ws.tink.spark.controls.Alert"/>
 	<component id="BorderDataNavigator" class="ws.tink.spark.controls.BorderDataNavigator"/>
+	<component id="CheckBoxButtonBar" class="ws.tink.spark.controls.CheckBoxButtonBar"/>
 	<component id="DataNavigator" class="ws.tink.spark.controls.DataNavigator"/>
 	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
 	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
