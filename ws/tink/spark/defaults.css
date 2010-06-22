@@ -11,6 +11,11 @@ BorderDataNavigator
 	skinClass: ClassReference("ws.tink.spark.skins.controls.BorderDataNavigatorSkin");
 }
 
+CheckBoxButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.CheckBoxButtonBarSkin");
+}
+
 DataNavigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
