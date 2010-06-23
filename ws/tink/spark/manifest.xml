@@ -17,11 +17,20 @@
 	<component id="DataNavigator" class="ws.tink.spark.controls.DataNavigator"/>
 	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
 	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
+	<component id="HMouseOverStep" class="ws.tink.spark.controls.HMouseOverStep"/>
+	<component id="HPageStep" class="ws.tink.spark.controls.HPageStep"/>
+	<component id="HStep" class="ws.tink.spark.controls.HStep"/>
+	<component id="MouseOverStepper" class="ws.tink.spark.controls.MouseOverStepper"/>
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
+	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
 	<component id="PartitionDataGroup" class="ws.tink.spark.controls.PartitionDataGroup"/>
 	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
+	<component id="Stepper" class="ws.tink.spark.controls.Stepper"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
 	<component id="ValidityVScrollBar" class="ws.tink.spark.controls.ValidityVScrollBar"/>
+	<component id="VMouseOverStep" class="ws.tink.spark.controls.VMouseOverStep"/>
+	<component id="VPageStep" class="ws.tink.spark.controls.VPageStep"/>
+	<component id="VStep" class="ws.tink.spark.controls.VStep"/>
     
     <!-- graphics -->
 	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
@@ -32,9 +41,10 @@
 	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
 	
 	<!-- layouts -->
+	<component id="RolodexLayout" class="ws.tink.spark.layouts.RolodexLayout"/>
 	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="SemiCarouselLayout" class="ws.tink.spark.layouts.SemiCarouselLayout"/>
-	<component id="RolodexLayout" class="ws.tink.spark.layouts.RolodexLayout"/>
+	<component id="StepperLayout" class="ws.tink.spark.layouts.StepperLayout"/>
 	<component id="TimeMachineLayout" class="ws.tink.spark.layouts.TimeMachineLayout"/>
 	
 	<!-- modules -->
