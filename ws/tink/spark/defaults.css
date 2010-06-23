@@ -31,6 +31,18 @@ FormItem
 	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormItemSkin" );
 }
 
+/*HPageStep*/
+
+HStep
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.controls.HStepSkin" );
+}
+
+MouseOverStepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MouseOverStepperSkin");
+}
+
 MultipleSelectionButtonBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
@@ -41,14 +53,31 @@ Navigator
 	skinClass: ClassReference("ws.tink.spark.skins.containers.NavigatorSkin");
 }
 
+PageStepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.PageStepperSkin");
+}
+
 RadioButtonBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
 }
 
+Stepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.StepperSkin");
+}
+
 ValidityVScrollBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
+}
+
+/*VPageStep*/
+
+VStep
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.controls.VStepSkin" );
 }
 
 
