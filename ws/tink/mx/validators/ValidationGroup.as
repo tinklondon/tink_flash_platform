@@ -21,14 +21,16 @@ SOFTWARE.
 package ws.tink.mx.validators
 {
 	import mx.core.IMXMLObject;
+	import mx.core.UIComponent;
 	
 	import ws.tink.mx.core.MXMLObject;
 	
 
 	public class ValidationGroup extends MXMLObject
 	{
-		public function ValidationGroup()
+		public function ValidationGroup( document:UIComponent = null )
 		{
+			initialized( document, null );
 		}
 		
 		
