@@ -34,6 +34,7 @@
     
     <!-- graphics -->
 	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
+	<component id="SolidColorHatch" class="ws.tink.spark.graphics.SolidColorHatch"/>
 	
 	<!-- itemRenderers -->
 	<component id="CheckBoxItemRenderer" class="ws.tink.spark.itemRenderers.CheckBoxItemRenderer"/>
@@ -52,6 +53,9 @@
 	<component id="Module" class="ws.tink.spark.modules.Module"/>
 	
 	<component id="Cross" class="ws.tink.spark.primatives.Cross"/>
+	<component id="Ellipse" class="ws.tink.spark.primatives.Ellipse"/>
+	<component id="Line" class="ws.tink.spark.primatives.Line"/>
+	<component id="Path" class="ws.tink.spark.primatives.Path"/>
 	<component id="Rect" class="ws.tink.spark.primatives.Rect"/>
 	
 </componentPackage>
