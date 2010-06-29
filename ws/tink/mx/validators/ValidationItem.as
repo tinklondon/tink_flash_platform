@@ -48,8 +48,9 @@ package ws.tink.mx.validators
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 3
 		 */
-		public function ValidationItem()
+		public function ValidationItem( document:UIComponent = null )
 		{
+			initialized( document, null );
 		}
 		
 		
@@ -560,9 +561,9 @@ package ws.tink.mx.validators
 				}
 			}
 			
+			
 			if( doValidation )
 			{
-					
 				var previousTarget:IEventDispatcher = IEventDispatcher( validator.source );
 				
 				var currentListener:IValidatorListener = listener;
@@ -658,6 +659,8 @@ package ws.tink.mx.validators
 				_isDisplayed = isTargetDisplayed( _activeTarget );
 				_isEnabled = isTargetEnabled( _activeTarget );
 				_isVisible = isTargetVisible( _activeTarget );
+				
+				
 					
 				_activeTarget.addEventListener( _activeTriggerEvent, onTargetTrigger, false );
 				_activeTarget.addEventListener( "enabledChanged", onTargetEnabledChange, false, 0, true );
@@ -784,6 +787,8 @@ package ws.tink.mx.validators
 		 */
 		override protected function commit():void
 		{
+			super.commit();
+			
 			removeTriggerListener();
 			addTriggerListener();
 			
