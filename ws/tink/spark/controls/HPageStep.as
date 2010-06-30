@@ -156,8 +156,7 @@ package ws.tink.spark.controls
 			var val:Number = pageSize * _currentPage;
 			if( getStyle( "smoothScrolling" ) )
 			{
-				animateStepping( val, pageSize );
-//				startAnimation( getStyle( "slideDuration" ), val, linearEaser );
+				startAnimation( getStyle( "slideDuration" ), val, linearEaser );
 			}
 			else
 			{
