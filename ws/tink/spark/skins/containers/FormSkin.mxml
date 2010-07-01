@@ -94,7 +94,7 @@ SOFTWARE.
 		<!--- The Scroller component to add scroll bars to the list. -->
 	    <s:Group id="contentGroup">
 	        <s:layout>
-	            <s:BasicLayout/>
+	            <s:VerticalLayout/>
 	        </s:layout>
 	    </s:Group>
 	</s:Scroller>
