@@ -97,7 +97,7 @@ package ws.tink.spark.controls
 				_elements.source = elements;
 				if( errorsButtonBar ) errorsButtonBar.dataProvider = _elements;
 				
-				VerticalLayout( errorsButtonBar.layout ).gap = VerticalLayout( groupBase.layout ).gap * scale;
+				VerticalLayout( errorsButtonBar.layout ).gap = ( groupBase.layout is VerticalLayout ) ? VerticalLayout( groupBase.layout ).gap * scale : 0;
 			}
 		}
 		
