@@ -10,5 +10,6 @@
  	<component id="LengthValidator" class="ws.tink.mx.validators.LengthValidator"/>
  	<component id="ValidationGroup" class="ws.tink.mx.validators.ValidationGroup"/>
  	<component id="ValidationItem" class="ws.tink.mx.validators.ValidationItem"/>
+ 	<component id="ValidationItems" class="ws.tink.mx.validators.ValidationItems"/>
  	
 </componentPackage>
