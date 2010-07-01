@@ -627,6 +627,7 @@ package ws.tink.mx.validators
 			
 			resultEvent = new ValidationResultEvent( ValidationResultEvent.VALID );
 			dispatchEvent( resultEvent );
+			
 			return resultEvent;
 		}
 				

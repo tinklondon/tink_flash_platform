@@ -22,16 +22,47 @@ package ws.tink.mx.validators
 {
 	import mx.core.IMXMLObject;
 	import mx.core.UIComponent;
+	import mx.events.ValidationResultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.validators.ValidationResult;
 	
 	import ws.tink.mx.core.MXMLObject;
 	
 
 	public class ValidationGroup extends MXMLObject
 	{
+		
+		private var _lastResults		: Array;
+		private var _lastValidResults	: Array;
+		private var _lastInvalidResults	: Array;
+		private var _valid					: Boolean = true;
+		
 		public function ValidationGroup( document:UIComponent = null )
 		{
 			initialized( document, null );
 		}
+		
+		public function get lastResults():Array
+		{
+			return _lastResults;
+		}
+		
+		public function get lastValidResults():Array
+		{
+			return _lastValidResults;
+		}
+		
+		public function get lastInvalidResults():Array
+		{
+			return _lastInvalidResults;
+		}
+		
+		public function get valid():Boolean
+		{
+			return _valid;
+		}
+		
+		
 		
 		
 //		private var _document:Object;
@@ -105,16 +136,38 @@ package ws.tink.mx.validators
 		}
 		
 		
-		public function validate():void
+		public function validate():Boolean
 		{
-			if( !_validators || !_enabled ) return;
 			
+			_lastValidResults = new Array();
+			_lastResults = new Array();
+			_lastInvalidResults = new Array();
+			
+			if( !_validators || !_enabled )
+			{
+				_valid = true;
+				return _valid;
+			}
+			
+			_valid = false;
+			
+			var e:ValidationResultEvent;
 			for each( var v:IValidationItem in _validators )
 			{
+				v.addEventListener( ValidationResultEvent.INVALID, onValidationItemResult, false, 0, true );
+				v.addEventListener( ValidationResultEvent.VALID, onValidationItemResult, false, 0, true );
 				v.validate();
+				v.removeEventListener( ValidationResultEvent.INVALID, onValidationItemResult, false );
+				v.removeEventListener( ValidationResultEvent.VALID, onValidationItemResult, false );
+//				e.target = v;
+//				trace( e.target = v );
 			}
 			
 			if( _validateOnTriggerAfterValidate ) validateOnTrigger = true;
+			
+			_valid = _lastInvalidResults.length == 0;
+			
+			return _valid;
 		}
 		
 		override protected function commit():void
@@ -125,6 +178,25 @@ package ws.tink.mx.validators
 			{
 				validatorItem.validateOnTrigger = _validateOnTrigger;
 			} 
+		}
+		
+		private function onValidationItemResult( event:ValidationResultEvent ):void
+		{
+			_lastResults.push( event );
+			
+			switch( event.type )
+			{
+				case ValidationResultEvent.INVALID :
+				{
+					_lastInvalidResults.push( event );
+					break;
+				}
+				case ValidationResultEvent.VALID :
+				{
+					_lastValidResults.push( event );
+					break;
+				}
+			}
 		}
 	}
 }

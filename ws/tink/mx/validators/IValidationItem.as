@@ -20,10 +20,12 @@ SOFTWARE.
 
 package ws.tink.mx.validators
 {
+	import flash.events.IEventDispatcher;
+	
 	import mx.core.IMXMLObject;
 	import mx.events.ValidationResultEvent;
 
-	public interface IValidationItem extends IMXMLObject
+	public interface IValidationItem extends IMXMLObject, IEventDispatcher
 	{
 		
 		/**
