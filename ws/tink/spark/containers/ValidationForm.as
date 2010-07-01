@@ -53,9 +53,29 @@ package ws.tink.spark.containers
 			
 		}
 		
-		public function validate():void
+		public function get lastResults():Array
 		{
-			if( _validationGroup ) _validationGroup.validate();
+			return ( _validationGroup ) ? _validationGroup.lastResults : null;
+		}
+		
+		public function get lastValidResults():Array
+		{
+			return ( _validationGroup ) ? _validationGroup.lastValidResults : null;
+		}
+		
+		public function get lastInvalidResults():Array
+		{
+			return ( _validationGroup ) ? _validationGroup.lastInvalidResults : null;
+		}
+		
+		public function get valid():Boolean
+		{
+			return ( _validationGroup ) ? _validationGroup.valid : true;
+		}
+		
+		public function validate():Boolean
+		{
+			return ( _validationGroup ) ? _validationGroup.validate() : true;
 		}
 		
 		//----------------------------------
