@@ -23,7 +23,6 @@
 	<component id="MouseOverStepper" class="ws.tink.spark.controls.MouseOverStepper"/>
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
 	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
-	<component id="PartitionDataGroup" class="ws.tink.spark.controls.PartitionDataGroup"/>
 	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
 	<component id="Stepper" class="ws.tink.spark.controls.Stepper"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
