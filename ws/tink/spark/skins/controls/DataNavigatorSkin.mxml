@@ -2,12 +2,21 @@
 
 <!--
 
-ADOBE SYSTEMS INCORPORATED
-Copyright 2008 Adobe Systems Incorporated
-All Rights Reserved.
+Copyright (c) 2010 Tink Ltd - http://www.tink.ws
 
-NOTICE: Adobe permits you to use, modify, and distribute this file
-in accordance with the terms of the license agreement accompanying it.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 -->
 
@@ -21,7 +30,8 @@ in accordance with the terms of the license agreement accompanying it.
 @productversion Flex 4
 -->
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:st="library://ns.tink.ws/flex/spark"
 		xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
 		xmlns:controls="ws.tink.spark.controls.*"
 		alpha.disabled="0.5">
@@ -81,6 +91,6 @@ in accordance with the terms of the license agreement accompanying it.
 	
 	<!--- @copy ws.tink.spark.controls.DataNavigator#contentGroup -->
 	
-	<controls:DataNavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0"/>
+	<st:DataNavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0"/>
 	
 </s:Skin>
