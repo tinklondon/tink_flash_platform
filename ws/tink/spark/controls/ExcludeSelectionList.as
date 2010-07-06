@@ -308,7 +308,7 @@ package ws.tink.spark.controls
 		{
 			if( !dataProvider ) return true;
 			
-			if( value > -1 && value < dataProvider.length - 1 )
+			if( value > -1 && value < dataProvider.length )
 			{
 				// Check for excluded indices
 				if( _excludeIndex )
