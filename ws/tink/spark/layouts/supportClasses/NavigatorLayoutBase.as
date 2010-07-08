@@ -44,12 +44,12 @@ package ws.tink.spark.layouts.supportClasses
 		
 		private var _elementsChanged		: Boolean;
 		
-		private var _firstIndexInView		: int;
-		private var _lastIndexInView		: int;
-		private var _numIndicesInView		: int;
+		private var _firstIndexInView		: int = -1;
+		private var _lastIndexInView		: int = -1;
+		private var _numIndicesInView		: int = -1;
 		
-		private var _numElementsInLayout	: int;
-		private var _numElementsNotInLayout	: int;
+		private var _numElementsInLayout	: int = -1;
+		private var _numElementsNotInLayout	: int = -1;
 //		private var _elementsInLayout		: Vector.<IVisualElement>;
 //		private var _stepScrollBar			: Boolean = true;
 		
@@ -143,11 +143,11 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			if( _useScrollBarForNavigation )
 			{
-				updateScrollBar( _selectedIndex, value );
+//				updateScrollBar( _selectedIndex, value );
 			}
 			else
 			{
-				updateSelectedIndex( _selectedIndex, value );
+//				updateSelectedIndex( _selectedIndex, value );
 			}
 		}
 		
@@ -159,6 +159,7 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
+		[Bindable( event="change" )]
 		public function get selectedIndex():int
 		{
 			return _selectedIndex;
@@ -355,8 +356,6 @@ package ws.tink.spark.layouts.supportClasses
 			_unscaledWidth = unscaledWidth;
 			_unscaledHeight = unscaledHeight;
 			
-			
-			
 			if( _elementsChanged || _targetChanged )
 			{
 				_elementsChanged = false;
@@ -364,8 +363,12 @@ package ws.tink.spark.layouts.supportClasses
 			}
 			
 			//TODO support includeInLayout
+			// Only really want to do this if...
+			// a) the number of elements have changed
+			// b) includeLayout has changed on an element
 			updateElementsInLayout();
 			
+			// If the selected index has changed exit the method as its handle in selectedIndex
 			if( _numElementsInLayout == 0 )
 			{
 				selectedIndex = -1;
@@ -373,6 +376,7 @@ package ws.tink.spark.layouts.supportClasses
 			else if( selectedIndex == -1 )
 			{
 				selectedIndex = 0;
+				scrollPositionChanged();
 			}
 			
 			if( _targetChanged )
@@ -426,7 +430,7 @@ package ws.tink.spark.layouts.supportClasses
 				}
 				catch( e:Error )
 				{
-					throw new Error( "NavigatorLayoutBase is not about to be used as a layout for this kind of container" );
+					throw new Error( "NavigatorLayoutBase cannot be used as a layout for this kind of container" );
 					elts = new Array();
 				}
 			}
@@ -518,6 +522,7 @@ package ws.tink.spark.layouts.supportClasses
 		
 		protected function setElementLayoutBoundsSize( element:IVisualElement, postLayoutTransform:Boolean = true ):void
 		{
+			if( !element ) return;
 			element.setLayoutBoundsSize(
 				( isNaN( element.percentWidth ) ) ? element.getPreferredBoundsWidth() : unscaledWidth * ( element.percentWidth / 100 ),
 				( isNaN( element.percentHeight ) ) ? element.getPreferredBoundsHeight() : unscaledHeight * ( element.percentHeight / 100 ),
@@ -532,7 +537,6 @@ package ws.tink.spark.layouts.supportClasses
 			var indexMaxScroll:Number;
 			switch( scrollBarDirection )
 			{
-				
 				case ScrollBarDirection.HORIZONTAL :
 				{
 					scrollPosition = horizontalScrollPosition;
@@ -547,8 +551,17 @@ package ws.tink.spark.layouts.supportClasses
 				}
 			}
 			
+			if( target.numElements )
+			{
+			
 			updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
 								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
+		
+			}
+			else
+			{
+				updateSelectedIndex( -1, NaN );
+			}
 		}
 		
 		protected function updateScrollBar( index:int, offset:Number ):void
@@ -571,7 +584,7 @@ package ws.tink.spark.layouts.supportClasses
 		
 		protected function updateSelectedIndex( index:int, offset:Number ):void
 		{
-			if( _selectedIndex == index && _selectedIndexOffset == offset ) return;
+			if( _selectedIndex == index && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
 			
 			_selectedIndexChanged = _selectedIndex != index;
 			_selectedIndex = index;
@@ -637,6 +650,8 @@ package ws.tink.spark.layouts.supportClasses
 			//TODO maybe add a listener here for "includeInLayoutChanged"
 			// not implement due to risk of not being able to remove the listener
 			// (https://bugs.adobe.com/jira/browse/SDK-25896)
+			
+//			if( selectedIndex == -1 ) scrollPositionChanged();
 		}
 		
 		/**
@@ -660,34 +675,38 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function restoreElements():void
 		{
-			var i:int;
-			var numElements:int = target.numElements;
-			if( target is DataGroup )
+			for each( var element:IVisualElement in _elements )
 			{
-				var dataGroup:DataGroup = DataGroup( target );
-				for( i = 0; i < numElements; i++ )
-				{
-					// If we are adding children and not using an ItemRenderer
-					if( !dataGroup.itemRenderer )
-					{
-						if( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ).includeInLayout )
-						{
-							restoreElement( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ) );
-						}
-					}
-				}
+				restoreElement( element );
 			}
-			else
-			{
-				var content:Array = Group( target ).getMXMLContent();
-				for( i = 0; i < numElements; i++ )
-				{
-					if( IVisualElement( content[ i ] ).includeInLayout )
-					{
-						restoreElement( IVisualElement( content[ i ] ) );
-					}
-				}
-			}
+//			var i:int;
+//			var numElements:int = target.numElements;
+//			if( target is DataGroup )
+//			{
+//				var dataGroup:DataGroup = DataGroup( target );
+//				for( i = 0; i < numElements; i++ )
+//				{
+//					// If we are adding children and not using an ItemRenderer
+//					if( !dataGroup.itemRenderer )
+//					{
+//						if( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ).includeInLayout )
+//						{
+//							restoreElement( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ) );
+//						}
+//					}
+//				}
+//			}
+//			else
+//			{
+//				var content:Array = Group( target ).getMXMLContent();
+//				for( i = 0; i < numElements; i++ )
+//				{
+//					if( IVisualElement( content[ i ] ).includeInLayout )
+//					{
+//						restoreElement( IVisualElement( content[ i ] ) );
+//					}
+//				}
+//			}
 		}
 		
 		/**
