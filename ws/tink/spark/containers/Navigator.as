@@ -28,6 +28,7 @@ package ws.tink.spark.containers
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.mx_internal;
+	import mx.events.CollectionEvent;
 	import mx.events.FlexEvent;
 	import mx.utils.BitFlagUtil;
 	
@@ -406,7 +407,7 @@ package ws.tink.spark.containers
 		// Used to hold the content until the contentGroup is created. 
 		private var _placeHolderGroup:NavigatorGroup;
 		
-		mx_internal function get currentnavigatorGroup():NavigatorGroup
+		mx_internal function get currentContentGroup():NavigatorGroup
 		{          
 			createContentIfNeeded();
 			
@@ -416,16 +417,18 @@ package ws.tink.spark.containers
 				{
 					_placeHolderGroup = new NavigatorGroup();
 					
-					if (_mxmlContent)
-					{
-						_placeHolderGroup.mxmlContent = _mxmlContent;
-						_mxmlContent = null;
-					}
+//					if (_mxmlContent)
+//					{
+//						_placeHolderGroup.mxmlContent = _mxmlContent;
+//						_mxmlContent = null;
+//					}
 					
 					_placeHolderGroup.addEventListener(
 						ElementExistenceEvent.ELEMENT_ADD, contentGroup_elementAddedHandler);
 					_placeHolderGroup.addEventListener(
 						ElementExistenceEvent.ELEMENT_REMOVE, contentGroup_elementRemovedHandler);
+					_placeHolderGroup.addEventListener(
+						CollectionEvent.COLLECTION_CHANGE, onNavigatorGroupCollectionChange );
 				}
 				return _placeHolderGroup;
 			}
@@ -545,6 +548,55 @@ package ws.tink.spark.containers
 				contentGroupProperties.autoLayout = value;
 		}
 		
+		
+		//----------------------------------
+		//  useVirtualLayout
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 */
+		private var _useVirtualLayout:Boolean = false;
+		
+		/**
+		 *  Sets the value of the <code>useVirtualLayout</code> property
+		 *  of the layout associated with this control.  
+		 *  If the layout is subsequently replaced and the value of this 
+		 *  property is <code>true</code>, then the new layout's 
+		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
+		 *
+		 *  @default false
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get useVirtualLayout():Boolean
+		{
+			return (layout) ? layout.useVirtualLayout : _useVirtualLayout;
+		}
+		
+		/**
+		 *  @private
+		 *  Note: this property deviates a little from the conventional delegation pattern.
+		 *  If the user explicitly sets ListBase.useVirtualLayout=false and then sets
+		 *  the layout property to a layout with useVirtualLayout=true, the layout's value
+		 *  for this property trumps the ListBase.  The convention dictates opposite
+		 *  however in this case, always honoring the layout's useVirtalLayout property seems 
+		 *  less likely to cause confusion.
+		 */
+		public function set useVirtualLayout(value:Boolean):void
+		{
+			if (value == useVirtualLayout)
+				return;
+			
+			_useVirtualLayout = value;
+			if (layout)
+				layout.useVirtualLayout = value;
+		}
+		
+		
 		//----------------------------------
 		//  layout
 		//----------------------------------
@@ -573,6 +625,8 @@ package ws.tink.spark.containers
 		{
 			if( value is INavigatorLayout )
 			{
+				value.useVirtualLayout = useVirtualLayout;
+				
 				if (contentGroup)
 				{
 					contentGroup.layout = value;
@@ -584,28 +638,7 @@ package ws.tink.spark.containers
 			}
 			else
 			{
-				throw new Error( "Layout must implement InavigatorGroupLayout" );
-			}
-		}
-		
-		
-		public function get useVirtualLayout():Boolean
-		{
-			return ( contentGroup) ? contentGroup.useVirtualLayout : contentGroupProperties.useVirtualLayout;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set useVirtualLayout( value:Boolean ):void
-		{
-			if( contentGroup )
-			{
-				contentGroup.useVirtualLayout = value;
-			}
-			else
-			{
-				contentGroupProperties.useVirtualLayout = value;
+				throw new Error( "Layout must implement INavigatorLayout" );
 			}
 		}
 		
@@ -618,7 +651,7 @@ package ws.tink.spark.containers
 		 *  Variable used to store the mxmlContent when the contentGroup is 
 		 *  not around, and there hasnt' been a need yet for the placeHolderGroup.
 		 */
-		private var _mxmlContent:Array;
+//		private var _mxmlContent:Array;
 		
 		/**
 		 *  @private
@@ -641,17 +674,19 @@ package ws.tink.spark.containers
 		 */
 		public function set mxmlContent(value:Array):void
 		{
-			if (contentGroup)
-				contentGroup.mxmlContent = value;
-			else if (_placeHolderGroup)
-				_placeHolderGroup.mxmlContent = value;
-			else
-				_mxmlContent = value;
+//			if (contentGroup)
+//				contentGroup.mxmlContent = value;
+//			else if (_placeHolderGroup)
+//				_placeHolderGroup.mxmlContent = value;
+//			else
+//				_mxmlContent = value;
+			
+			currentContentGroup.mxmlContent = value;
 			
 			if (value != null)
 				_contentModified = true;
 			
-			_mxmlContent = value;
+//			_mxmlContent = value;
 		}
 		
 		//----------------------------------
@@ -707,7 +742,7 @@ package ws.tink.spark.containers
 		 */
 		public function get numElements():int
 		{
-			return currentnavigatorGroup.numElements;
+			return currentContentGroup.numElements;
 		}
 		
 		/**
@@ -720,7 +755,7 @@ package ws.tink.spark.containers
 		 */
 		public function getElementAt(index:int):IVisualElement
 		{
-			return currentnavigatorGroup.getElementAt(index);
+			return currentContentGroup.getElementAt(index);
 		}
 		
 		
@@ -734,7 +769,7 @@ package ws.tink.spark.containers
 		 */
 		public function getElementIndex(element:IVisualElement):int
 		{
-			return currentnavigatorGroup.getElementIndex(element);
+			return currentContentGroup.getElementIndex(element);
 		}
 		
 		/**
@@ -748,7 +783,7 @@ package ws.tink.spark.containers
 		public function addElement(element:IVisualElement):IVisualElement
 		{
 			_contentModified = true;
-			return currentnavigatorGroup.addElement(element);
+			return currentContentGroup.addElement(element);
 		}
 		
 		/**
@@ -762,7 +797,7 @@ package ws.tink.spark.containers
 		public function addElementAt(element:IVisualElement, index:int):IVisualElement
 		{
 			_contentModified = true;
-			return currentnavigatorGroup.addElementAt(element, index);
+			return currentContentGroup.addElementAt(element, index);
 		}
 		
 		/**
@@ -776,7 +811,7 @@ package ws.tink.spark.containers
 		public function removeElement(element:IVisualElement):IVisualElement
 		{
 			_contentModified = true;
-			return currentnavigatorGroup.removeElement(element);
+			return currentContentGroup.removeElement(element);
 		}
 		
 		/**
@@ -790,7 +825,7 @@ package ws.tink.spark.containers
 		public function removeElementAt(index:int):IVisualElement
 		{
 			_contentModified = true;
-			return currentnavigatorGroup.removeElementAt(index);
+			return currentContentGroup.removeElementAt(index);
 		}
 		
 		/**
@@ -804,7 +839,7 @@ package ws.tink.spark.containers
 		public function removeAllElements():void
 		{
 			_contentModified = true;
-			currentnavigatorGroup.removeAllElements();
+			currentContentGroup.removeAllElements();
 		}
 		
 		/**
@@ -813,7 +848,7 @@ package ws.tink.spark.containers
 		public function setElementIndex(element:IVisualElement, index:int):void
 		{
 			_contentModified = true;
-			currentnavigatorGroup.setElementIndex(element, index);
+			currentContentGroup.setElementIndex(element, index);
 		}
 		
 		/**
@@ -831,7 +866,7 @@ package ws.tink.spark.containers
 			// TODO tink swapElements
 			swapElementsAt( getElementIndex( element1 ), getElementIndex( element1 ) )
 			
-			//currentnavigatorGroup.swapElements(element1, element2);
+			//currentContentGroup.swapElements(element1, element2);
 		}
 		
 		/**
@@ -845,7 +880,7 @@ package ws.tink.spark.containers
 		public function swapElementsAt(index1:int, index2:int):void
 		{
 			_contentModified = true;
-			currentnavigatorGroup.swapElementsAt(index1, index2);
+			currentContentGroup.swapElementsAt(index1, index2);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -909,12 +944,16 @@ package ws.tink.spark.containers
 						contentGroup.mxmlContent = sourceContent ? sourceContent.slice() : null;
 						
 					}
-					else if (_mxmlContent != null)
-					{
-						contentGroup.mxmlContent = _mxmlContent;
-						_mxmlContent = null;
-					}
+//					else if (_mxmlContent != null)
+//					{
+//						contentGroup.mxmlContent = _mxmlContent;
+//						_mxmlContent = null;
+//					}
 				}
+				
+				// Not your typical delegation, see 'set useVirtualLayout'
+				if( _useVirtualLayout && contentGroup.layout )
+					contentGroup.layout.useVirtualLayout = true;
 				
 				// copy proxied values from contentGroupProperties (if set) to contentGroup
 				
@@ -940,6 +979,8 @@ package ws.tink.spark.containers
 					ElementExistenceEvent.ELEMENT_ADD, contentGroup_elementAddedHandler);
 				contentGroup.addEventListener(
 					ElementExistenceEvent.ELEMENT_REMOVE, contentGroup_elementRemovedHandler);
+				contentGroup.addEventListener(
+					CollectionEvent.COLLECTION_CHANGE, onNavigatorGroupCollectionChange );
 				
 				if (_placeHolderGroup)
 				{
@@ -947,7 +988,8 @@ package ws.tink.spark.containers
 						ElementExistenceEvent.ELEMENT_ADD, contentGroup_elementAddedHandler);
 					_placeHolderGroup.removeEventListener(
 						ElementExistenceEvent.ELEMENT_REMOVE, contentGroup_elementRemovedHandler);
-					
+					_placeHolderGroup.removeEventListener(
+						CollectionEvent.COLLECTION_CHANGE, onNavigatorGroupCollectionChange );
 					_placeHolderGroup = null;
 				}
 			}
@@ -971,6 +1013,8 @@ package ws.tink.spark.containers
 					ElementExistenceEvent.ELEMENT_ADD, contentGroup_elementAddedHandler);
 				contentGroup.removeEventListener(
 					ElementExistenceEvent.ELEMENT_REMOVE, contentGroup_elementRemovedHandler);
+				contentGroup.removeEventListener(
+					CollectionEvent.COLLECTION_CHANGE, onNavigatorGroupCollectionChange );
 				
 				// copy proxied values from contentGroup (if explicitely set) to contentGroupProperties
 				
@@ -996,6 +1040,8 @@ package ws.tink.spark.containers
 						ElementExistenceEvent.ELEMENT_ADD, contentGroup_elementAddedHandler);
 					_placeHolderGroup.addEventListener(
 						ElementExistenceEvent.ELEMENT_REMOVE, contentGroup_elementRemovedHandler);
+					_placeHolderGroup.addEventListener(
+						CollectionEvent.COLLECTION_CHANGE, onNavigatorGroupCollectionChange );
 				}
 				
 				contentGroup.mxmlContent = null;
@@ -1084,23 +1130,6 @@ package ws.tink.spark.containers
 		}
 		
 		
-		public function set selectedElement( value:IVisualElement ):void
-		{
-			selectedIndex = getItemIndex( value );
-//			_selectedIndex = value;
-//			if( layout ) InavigatorGroupLayout( layout ).selectedIndex = _selectedIndex;
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of selectedIndex returns
-		 *  StackLayout( layout ).focusedIndex
-		 */
-		public function get selectedElement():IVisualElement
-		{
-			return IVisualElement( getItemAt( selectedIndex ) );
-		}
-		
 		
 		/**
 		 *  @private
@@ -1130,7 +1159,7 @@ package ws.tink.spark.containers
 		 */
 		public function get length():int
 		{
-			return ( _mxmlContent ) ? _mxmlContent.length : 0;
+			return currentContentGroup.length;
 		}
 		
 		/**
@@ -1148,16 +1177,7 @@ package ws.tink.spark.containers
 		 */
 		public function addItemAt( item:Object, index:int ):void
 		{
-			//TODO fire error if index isn't 0
-			if( index > length ) return;
-			if( !_mxmlContent )
-			{
-				mxmlContent = new Array( item );
-			}
-			else
-			{
-				_mxmlContent.splice( index, 0, item );
-			}
+			currentContentGroup.addItemAt( item, index );
 		}
 		
 		/**
@@ -1166,8 +1186,7 @@ package ws.tink.spark.containers
 		 */
 		public function getItemAt( index:int, prefetch:int = 0 ):Object
 		{
-			if( length <= index ) return null;
-			return  _mxmlContent[ index ];
+			return currentContentGroup.getItemAt( index );
 		}
 		
 		/**
@@ -1176,8 +1195,7 @@ package ws.tink.spark.containers
 		 */
 		public function getItemIndex( item:Object ):int
 		{
-			if( !_mxmlContent ) return -1;
-			return _mxmlContent.indexOf( item );
+			return currentContentGroup.getItemIndex( item );
 		}
 		
 		/**
@@ -1194,8 +1212,7 @@ package ws.tink.spark.containers
 		 */
 		public function removeAll():void
 		{
-			if( !_mxmlContent ) return;
-			_mxmlContent.removeAll();
+			currentContentGroup.removeAll();
 		}
 		
 		/**
@@ -1204,8 +1221,7 @@ package ws.tink.spark.containers
 		 */
 		public function removeItemAt( index:int ):Object
 		{
-			if( !_mxmlContent || index >= length ) return null;
-			return _mxmlContent.splice( index, 1 );
+			return currentContentGroup.removeItemAt( index );
 		}
 		
 		/**
@@ -1214,10 +1230,9 @@ package ws.tink.spark.containers
 		 *  to remove the old child and removeElementAt to add the
 		 *  new one.
 		 */
-		public function setItemAt(item:Object, index:int):Object
+		public function setItemAt( item:Object, index:int ):Object
 		{
-			if( !_mxmlContent || index > length ) return null;
-			return _mxmlContent[ index ] = item;
+			return currentContentGroup.setItemAt( item, index );
 		}
 		
 		/**
@@ -1226,21 +1241,16 @@ package ws.tink.spark.containers
 		 */
 		public function toArray():Array
 		{
-			if (contentGroup)
-			{
-				return contentGroup.getMXMLContent();
-			}
-			else if (_placeHolderGroup)
-			{
-				return _placeHolderGroup.getMXMLContent();
-			}
-			else
-			{
-				return _mxmlContent;
-			}
-			
-			return _mxmlContent;
+			return currentContentGroup.toArray();
 		}
+		
+		
+		private function onNavigatorGroupCollectionChange( event:CollectionEvent ):void
+		{
+			dispatchEvent( event );
+		}
+		
+		
 	}
 	
 }
