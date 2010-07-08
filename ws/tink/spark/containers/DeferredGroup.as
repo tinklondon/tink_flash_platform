@@ -1,3 +1,23 @@
+/*
+
+Copyright (c) 2010 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
 package ws.tink.spark.containers
 {
 	import flash.display.BlendMode;
@@ -180,6 +200,14 @@ package ws.tink.spark.containers
 			invalidateDisplayList();
 		}
 		
+		/**
+		 *  @inheritDoc
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function get numElements():int
 		{
 			if (_mxmlContent == null)
@@ -326,6 +354,15 @@ package ws.tink.spark.containers
 			return _deferredContentCreated;
 		}
 		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function getVirtualElementAt(index:int, eltWidth:Number=NaN, eltHeight:Number=NaN):IVisualElement
 		{
 			// check for RangeError:
@@ -346,9 +383,16 @@ package ws.tink.spark.containers
 
 			return elt;
 		}
+		
+		
 		/**
-		 *  @private
-		 */ 
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function getElementAt(index:int):IVisualElement
 		{
 			// check for RangeError:
@@ -388,7 +432,12 @@ package ws.tink.spark.containers
 		
 		
 		/**
-		 *  @private
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */ 
 		override public function getElementIndex( element:IVisualElement ):int
 		{
@@ -401,6 +450,14 @@ package ws.tink.spark.containers
 		}
 		
 		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function addElement(element:IVisualElement):IVisualElement
 		{
 			var index:int = numElements;
@@ -450,7 +507,8 @@ package ws.tink.spark.containers
 			// If we don't have any content yet, initialize it to an empty array
 			if (_mxmlContent == null) _mxmlContent = [];
 			
-			_mxmlContent.splice(index, 0, element);
+			_mxmlContent.splice( index, 0, element );
+			if( layout ) layout.elementAdded(index);
 			
 			invalidateDisplayList();
 			
@@ -460,6 +518,11 @@ package ws.tink.spark.containers
 		
 		/**
 		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		public function removeAllElements():void
 		{
@@ -490,13 +553,21 @@ package ws.tink.spark.containers
 			if( element.parent ) elementRemoved( element, index );
 			
 			_mxmlContent.splice(index, 1);
+			if( layout ) layout.elementRemoved( index );
 			
 			return element;
 		}
 		
 		
-		
-		public function swapElementsAt(index1:int, index2:int):void
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function swapElementsAt( index1:int, index2:int ):void
 		{
 			checkForRangeError( index1 );
 			checkForRangeError( index2 );
@@ -592,6 +663,7 @@ package ws.tink.spark.containers
 		 */
 		mx_internal function elementAdded(element:IVisualElement, index:int, notifyListeners:Boolean = true):void
 		{
+			trace( "elementAdded" );
 			if (layout)
 				layout.elementAdded(index);        
 			
