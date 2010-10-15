@@ -1105,53 +1105,6 @@ package ws.tink.mx.containers
 	        return tabBar;
 	    }
 	    
-	    
-	    
-	    //--------------------------------------------------------------------------
-	    //
-	    //  Setup default styles.
-	    //
-	    //--------------------------------------------------------------------------
-	    
-	    private static var defaultStylesSet				: Boolean = setDefaultStyles();
-	    
-	    /**
-	     *  @private
-	     */
-	    private static function setDefaultStyles():Boolean
-		{
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( "PositionedTabNavigator" );
-			
-		    if( !style )
-		    {
-		        style = new CSSStyleDeclaration();
-		        StyleManager.setStyleDeclaration( "PositionedTabNavigator", style, true );
-		    }
-		    
-		    if( style.defaultFactory == null )
-	        {
-	        	style.defaultFactory = function():void
-	            {
-	            	// TabNavigator defaults.
-	            	this.backgroundColor 	= 0xFFFFFF;
-	            	this.borderColor 		= 0xAAB3B3;
-	            	this.borderStyle 		= "solid";
-	                //this.horizontalAlign 	= "left";
-	                this.horizontalGap 		= -1;
-	                this.paddingTop 		= 10;
-	                this.tabOffset			= 0;
-	                
-	                this.tabPosition 		= "topLeft";
-	                this.paddingBottom 		= 0;
-	                this.paddingLeft 		= 0;
-					this.paddingRight 		= 0;
-					this.verticalGap 		= -1;
-					
-	            };
-	        }
-
-		    return true;
-		}
 	
 	}
 

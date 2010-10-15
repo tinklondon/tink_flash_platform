@@ -142,42 +142,6 @@ package ws.tink.mx.containers
 				_layoutObject.updateDisplayList( _unscaledWidth, _unscaledHeight );
 			}
 		}
-
-		
-		
-		
-		
-		private static var defaultStylesSet                : Boolean = setDefaultStyles();
-		
-		/**
-		 *  @private
-		 */
-		private static function setDefaultStyles():Boolean
-		{
-			var defaultStyleName:String = StyleUtil.getDefaultStyleName( prototype );
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( defaultStyleName );
-			
-			if( !style )
-			{
-				style = new CSSStyleDeclaration();
-				StyleManager.setStyleDeclaration( defaultStyleName, style, true );
-			}
-			
-			if( style.defaultFactory == null )
-			{
-				style.defaultFactory = function():void
-				{
-					this.horizontalGap = 8;
-					this.verticalGap = 8;
-					this.heightRatio = 1;
-					this.horizontalAlign = "left";
-					this.verticalAlign = "top";
-					this.optimumLayout = true;
-					this.fillContainer = true;
-				};
-			}
-			return true;
-		}
 		
 	}
 }

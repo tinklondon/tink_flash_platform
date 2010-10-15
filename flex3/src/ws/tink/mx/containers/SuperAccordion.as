@@ -2796,49 +2796,6 @@ package ws.tink.mx.containers
 			return returnArray;
 	    }
 	    
-	    
-	    //--------------------------------------------------------------------------
-	    //
-	    //  Setup default styles.
-	    //
-	    //--------------------------------------------------------------------------
-	    
-	    private static var defaultStylesSet				: Boolean = setDefaultStyles();
-	    
-	    /**
-	     *  @private
-	     */
-	    private static function setDefaultStyles():Boolean
-		{
-			var styleDeclaration:String = StyleUtil.getDefaultStyleName( prototype );
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( styleDeclaration );
-			
-		    if( !style )
-		    {
-		        style = new CSSStyleDeclaration();
-		        StyleManager.setStyleDeclaration( styleDeclaration, style, true );
-		    }
-		    
-		    if( style.defaultFactory == null )
-	        {
-	        	style.defaultFactory = function():void
-	            {
-	            	// SuperAccordian defaults.
-	            	this.verticalAlign 			= "top";
-	            	this.verticalAlignOffset 	= 0;	
-	            	this.backgroundColor 		= 0xFFFFFF;
-					this.borderStyle 			= "solid";
-					this.headerHeight 			= 22; 
-					this.paddingBottom 			= -1;
-					this.paddingLeft 			= -1;
-					this.paddingRight 			= -1;
-					this.paddingTop 			= -1;
-					this.verticalGap 			= -1;	
-	            };
-	        }
-
-		    return true;
-		}
 	}
 
 }

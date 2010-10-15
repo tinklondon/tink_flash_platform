@@ -344,41 +344,6 @@ package ws.tink.mx.containers
 				dock = value;
 		}
 		
-		private static var defaultStylesSet                : Boolean = setDefaultStyles();
-		
-		/**
-		 *  @private
-		 */
-		private static function setDefaultStyles():Boolean
-		{
-			var defaultStyleName:String = StyleUtil.getDefaultStyleName( prototype );
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( defaultStyleName );
-			
-			if( !style )
-			{
-				style = new CSSStyleDeclaration();
-				StyleManager.setStyleDeclaration( defaultStyleName, style, true );
-			}
-			
-			if( style.defaultFactory == null )
-			{
-				style.defaultFactory = function():void
-				{
-					this.borderStyle = "applicationControlBar";
-					this.cornerRadius = 5;
-					this.docked = false;
-					this.dropShadowEnabled = true;
-					this.fillAlphas = [ 0, 0 ];
-					this.fillColors = [ 0xFFFFFF, 0xFFFFFF ];
-					this.paddingBottom = 4;
-					this.paddingLeft = 8;
-					this.paddingRight = 8;
-					this.paddingTop = 5;
-					this.shadowDistance = 5;
-				};
-			}
-			return true;
-		}
 
 	}
 	

@@ -2024,53 +2024,6 @@ package ws.tink.mx.containers
 	        return getStyle("paddingTop");
 	    }
     
-	    private static var defaultStylesSet                : Boolean = setDefaultStyles();
-       
-        /**
-         *  @private
-         */
-        private static function setDefaultStyles():Boolean
-        {
-                var defaultStyleName:String = StyleUtil.getDefaultStyleName( prototype );
-                var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( defaultStyleName );
-               
-                 if( !style )
-                {
-                        style = new CSSStyleDeclaration();
-                        StyleManager.setStyleDeclaration( defaultStyleName, style, true );
-                }
-            
-                if( style.defaultFactory == null )
-                {
-                        style.defaultFactory = function():void
-                        {
-                        	this.backgroundColor = 0xFFFFFF;
-	                    	this.borderAlpha = 0.4; /* controls the alpha of the panel top, bottom and sides. */
-	                    	this.borderColor = 0xE2E2E2;
-	                    	this.borderSkin = PanelSkin;
-	                    	this.borderStyle = "default";
-	                    	this.borderThickness = 0;
-							/* borderThicknessBottom is NaN */
-	                    	this.borderThicknessLeft = 10;
-	                    	this.borderThicknessRight = 10;
-	                    	this.borderThicknessTop = 30;
-	                    	this.cornerRadius = 4;
-	                    	this.dropShadowEnabled = true;
-	                    	this.paddingBottom = 0;
-	                    	this.paddingLeft = 0;
-	                    	this.paddingRight = 0;
-	                    	this.paddingTop = 0;
-	                    	this.resizeEndEffect = "Dissolve";
-	                    	this.resizeStartEffect = "Dissolve";
-	                    	this.roundedBottomCorners = false;
-	                    	this.statusStyleName = "windowStatus";
-	                    	this.titleBackgroundSkin = TitleBackground;
-	                    	this.titleStyleName = "windowStyles";
-							
-                        };
-                }
-                return true;
-        }
 	}
 
 }
