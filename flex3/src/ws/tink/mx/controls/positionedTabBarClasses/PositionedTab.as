@@ -50,39 +50,5 @@ package ws.tink.mx.controls.positionedTabBarClasses
 			super();
 		}
 		
-		
-		
-		//--------------------------------------------------------------------------
-	    //
-	    //  Setup default styles.
-	    //
-	    //--------------------------------------------------------------------------
-	    
-		private static var defaultStylesSet				: Boolean = setDefaultStyles();
-		
-		/**
-	     *  @private
-	     */
-		private static function setDefaultStyles():Boolean
-		{
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( "PositionedTab" );
-			
-		    if( !style )
-		    {
-		        style = new CSSStyleDeclaration();
-		        StyleManager.setStyleDeclaration( "PositionedTab", style, true );
-		    }
-		    
-		    if( style.defaultFactory == null )
-	        {
-	        	style.defaultFactory = function():void
-	            {
-	            	this.position = "top";
-	            	this.skin = PositionedTabSkin;				
-	            };
-	        }
-
-		    return true;
-		}
 	}
 }

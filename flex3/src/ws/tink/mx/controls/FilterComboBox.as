@@ -2588,42 +2588,6 @@ package ws.tink.mx.controls
 		
 		
 		
-		private static var defaultStylesSet				: Boolean = setDefaultStyles();
-		
-		/**
-		 *  @private
-		 */
-		private static function setDefaultStyles():Boolean
-		{
-			var defaultStyleName:String = StyleUtil.getDefaultStyleName( prototype );
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( defaultStyleName );
-			
-			if( !style )
-			{
-				style = new CSSStyleDeclaration();
-				StyleManager.setStyleDeclaration( defaultStyleName, style, true );
-			}
-			
-			if( style.defaultFactory == null )
-			{
-				style.defaultFactory = function():void
-				{
-					this.arrowButtonWidth = 22;
-					this.cornerRadius = 5;
-					this.disabledIconColor = 0x919999;
-					this.dropdownStyleName = "comboDropdown";
-					this.fontWeight = "bold";
-					this.leading = 0;
-					this.paddingLeft = 5;
-					this.paddingRight = 5;
-					this.skin = ComboBoxArrowSkin;
-					this.matchedTextStyleName = null;
-				};
-			}
-			
-			return true;
-		}
-		
 		
 		private var _filterChanged				: Boolean;
 		private var _filterString				: String;
@@ -2735,7 +2699,6 @@ package ws.tink.mx.controls
 		{
 			if( textInput.text == "" )
 			{
-				trace( "555" );
 				_filterString = "";
 				_filteredCollection.refresh();
 				textInput.text = prompt;

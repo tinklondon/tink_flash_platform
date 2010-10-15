@@ -37,8 +37,6 @@ package ws.tink.mx.controls.alertTabBarClasses
 	{
 		
 		
-		private static var defaultStylesSet				: Boolean = setDefaultStyles();
-		
 		private var _color								: Number;
 		private var _textRollOverColor					: Number;
 		
@@ -89,35 +87,5 @@ package ws.tink.mx.controls.alertTabBarClasses
 	        }
 	    }
 	    
-		
-		/**
-	     *  @private
-	     */
-		private static function setDefaultStyles():Boolean
-		{
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( "AlertTab" );
-			
-		    if( !style )
-		    {
-		        style = new CSSStyleDeclaration();
-		        StyleManager.setStyleDeclaration( "AlertTab", style, true );
-		    }
-		    
-		    if( style.defaultFactory == null )
-	        {
-	        	style.defaultFactory = function():void
-	            {
-	            	this.alerted = false;
-	            	this.alertedTextRollOverColor = 0xFFFFFF;
-	            	this.alertedColor = 0xFFFFFF;
-	            	this.alertedFillColors = [ 0xFF0000, 0xFF0000 ];
-	            	this.alertedBorderColor = 0xFF0000;
-	            	this.skin = AlertTabSkin;	
-	            };
-	        }
-
-		    return true;
-		}
-		
 	}
 }

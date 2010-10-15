@@ -76,37 +76,5 @@ package ws.tink.mx.controls
 			}
 		}
 		
-		
-		//--------------------------------------------------------------------------
-	    //
-	    //  Setup default styles.
-	    //
-	    //--------------------------------------------------------------------------
-	    
-		private static var defaultStylesSet				: Boolean = setDefaultStyles();
-		
-		/**
-	     *  @private
-	     */
-		private static function setDefaultStyles():Boolean
-		{
-			var style:CSSStyleDeclaration = StyleManager.getStyleDeclaration( "PositionedTabBar" );
-
-		    if( !style )
-		    {
-		        style = new CSSStyleDeclaration();
-		        StyleManager.setStyleDeclaration( "PositionedTabBar", style, true );
-		    }
-		    
-		    if( style.defaultFactory == null )
-	        {
-	        	style.defaultFactory = function():void
-	            {
-	            	this.position = "top";	
-	            };
-	        }
-
-		    return true;
-		}
 	}
 }
