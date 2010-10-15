@@ -1,0 +1,105 @@
+/* CSS file */
+@namespace "library://ns.tink.ws/flex/spark";
+@namespace controls "ws.tink.spark.skins.controls.*";
+@namespace s "library://ns.adobe.com/flex/spark";
+
+Alert
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.AlertSkin");
+}
+
+BorderDataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.BorderDataNavigatorSkin");
+}
+
+CheckBoxButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.CheckBoxButtonBarSkin");
+}
+
+DataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
+}
+
+Form
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormSkin" );
+}
+
+FormItem
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormItemSkin" );
+}
+
+/*HPageStep*/
+
+HStep
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.controls.HStepSkin" );
+}
+
+MouseOverStepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MouseOverStepperSkin");
+}
+
+MultipleSelectionButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
+}
+
+Navigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.containers.NavigatorSkin");
+}
+
+PageStepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.PageStepperSkin");
+}
+
+RadioButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
+}
+
+Stepper
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.StepperSkin");
+}
+
+ValidityVScrollBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
+}
+
+/*VPageStep*/
+
+VStep
+{
+	skin-class : ClassReference( "ws.tink.spark.skins.controls.VStepSkin" );
+}
+
+controls|VStepSkin s|Button#decrementButton
+{
+	skin-class : ClassReference( "spark.skins.spark.ScrollBarUpButtonSkin" );
+}
+
+controls|VStepSkin s|Button#incrementButton
+{
+	skin-class : ClassReference( "spark.skins.spark.ScrollBarDownButtonSkin" );
+}
+
+controls|HStepSkin s|Button#decrementButton
+{
+	skin-class : ClassReference( "spark.skins.spark.ScrollBarLeftButtonSkin" ); 
+}
+
+controls|HStepSkin s|Button#incrementButton
+{
+	skin-class : ClassReference( "spark.skins.spark.ScrollBarRightButtonSkin" ); 
+}
+
+

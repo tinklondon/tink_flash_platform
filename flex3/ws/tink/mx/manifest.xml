@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<componentPackage>
+	
+ 	<component id="HReverseBox" class="ws.tink.mx.containers.HReverseBox"/>
+ 	<component id="ReverseBox" class="ws.tink.mx.containers.ReverseBox"/>
+ 	<component id="VReverseBox" class="ws.tink.mx.containers.VReverseBox"/>
+ 	
+	<component id="FilterComboBox" class="ws.tink.mx.controls.FilterComboBox"/>
+ 	
+ 	<component id="LengthValidator" class="ws.tink.mx.validators.LengthValidator"/>
+ 	<component id="ValidationGroup" class="ws.tink.mx.validators.ValidationGroup"/>
+ 	<component id="ValidationItem" class="ws.tink.mx.validators.ValidationItem"/>
+ 	<component id="ValidationItems" class="ws.tink.mx.validators.ValidationItems"/>
+ 	
+</componentPackage>
