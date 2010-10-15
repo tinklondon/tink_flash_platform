@@ -28,6 +28,7 @@
 	<component id="AlignBottomDataGridItemRenderer" class="ws.tink.mx.controls.dataGridClasses.AlignBottomDataGridItemRenderer"/>
 	<component id="ApplicationStack" class="ws.tink.mx.core.ApplicationStack"/>
 	<component id="ArrayCollectionDataDescriptor" class="ws.tink.mx.controls.treeClasses.ArrayCollectionDataDescriptor"/>
+	<component id="ChartToolTipSync" class="ws.tink.mx.charts.chartClasses.ChartToolTipSync"/>
 	<component id="ConstrainedTile" class="ws.tink.mx.containers.ConstrainedTile"/>
 	<component id="DataStack" class="ws.tink.mx.containers.DataStack"/>
 	<component id="DockedControlBar" class="ws.tink.mx.containers.DockedControlBar"/>
