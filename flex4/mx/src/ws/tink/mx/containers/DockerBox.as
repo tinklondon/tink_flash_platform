@@ -25,10 +25,8 @@ package ws.tink.mx.containers
 	
 	import mx.containers.Box;
 	import mx.core.EdgeMetrics;
-	import mx.core.IInvalidating;
 	import mx.core.IUIComponent;
 	import mx.core.mx_internal;
-	import mx.styles.IStyleClient;
 	
 	import ws.tink.mx.containers.utilityClasses.DockerLayout;
 	import ws.tink.mx.core.IDockedComponent;

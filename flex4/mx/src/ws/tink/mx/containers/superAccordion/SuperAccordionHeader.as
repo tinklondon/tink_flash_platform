@@ -31,12 +31,8 @@ package ws.tink.mx.containers.superAccordion
 	import mx.core.IDataRenderer;
 	import mx.core.mx_internal;
 	import mx.events.ChildExistenceChangedEvent;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
 	
 	import ws.tink.mx.containers.SuperAccordion;
-	import ws.tink.mx.skins.halo.SuperAccordionHeaderSkin;
-	import ws.tink.mx.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	

@@ -24,17 +24,12 @@ package ws.tink.mx.containers
 	import flash.events.Event;
 	
 	import mx.containers.ControlBar;
-	import mx.core.Application;
 	import mx.core.mx_internal;
-	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.IStyleClient;
-	import mx.styles.StyleManager;
 	
-	import ws.tink.mx.core.ApplicationStack;
+	import ws.tink.mx.containers.utilityClasses.DockPosition;
 	import ws.tink.mx.core.IDockedComponent;
 	import ws.tink.mx.core.IDockerContainer;
-	import ws.tink.mx.utils.StyleUtil;
-	import ws.tink.mx.containers.utilityClasses.DockPosition;
 	
 	use namespace mx_internal;
 	

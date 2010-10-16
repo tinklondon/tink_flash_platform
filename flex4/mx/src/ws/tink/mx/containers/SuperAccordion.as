@@ -50,13 +50,11 @@ package ws.tink.mx.containers
 	import mx.managers.HistoryManager;
 	import mx.managers.IFocusManagerComponent;
 	import mx.managers.IHistoryManagerClient;
-	import mx.skins.halo.AccordionHeaderSkin;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
 	import ws.tink.mx.containers.superAccordion.SuperAccordionHeader;
 	import ws.tink.mx.events.IndicesChangedEvent;
-	import ws.tink.mx.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	

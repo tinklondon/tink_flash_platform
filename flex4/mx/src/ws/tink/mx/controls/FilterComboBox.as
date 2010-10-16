@@ -26,13 +26,11 @@ package ws.tink.mx.controls
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.events.TextEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	import flash.ui.Keyboard;
-	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.CursorBookmark;
@@ -40,7 +38,6 @@ package ws.tink.mx.controls
 	import mx.collections.ListCollectionView;
 	import mx.controls.ComboBase;
 	import mx.controls.List;
-	import mx.controls.MXFTETextInput;
 	import mx.controls.TextInput;
 	import mx.controls.dataGridClasses.DataGridListData;
 	import mx.controls.listClasses.BaseListData;
@@ -72,12 +69,8 @@ package ws.tink.mx.controls
 	import mx.events.ScrollEventDetail;
 	import mx.managers.ISystemManager;
 	import mx.managers.PopUpManager;
-	import mx.skins.halo.ComboBoxArrowSkin;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
-	import mx.styles.StyleProxy;
-	
-	import ws.tink.mx.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	

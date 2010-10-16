@@ -30,7 +30,6 @@ package ws.tink.mx.containers.utilityClasses
 	import mx.core.mx_internal;
 	import mx.styles.IStyleClient;
 	
-	import ws.tink.mx.containers.DockedControlBar;
 	import ws.tink.mx.core.IDockedComponent;
 
 	use namespace mx_internal;

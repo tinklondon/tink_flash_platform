@@ -20,14 +20,10 @@
 
 package ws.tink.mx.controls.alertTabBarClasses
 {
-	import mx.core.mx_internal;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
 	import mx.controls.ButtonPhase;
-	//import mx.controls.ButtonPhase;
+	import mx.core.mx_internal;
 	
 	import ws.tink.mx.controls.positionedTabBarClasses.PositionedTab;
-	import ws.tink.mx.skins.halo.AlertTabSkin;
 	
 	use namespace mx_internal;
 

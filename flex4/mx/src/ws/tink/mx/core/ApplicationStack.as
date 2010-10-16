@@ -35,16 +35,12 @@ package ws.tink.mx.core
 	import flash.ui.ContextMenuItem;
 	import flash.utils.setInterval;
 	
-	import mx.containers.HBox;
 	import mx.containers.ViewStack;
-	import mx.controls.Image;
-	import mx.core.Application;
 	import mx.core.Container;
 	import mx.core.ContainerCreationPolicy;
 	import mx.core.EdgeMetrics;
 	import mx.core.FlexGlobals;
 	import mx.core.IFlexDisplayObject;
-	import mx.core.IInvalidating;
 	import mx.core.IUIComponent;
 	import mx.core.Singleton;
 	import mx.core.UIComponentGlobals;
@@ -58,8 +54,6 @@ package ws.tink.mx.core
 	import mx.styles.IStyleClient;
 	import mx.styles.StyleManager;
 	
-	import ws.tink.mx.containers.DockedControlBar;
-	import ws.tink.mx.containers.utilityClasses.DockPosition;
 	import ws.tink.mx.containers.utilityClasses.DockerLayout;
 	
 	use namespace mx_internal;

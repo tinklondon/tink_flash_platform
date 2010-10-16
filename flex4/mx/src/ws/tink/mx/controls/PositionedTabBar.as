@@ -23,11 +23,8 @@ package ws.tink.mx.controls
 	
 	import mx.controls.TabBar;
 	import mx.core.ClassFactory;
-	import mx.core.IUIComponent;
 	import mx.core.mx_internal;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
-
+	
 	import ws.tink.mx.controls.positionedTabBarClasses.PositionedTab;
 	
 	use namespace mx_internal;

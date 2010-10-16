@@ -24,7 +24,6 @@ package ws.tink.mx.validators
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	
-	import mx.core.IMXMLObject;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.ValidationResultEvent;

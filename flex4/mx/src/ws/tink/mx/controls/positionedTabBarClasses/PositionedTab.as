@@ -23,10 +23,6 @@ package ws.tink.mx.controls.positionedTabBarClasses
 	
 	
 	import mx.controls.tabBarClasses.Tab;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
-	
-	import ws.tink.mx.skins.halo.PositionedTabSkin;
 	
 	
 	[Style(name="position", type="String", enumeration="top,bottom,left,right", inherit="no")]

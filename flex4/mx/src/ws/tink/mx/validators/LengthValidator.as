@@ -20,12 +20,7 @@
 
 package ws.tink.mx.validators
 {
-	import flash.events.IEventDispatcher;
-	import flash.utils.describeType;
-	
-	import mx.events.ValidationResultEvent;
 	import mx.utils.StringUtil;
-	import mx.validators.StringValidator;
 	import mx.validators.ValidationResult;
 	import mx.validators.Validator;
 	

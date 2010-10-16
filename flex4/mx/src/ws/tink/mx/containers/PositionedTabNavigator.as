@@ -37,8 +37,6 @@ package ws.tink.mx.containers
 	import mx.core.mx_internal;
 	import mx.managers.IFocusManagerComponent;
 	import mx.skins.ProgrammaticSkin;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
 	import mx.styles.StyleProxy;
 	
 	import ws.tink.mx.controls.PositionedTabBar;

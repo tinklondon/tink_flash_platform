@@ -24,11 +24,8 @@ package ws.tink.mx.containers
 	
 	import mx.core.Container;
 	import mx.core.ScrollPolicy;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
 	
 	import ws.tink.mx.containers.utilityClasses.ConstrainedTileLayout;
-	import ws.tink.mx.utils.StyleUtil;
 
 	[Style(name="verticalGap", type="Number", format="Length", inherit="no", defaultValue="8")]
 	[Style(name="horizontalGap", type="Number", format="Length", inherit="no", defaultValue="8")]

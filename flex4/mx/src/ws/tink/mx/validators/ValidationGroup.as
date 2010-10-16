@@ -20,10 +20,8 @@
 
 package ws.tink.mx.validators
 {
-	import mx.core.IMXMLObject;
 	import mx.core.UIComponent;
 	import mx.events.ValidationResultEvent;
-	import mx.validators.ValidationResult;
 	
 	import ws.tink.mx.core.MXMLObject;
 	

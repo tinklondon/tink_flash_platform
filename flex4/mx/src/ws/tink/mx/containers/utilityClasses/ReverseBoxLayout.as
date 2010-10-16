@@ -22,14 +22,14 @@ package ws.tink.mx.containers.utilityClasses
 {
 
 import mx.containers.BoxDirection;
+import mx.containers.utilityClasses.BoxLayout;
+import mx.containers.utilityClasses.Flex;
 import mx.controls.scrollClasses.ScrollBar;
 import mx.core.Container;
 import mx.core.EdgeMetrics;
 import mx.core.IUIComponent;
 import mx.core.ScrollPolicy;
 import mx.core.mx_internal;
-import mx.containers.utilityClasses.BoxLayout;
-import mx.containers.utilityClasses.Flex;
 
 use namespace mx_internal;
 

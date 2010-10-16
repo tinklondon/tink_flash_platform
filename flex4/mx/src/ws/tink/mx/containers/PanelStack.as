@@ -53,15 +53,9 @@ package ws.tink.mx.containers
 	import mx.effects.EffectManager;
 	import mx.events.CloseEvent;
 	import mx.events.SandboxMouseEvent;
-	import mx.skins.halo.PanelSkin;
-	import mx.skins.halo.TitleBackground;
-	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.IStyleClient;
-	import mx.styles.StyleManager;
 	import mx.styles.StyleProxy;
-	
-	import ws.tink.mx.utils.StyleUtil;
 	
 	use namespace mx_internal;
 	
