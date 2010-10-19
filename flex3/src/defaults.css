@@ -246,9 +246,9 @@ SuperAccordion
 
 SuperAccordionHeader
 {
-	button-style-name 		: "superAccordionHeaderButton";
-	first-button-style-name 	: "superAccordionHeaderButton";	
-	last-button-style-name 	: "superAccordionHeaderButton";	
+	button-style-name 		: ".superAccordionHeaderButton";
+	first-button-style-name 	: ".superAccordionHeaderButton";	
+	last-button-style-name 	: ".superAccordionHeaderButton";	
 }
 
 /*
