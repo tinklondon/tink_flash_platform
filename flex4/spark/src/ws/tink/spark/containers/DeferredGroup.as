@@ -89,7 +89,7 @@ package ws.tink.spark.containers
 		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
 		 * 
 		 *	<p>The value of this property overrides <code>useVirtualLayout</code>
-		 * 	set directly on the layout property.
+		 * 	set directly on the layout property.</p>
 		 *
 		 *  @default true
 		 *  
