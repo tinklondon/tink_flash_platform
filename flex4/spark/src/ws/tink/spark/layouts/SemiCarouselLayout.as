@@ -69,7 +69,7 @@ package ws.tink.spark.layouts
 		 *	back on the z axis taking into account the <code>depthColorAlpha</code>
 		 *	specified. If a value of -1 is set for the color no tinting is applied.</p>
 		 * 
-		 *  <p>The default value is <code>-1</code></p>
+		 *  @default -1
 		 * 
 		 * 	@see #depthColorAlpha
 		 * 
@@ -100,7 +100,7 @@ package ws.tink.spark.layouts
 		 *	The alpha to be used for the color tint that is applied to elements
 		 *	as their are moved back on the z axis.
 		 * 
-		 *  <p>The default value is <code>1</code></p>
+		 *  @default 1
 		 * 
 		 * 	@see #depthColor
 		 * 
@@ -132,9 +132,9 @@ package ws.tink.spark.layouts
 		 *	are positioned around this element.
 		 * 
 		 *	<p>Valid values are <code>HorizontalAlign.LEFT</code>, <code>HorizontalAlign.CENTER</code>
-		 *	and <code>HorizontalAlign.RIGHT</code>.
+		 *	and <code>HorizontalAlign.RIGHT</code>.</p>
 		 * 
-		 *  <p>The default value is <code>2</code></p>
+		 *  @default 2
 		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -165,9 +165,9 @@ package ws.tink.spark.layouts
 		 *	are positioned around this element.
 		 * 
 		 *	<p>Valid values are <code>HorizontalAlign.LEFT</code>, <code>HorizontalAlign.CENTER</code>
-		 *	and <code>HorizontalAlign.RIGHT</code>.
+		 *	and <code>HorizontalAlign.RIGHT</code>.</p>
 		 * 
-		 *  <p>The default value is <code>HorizontalAlign.CENTER</code></p>
+		 *  @default "center"
 		 * 
 		 * 	@see #horizontalAlignOffset
 		 * 	@see #horizontalAlignOffsetPercent
@@ -202,9 +202,9 @@ package ws.tink.spark.layouts
 		 *	are positioned around this element.
 		 * 
 		 *	<p>Valid values are <code>VerticalAlign.TOP</code>, <code>VerticalAlign.MIDDLE</code>
-		 *	and <code>VerticalAlign.BOTTOM</code>.
+		 *	and <code>VerticalAlign.BOTTOM</code>.</p>
 		 * 
-		 *  <p>The default value is <code>VerticalAlign.MIDDLE</code></p>
+		 *  @default "middle"
 		 * 
 		 * 	@see #verticalAlignOffset
 		 * 	@see #verticalAlignOffsetPercent
@@ -240,9 +240,9 @@ package ws.tink.spark.layouts
 		 *	are positioned around this element.
 		 * 
 		 *	<p>If <code>horizontalAlignOffsetPercent</code> is set after this property,
-		 *	this property is set automatically depending on the value of <code>horizontalAlignOffsetPercent</code>.
+		 *	this property is set automatically depending on the value of <code>horizontalAlignOffsetPercent</code>.</p>
 		 * 
-		 *  <p>The default value is <code>0</code></p>
+		 *  @default 0
 		 * 
 		 * 	@see #horizontalAlign
 		 * 	@see #horizontalAlignOffsetPercent
@@ -279,9 +279,9 @@ package ws.tink.spark.layouts
 		 *	are positioned around this element.
 		 * 
 		 *	<p>If <code>verticalAlignOffsetPercent</code> is set after this property,
-		 *	this property is set automatically depending on the value of <code>verticalAlignOffsetPercent</code>.
+		 *	this property is set automatically depending on the value of <code>verticalAlignOffsetPercent</code>.</p>
 		 * 
-		 *  <p>The default value is <code>0</code></p>
+		 *  @default 0
 		 * 
 		 * 	@see #verticalAlign
 		 * 	@see #verticalAlignOffsetPercent
@@ -318,9 +318,9 @@ package ws.tink.spark.layouts
 		 *	position of the selected element in the viewport. All other elements are
 		 * 	positioned around this element.
 		 * 
-		 *	<p>Setting this property overrides any value set on <code>horizontalAlignOffset</code>.
+		 *	<p>Setting this property overrides any value set on <code>horizontalAlignOffset</code>.</p>
 		 * 
-		 *  <p>The default value is <code>0</code></p>
+		 *  @default 0
 		 * 
 		 * 	@see #horizontalAlign
 		 * 	@see #horizontalAlignOffset
@@ -357,9 +357,9 @@ package ws.tink.spark.layouts
 		 *	position of the selected element in the viewport. All other elements are
 		 * 	positioned around this element.
 		 * 
-		 *	<p>Setting this property overrides any value set on <code>verticalAlignOffset</code>.
+		 *	<p>Setting this property overrides any value set on <code>verticalAlignOffset</code>.</p>
 		 * 
-		 *  <p>The default value is <code>0</code></p>
+		 *  @default 0
 		 * 
 		 * 	@see #verticalAlign
 		 * 	@see #verticalAlignOffset
@@ -394,9 +394,9 @@ package ws.tink.spark.layouts
 		 *	The horizontal transform point of elements.
 		 * 
 		 *	<p>Valid values are <code>HorizontalAlign.LEFT</code>, <code>HorizontalAlign.CENTER</code>
-		 *	and <code>HorizontalAlign.RIGHT</code>.
+		 *	and <code>HorizontalAlign.RIGHT</code>.</p>
 		 * 
-		 *  <p>The default value is <code>HorizontalAlign.CENTER</code></p>
+		 *  @default "center"
 		 * 
 		 * 	@see spark.layouts.HorizontalAlign
 		 * 
@@ -428,9 +428,9 @@ package ws.tink.spark.layouts
 		 *	The vertical transform point of elements.
 		 * 
 		 *	<p>Valid values are <code>VerticalAlign.TOP</code>, <code>VerticalAlign.MIDDLE</code>
-		 *	and <code>VerticalAlign.BOTTOM</code>.
+		 *	and <code>VerticalAlign.BOTTOM</code>.</p>
 		 * 
-		 *  <p>The default value is <code>VerticalAlign.MIDDLE</code></p>
+		 *  @default "middle"
 		 * 
 		 * 	@see spark.layouts.VerticalAlign
 		 * 
@@ -461,7 +461,7 @@ package ws.tink.spark.layouts
 		/**
 		 *	The radius to be used on the x axis for the SemiCarouselLayout.
 		 * 
-		 *  <p>The default value is <code>100</code></p>
+		 *  @default 100
 		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -489,7 +489,7 @@ package ws.tink.spark.layouts
 		/**
 		 *	The radius to be used on the y axis for the SemiCarouselLayout.
 		 * 
-		 *  <p>The default value is <code>0</code></p>
+		 *  @default 0
 		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -520,7 +520,7 @@ package ws.tink.spark.layouts
 		 * 	<p>If a value of NaN is passed the largest of <code>radiusX</code>
 		 *	or <code>radiusY</code> is used.</p>
 		 * 
-		 *  <p>The default value is <code>NaN</code></p>
+		 *  @default NaN
 		 * 
 		 * 	@see #radiusX
 		 *	@see #radiusY
@@ -551,7 +551,7 @@ package ws.tink.spark.layouts
 		/**
 		 *	The layout type to be used for the SemiCarouselLayout.
 		 * 
-		 *  <p>The default value is <code>SemiCarouselLayoutType.CIRCULAR</code></p>
+		 *  @default "circular"
 		 * 
 		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselLayoutType
 		 *
