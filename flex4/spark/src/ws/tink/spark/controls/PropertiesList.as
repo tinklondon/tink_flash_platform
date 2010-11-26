@@ -66,6 +66,11 @@ package ws.tink.spark.controls
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @private
+		 *  List of events to automatically add to instances
+		 *  that are IUIComponents.
+		 */
 		private const UI_COMPONENT_EVENTS:Array = [ 
 			FlexEvent.CREATION_COMPLETE,
 			FlexEvent.VALUE_COMMIT,
@@ -73,23 +78,47 @@ package ws.tink.spark.controls
 			FlexEvent.SHOW,
 			FlexEvent.HIDE ]
 		
+		/**
+		 *  @private
+		 *  List of events to automatically add to instances
+		 *  that are DisplayObject.
+		 */
 		private const DISPLAY_OBJECT_EVENTS:Array = [
 			Event.ADDED,
 			Event.ADDED_TO_STAGE,
 			Event.REMOVED,
 			Event.REMOVED_FROM_STAGE ];
 		
-		private var _propertiesChanged:Boolean;
-		private var _valuesChanged:Boolean;
 		/**
 		 *  @private
+		 *  Flag to indicate the properties have changed.
+		 */
+		private var _propertiesChanged:Boolean;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the values of properties have changed.
+		 */
+		private var _valuesChanged:Boolean;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the events property has changed.
 		 */
 		private var _eventsChanged:Boolean;
 		
 		/**
 		 *  @private
+		 *  Flag to indicate the instance property has changed.
 		 */
-		private var _sourceChanged:Boolean;
+		private var _instanceChanged:Boolean;
+		
+		/**
+		 *  @private
+		 *  Storage for the list of label/property/value combinations.
+		 */
+		private var _superProvider:ArrayList;
+		
 		
 		
 		
@@ -105,20 +134,21 @@ package ws.tink.spark.controls
 		
 		/**
 		 *  @private
+		 *  Storage property for events.
 		 */
 		private var _events:Array;
 		
 		/**
 		 *  @private
+		 *  Storage property for events to commit on validation.
 		 */
 		private var _proposedEvents:Array;
 		
 		/**
-		 *  The name of the field in the data provider items to display 
-		 *  as the label. 
-		 *  The <code>labelFunction</code> property overrides this property.
+		 *  An optional list of events that should be added to the instance
+		 *  to inform the component that property values have changed.
 		 *
-		 *  @default "label" 
+		 *  @default [] 
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -143,32 +173,44 @@ package ws.tink.spark.controls
 		
 		
 		//----------------------------------
-		//  source
+		//  instance
 		//----------------------------------
 		
 		/**
 		 *  @private
+		 *  Storage property for instance.
 		 */
-		private var _source:Object;
+		private var _instance:Object;
 		
 		/**
 		 *  @private
+		 *  Storage property for the instance to commit on validation.
 		 */
-		private var _proposedSource:Object;
+		private var _proposedInstance:Object;
 		
-		public function get source():Object
+		/**
+		 *  The object instance who's properties are to be listed.
+		 *
+		 *  @default null 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get instance():Object
 		{
-			return _proposedSource ? _proposedSource : _source;
+			return _proposedInstance ? _proposedInstance : _instance;
 		}
 		/**
 		 *  @private
 		 */
-		public function set source( value:Object ):void
+		public function set instance( value:Object ):void
 		{
-			if( _source == value ) return;
+			if( _instance == value ) return;
 			
-			_proposedSource = value;
-			_sourceChanged = true;
+			_proposedInstance = value;
+			_instanceChanged = true;
 			invalidateProperties();
 		}
 		
@@ -184,12 +226,37 @@ package ws.tink.spark.controls
 		//  dataProvider
 		//----------------------------------
 		
-		private var _superProvider:ArrayList;
+		/**
+		 *  @private
+		 *  Storage property for dataProvider.
+		 */
+		private var _dataProvider:IList;
+		
+		/**
+		 *  The list of label's and public properties to show in the component.
+		 * 
+		 *  <p>If this property is null, all the public properties of the <code>instance</code>
+		 *  property will be shown.</p>
+		 *
+		 *  @see #itemRenderer
+		 *  @see #itemRendererFunction
+		 *  @see mx.collections.IList
+		 *  @see mx.collections.ArrayCollection
+		 *  @see mx.collections.ArrayList
+		 *  @see mx.collections.XMLListCollection
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function get dataProvider():IList
 		{
 			return _dataProvider;
 		}
-		private var _dataProvider:IList;
+		/**
+		 *  @private
+		 */
 		override public function set dataProvider(value:IList):void
 		{
 			if( _dataProvider == value ) return;
@@ -210,7 +277,7 @@ package ws.tink.spark.controls
 		/**
 		 *  @private
 		 */
-		private function updateRendererProperty(itemIndex:int):void
+		private function updateRendererPropertyValue( itemIndex:int ):void
 		{
 			// grab the renderer at that index and re-compute it's label property
 			var renderer:IPropertyItemRenderer = dataGroup.getElementAt( itemIndex ) as IPropertyItemRenderer; 
@@ -264,25 +331,28 @@ package ws.tink.spark.controls
 		
 		override protected function commitProperties():void
 		{
-			var numItems:int;
 			var i:int;
+			var numItems:int;
 			var labelProperty:LabelProperty;
 			
-			if( _sourceChanged )
+			if( _instanceChanged )
 			{
 				_propertiesChanged = true;
-				_sourceChanged = false;
+				_instanceChanged = false;
 				
 				var eventDispatcher:IEventDispatcher;
-
-				if( _source is IEventDispatcher )
+				
+				// Remove the added listeners.
+				if( _instance is IEventDispatcher )
 				{
-					eventDispatcher = IEventDispatcher( _source );
-					removeListeners( IEventDispatcher( _source ), _events );
-					if( _source is IUIComponent ) removeListeners( IEventDispatcher( _source ), UI_COMPONENT_EVENTS );
-					if( _source is DisplayObject ) removeListeners( IEventDispatcher( _source ), DISPLAY_OBJECT_EVENTS );
+					eventDispatcher = IEventDispatcher( _instance );
+					removeListeners( IEventDispatcher( _instance ), _events );
+					if( _instance is IUIComponent ) removeListeners( IEventDispatcher( _instance ), UI_COMPONENT_EVENTS );
+					if( _instance is DisplayObject ) removeListeners( IEventDispatcher( _instance ), DISPLAY_OBJECT_EVENTS );
 				}
 				
+				// Here we commit the events so the correct ones are added
+				// directly below.
 				if( _eventsChanged )
 				{
 					_eventsChanged = false;
@@ -290,15 +360,16 @@ package ws.tink.spark.controls
 					_proposedEvents = null;
 				}
 				
-				_source = _proposedSource;
-				_proposedSource = null;
+				_instance = _proposedInstance;
+				_proposedInstance = null;
 				
-				if( _source is IEventDispatcher )
+				// Add the required listeners.
+				if( _instance is IEventDispatcher )
 				{
-					eventDispatcher = IEventDispatcher( _source );
-					addListeners( IEventDispatcher( _source ), _events );
-					if( _source is IUIComponent ) addListeners( IEventDispatcher( _source ), UI_COMPONENT_EVENTS );
-					if( _source is DisplayObject ) addListeners( IEventDispatcher( _source ), DISPLAY_OBJECT_EVENTS );
+					eventDispatcher = IEventDispatcher( _instance );
+					addListeners( IEventDispatcher( _instance ), _events );
+					if( _instance is IUIComponent ) addListeners( IEventDispatcher( _instance ), UI_COMPONENT_EVENTS );
+					if( _instance is DisplayObject ) addListeners( IEventDispatcher( _instance ), DISPLAY_OBJECT_EVENTS );
 				}
 			}
 			
@@ -306,19 +377,19 @@ package ws.tink.spark.controls
 			{
 				_eventsChanged = false;
 				
-				if( _source is IEventDispatcher )
+				if( _instance is IEventDispatcher )
 				{
-					eventDispatcher = IEventDispatcher( _source );
-					removeListeners( IEventDispatcher( _source ), _events );
+					eventDispatcher = IEventDispatcher( _instance );
+					removeListeners( IEventDispatcher( _instance ), _events );
 				}
 				
 				_events = _proposedEvents;
 				_proposedEvents = null;
 				
-				if( _source is IEventDispatcher )
+				if( _instance is IEventDispatcher )
 				{
-					eventDispatcher = IEventDispatcher( _source );
-					addListeners( IEventDispatcher( _source ), _events );
+					eventDispatcher = IEventDispatcher( _instance );
+					addListeners( IEventDispatcher( _instance ), _events );
 				}
 			}
 			
@@ -327,11 +398,13 @@ package ws.tink.spark.controls
 				_valuesChanged = true;
 				_superProvider = new ArrayList();
 				
-				if( _source )
+				if( _instance )
 				{
+					// If there are no properties specified use describeType()
+					// to output all public properties.
 					if( _dataProvider == null )
 					{
-						var d:XML = describeType( _source );
+						var d:XML = describeType( _instance );
 						var x:XMLList
 						var p:XML;
 
@@ -347,6 +420,7 @@ package ws.tink.spark.controls
 							if( p.@uri.toString() == "" ) _superProvider.addItem( createLabelProperty( p.@name, p.@name ) );
 						}
 						
+						// Sort the properties into alphabetical order.
 						_superProvider.source.sortOn( "label" );
 					}
 					else
@@ -381,7 +455,7 @@ package ws.tink.spark.controls
 					labelProperty = LabelProperty( _superProvider.getItemAt( i ) );
 					try
 					{
-						labelProperty.value = _source[ labelProperty.property ];
+						labelProperty.value = _instance[ labelProperty.property ];
 					}
 					catch( e:Error )
 					{
@@ -392,30 +466,30 @@ package ws.tink.spark.controls
 				
 				// Cycle through all instantiated renderers to push the correct text 
 				// in to the renderer by setting its label property
-				if (dataGroup)
+				if( dataGroup )
 				{
-					var itemIndex:int;
-					
 					// if virtual layout, only loop through the indices in view
 					// otherwise, loop through all of the item renderers
-					if (layout && layout.useVirtualLayout)
+					if( layout && layout.useVirtualLayout )
 					{
-						for each (itemIndex in dataGroup.getItemIndicesInView())
+						for each( i in dataGroup.getItemIndicesInView() )
 						{
-							updateRendererProperty(itemIndex);
+							updateRendererPropertyValue( i );
 						}
 					}
 					else
 					{
-						var n:int = dataGroup.numElements;
-						for (itemIndex = 0; itemIndex < n; itemIndex++)
+						numItems = dataGroup.numElements;
+						for( i = 0; i < numItems; i++ )
 						{
-							updateRendererProperty(itemIndex);
+							updateRendererPropertyValue( i );
 						}
 					}
 				}
 			}
 				
+			// Commit the new dataProvider of labels/properties/values
+			// to the super class.
 			if( _propertiesChanged )
 			{
 				_propertiesChanged = false;
