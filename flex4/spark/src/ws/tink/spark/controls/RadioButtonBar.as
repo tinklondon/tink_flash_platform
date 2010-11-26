@@ -16,10 +16,43 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 SOFTWARE.
 */
 
+
 package ws.tink.spark.controls
 {
 	import spark.components.ButtonBar;
 	
+	/**
+	 *  The RadioButtonBar component allows the user make a single choice
+	 *  within a set of mutually exclusive choices.
+	 *
+	 *  <p>The RadioButtonBar control has the following default characteristics:</p>
+	 *  <table class="innertable">
+	 *     <tr><th>Characteristic</th><th>Description</th></tr>
+	 *     <tr><td>Default size</td><td>Large enough to display all buttons</td></tr>
+	 *     <tr><td>Minimum size</td><td>0 pixels</td></tr>
+	 *     <tr><td>Maximum size</td><td>No limit</td></tr>
+	 *     <tr><td>Default skin class</td><td>ws.tink.spark.skins.controls.RadioButtonBarSkin</td></tr>
+	 *  </table>
+	 *
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:RadioButtonBar&gt;</code> tag inherits all of the tag
+	 *  attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:RadioButtonBar
+	 * 
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @see ws.tink.spark.itemRenderers.RadioButtonItemRenderer
+	 *  @see ws.tink.spark.skins.controls.RadioButtonBarSkin
+	 *  @includeExample ../examples/Examples/src/RadioButtonBarExample.mxml
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class RadioButtonBar extends ButtonBar
 	{
 		public function RadioButtonBar()
