@@ -24,7 +24,7 @@ SOFTWARE.
 The buttons on the MultipleSelectionButtonBar component use the ButtonBarLastButtonSkin,
 ButtonBarFirstButtonSkin and ButtonBarMiddleButtonSkin classes.  
 
-@see ws.tink.sparl.controls.MultipleSelectionButtonBar
+@see ws.tink.spark.controls.MultipleSelectionButtonBar
 @see spark.components.ButtonBarButton    
 
 @langversion 3.0
