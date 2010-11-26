@@ -13,7 +13,7 @@
 	<!-- controls -->
 	<component id="Alert" class="ws.tink.spark.controls.Alert"/>
 	<component id="BorderDataNavigator" class="ws.tink.spark.controls.BorderDataNavigator"/>
-	<component id="CheckBoxButtonBar" class="ws.tink.spark.controls.CheckBoxButtonBar"/>
+	<component id="CheckBoxBar" class="ws.tink.spark.controls.CheckBoxBar"/>
 	<component id="DataNavigator" class="ws.tink.spark.controls.DataNavigator"/>
 	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
 	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
@@ -23,6 +23,7 @@
 	<component id="MouseOverStepper" class="ws.tink.spark.controls.MouseOverStepper"/>
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
 	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
+	<component id="PropertiesList" class="ws.tink.spark.controls.PropertiesList"/>
 	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
 	<component id="Stepper" class="ws.tink.spark.controls.Stepper"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
@@ -37,13 +38,16 @@
 	
 	<!-- itemRenderers -->
 	<component id="CheckBoxItemRenderer" class="ws.tink.spark.itemRenderers.CheckBoxItemRenderer"/>
+	<component id="DefaultPropertyItemRenderer" class="ws.tink.spark.itemRenderers.DefaultPropertyItemRenderer"/>
+	<component id="PropertyItemRenderer" class="ws.tink.spark.itemRenderers.PropertyItemRenderer"/>
 	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
 	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
 	
 	<!-- layouts -->
-	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="SemiCarouselLayout" class="ws.tink.spark.layouts.SemiCarouselLayout"/>
+	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="StepperLayout" class="ws.tink.spark.layouts.StepperLayout"/>
+	<component id="TimeMachineLayout" class="ws.tink.spark.layouts.TimeMachineLayout"/>
 	
 	<!-- modules -->
 	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>

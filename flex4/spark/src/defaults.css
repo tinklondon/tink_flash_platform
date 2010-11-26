@@ -1,5 +1,6 @@
 /* CSS file */
 @namespace "library://ns.tink.ws/flex/spark";
+@namespace controls "ws.tink.spark.controls.*";
 
 Alert
 {
@@ -11,9 +12,9 @@ BorderDataNavigator
 	skinClass: ClassReference("ws.tink.spark.skins.controls.BorderDataNavigatorSkin");
 }
 
-CheckBoxButtonBar
+CheckBoxBar
 {
-	skinClass: ClassReference("ws.tink.spark.skins.controls.CheckBoxButtonBarSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.CheckBoxBarSkin");
 }
 
 DataNavigator
@@ -56,6 +57,11 @@ Navigator
 PageStepper
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.PageStepperSkin");
+}
+
+PropertiesList
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.PropertiesListSkin");
 }
 
 RadioButtonBar

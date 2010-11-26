@@ -43,7 +43,7 @@ ButtonBarFirstButtonSkin and ButtonBarMiddleButtonSkin classes.
 		/** 
 		* @copy spark.skins.spark.ApplicationSkin#hostComponent
 		*/
-		[HostComponent("ws.tink.spark.controls.CheckBoxButtonBar")]
+		[HostComponent("ws.tink.spark.controls.CheckBoxBar")]
 		]]>
 	</fx:Metadata>
 	

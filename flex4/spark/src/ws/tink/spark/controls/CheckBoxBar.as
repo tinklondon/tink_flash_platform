@@ -20,9 +20,9 @@ package ws.tink.spark.controls
 {
 	import spark.components.ButtonBar;
 	
-	public class CheckBoxButtonBar extends MultipleSelectionButtonBar
+	public class CheckBoxBar extends MultipleSelectionButtonBar
 	{
-		public function CheckBoxButtonBar()
+		public function CheckBoxBar()
 		{
 			super();
 		}
