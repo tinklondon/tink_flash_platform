@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("ws.tink.spark.controls.TimeStepper")]
+	</fx:Metadata>
+	
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"/>
+	</s:layout>
+	
+	<s:NumericStepper id="hourStepper"/>
+	<s:Label text=":"/>
+	<s:NumericStepper id="minuteStepper"/>
+	<s:Label text=":"/>
+	<s:NumericStepper id="secondStepper"/>
+	<s:Label text=":"/>
+	<s:NumericStepper id="millisecondStepper"/>
+	<s:Label id="meridiemDisplay"/>
+	
+</s:Skin>
