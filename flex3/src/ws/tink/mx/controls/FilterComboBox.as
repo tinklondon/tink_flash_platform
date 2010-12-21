@@ -1912,6 +1912,8 @@ package ws.tink.mx.controls
 		 */
 		private function displayDropdown(show:Boolean, trigger:Event = null):void
 		{
+			if( !enabled ) return;
+			
 			if( textInput.text == prompt ) textInput.text = "";
 			
 			if (!initialized || show == _showingDropdown)
