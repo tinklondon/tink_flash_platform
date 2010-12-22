@@ -1638,12 +1638,10 @@ package ws.tink.mx.controls
 				{
 					if (selectedIndex == -1 && prompt )
 					{
-						trace( "333" );
 						if( _removeInputOnFocusOut ) textInput.text = prompt;
 					}
 					else if (!explicitText)
 					{
-						trace( "444" );
 						textInput.text = selectedLabel;
 					}
 				}
@@ -1686,7 +1684,6 @@ package ws.tink.mx.controls
 			}
 			if (promptChanged && prompt != null && selectedIndex == -1)
 			{
-				trace( "ffff" );
 				promptChanged = false;
 				textInput.text = prompt;
 			}
@@ -1774,23 +1771,21 @@ package ws.tink.mx.controls
 		 */
 		public function open():void
 		{
-			displayDropdown(true);
+			displayDropdown( true );
 		}
 		
 		/**
 		 *  Hides the drop-down list.
 		 */
-		public function close(trigger:Event = null):void
+		public function close( trigger:Event = null ):void
 		{
-			if (_showingDropdown)
+			if( _showingDropdown )
 			{
 				setSelectedIndexFromDropDown();
 				
-				displayDropdown(false, trigger);
+				displayDropdown( false, trigger ) ;
 				
-				dispatchChangeEvent(new Event("dummy"),
-					_selectedIndexOnDropdown,
-					selectedIndex);
+				dispatchChangeEvent( new Event("dummy"), _selectedIndexOnDropdown, selectedIndex);
 			}
 		}
 		
@@ -1995,8 +1990,6 @@ package ws.tink.mx.controls
 				if (_dropdown.x != point.x || _dropdown.y != point.y)
 					_dropdown.move(point.x, point.y);
 				
-				_dropdown.scrollRect = new Rectangle(0, initY,
-					_dropdown.width, _dropdown.height);
 				
 				if (!_dropdown.visible)
 					_dropdown.visible = true;
@@ -2037,8 +2030,13 @@ package ws.tink.mx.controls
 			if (_dropdown)
 				_dropdown.enabled = false;
 			
-			duration = Math.max(1, duration);
-			tween = new Tween(this, initY, endY, duration);
+			duration = Math.max( 1, duration );
+			tween = new Tween( this, initY, endY, duration );
+			
+			if( _showingDropdown && duration > 80 )
+			{
+				_dropdown.scrollRect = new Rectangle( 0, initY, _dropdown.width, _dropdown.height );
+			}
 			
 			if (easingFunction != null && tween)
 				tween.easingFunction = easingFunction;
@@ -2160,7 +2158,6 @@ package ws.tink.mx.controls
 					invalidateProperties();
 				}
 				
-				trace( ce.kind, "ff" );
 				_filteredCollection = new ListCollectionView( ListCollectionView( collection ) );
 				_filteredCollection.filterFunction = _activeFilterFunction;
 				_filteredCollection.refresh();
@@ -2476,6 +2473,7 @@ package ws.tink.mx.controls
 		 */
 		mx_internal function onTweenUpdate(value:Number):void
 		{
+			trace( "onTweenUpdate", value );
 			if (_dropdown)
 			{
 				_dropdown.scrollRect = new Rectangle(0, value,
@@ -2488,6 +2486,7 @@ package ws.tink.mx.controls
 		 */
 		mx_internal function onTweenEnd(value:Number):void
 		{
+			trace( "onTweenEnd", value, _dropdown, _dropdown.y );
 			if (_dropdown)
 			{
 				// Clear the scrollRect here. This way if drop shadows are
