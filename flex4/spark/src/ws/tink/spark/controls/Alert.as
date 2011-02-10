@@ -653,12 +653,6 @@ package ws.tink.spark.controls
 			setButtonFocus();
 		}
 		
-		override public function set moduleFactory(factory:IFlexModuleFactory):void
-		{
-			super.moduleFactory = factory;
-			prototype.constructor.setDefaultStyles( factory );
-		}
-		
 		protected function onButtonClick( event:MouseEvent ):void
 		{
 			removeAlert( buttonGroup.getElementIndex( Button( event.currentTarget ) ) );
