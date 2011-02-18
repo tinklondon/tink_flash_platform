@@ -22,7 +22,6 @@ package ws.tink.spark.containers
 {
 	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
-	import flash.utils.describeType;
 	
 	import mx.core.ContainerCreationPolicy;
 	import mx.core.IDeferredContentOwner;
@@ -47,30 +46,124 @@ package ws.tink.spark.containers
 	import mx.graphics.shaderClasses.SoftLightShader;
 	import mx.resources.ResourceManager;
 	
-	import spark.components.Group;
-	import spark.components.ResizeMode;
 	import spark.components.supportClasses.GroupBase;
 	import spark.core.IGraphicElement;
 	import spark.events.ElementExistenceEvent;
 	import spark.layouts.BasicLayout;
-	import spark.layouts.VerticalLayout;
 	import spark.layouts.supportClasses.LayoutBase;
 	
-	
+	import ws.tink.spark.containers.supportClasses.DeferredCreationPolicy;
 	
 	use namespace mx_internal;
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/**
+	 *  Dispatched when the deferred content of this component is created.
+	 *
+	 *  @eventType mx.events.FlexEvent.CONTENT_CREATION_COMPLETE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Event(name="contentCreationComplete", type="mx.events.FlexEvent")]
+	
 	[DefaultProperty("mxmlContentFactory")]
+	
+	/**
+	 *  The DeferredGroup class enables deferred instatiation of child elements
+	 *  via is <code>creationPolicy</code> property.
+	 * 
+	 *  <p>You cannot use GraphicElement objects with the DeferredGroup due to Adobe
+	 *  data typing the paramater passed to <code>GraphicElement.parentChanged()</code>
+	 *  as a <code>Group</code>.
+	 *  See <a href="https://bugs.adobe.com/jira/browse/SDK-25601">Don't not hard code GraphicElement to Group</a>
+	 *  and <a href="https://bugs.adobe.com/jira/browse/SDK-25333">Make it easier to extend Group</a>.</p>
+	 *
+	 * <p>The Group container has the following default characteristics:</p>
+	 *  <table class="innertable">
+	 *     <tr><th>Characteristic</th><th>Description</th></tr>
+	 *     <tr><td>Default size</td><td>Large enough to display its children</td></tr>
+	 *     <tr><td>Minimum size</td><td>0 pixels</td></tr>
+	 *     <tr><td>Maximum size</td><td>10000 pixels wide and 10000 pixels high</td></tr>
+	 *  </table>
+	 * 
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;s:DeferredGroup&gt;</code> tag inherits all of the tag 
+	 *  attributes of its superclass and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;s:GroupBase
+	 *    <strong>Properties</strong>
+	 *    blendMode="auto"
+	 *    creationPolicy="visible"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @see ws.tink.spark.containers.supportClasses.DeferredCreationPolicy
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class DeferredGroup extends GroupBase implements IDeferredContentOwner
 	{
 		
+		private static const ITEM_ORDERED_LAYERING:uint = 0;
+		private static const SPARSE_LAYERING:uint = 1; 
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */ 
 		public function DeferredGroup()
 		{
 			super();
 			
-			_useVirtualLayout = true;
+			creationPolicy = DeferredCreationPolicy.CONSTRUCT;
 		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage property for whether <code>createChildren</code>
+		 *  has been invoked.
+		 */
+		private var _childrenCreated	: Boolean;
+		
+		private var needsDisplayObjectAssignment:Boolean = false;
+		private var layeringMode:uint = ITEM_ORDERED_LAYERING;
+		
+		 
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
 		
 		//----------------------------------
 		//  useVirtualLayout
@@ -78,20 +171,18 @@ package ws.tink.spark.containers
 		
 		/**
 		 *  @private
+		 *  Storage property for useVirtualLayout.
 		 */
-		private var _useVirtualLayout:Boolean = false;
+		private var _useVirtualLayout:Boolean = true;
 		
 		/**
-		 *  Sets the value of the <code>useVirtualLayout</code> property
-		 *  of the layout associated with this control.  
-		 *  If the layout is subsequently replaced and the value of this 
-		 *  property is <code>true</code>, then the new layout's 
-		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
+		 *  Returns whether a virtual layout is being used which is dependant
+		 *  on the <code>creationPolicy</code>.
 		 * 
 		 *	<p>The value of this property overrides <code>useVirtualLayout</code>
 		 * 	set directly on the layout property.</p>
 		 *
-		 *  @default true
+		 *  @see #creationPolicy
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -103,49 +194,99 @@ package ws.tink.spark.containers
 			return ( layout ) ? layout.useVirtualLayout : _useVirtualLayout;
 		}
 		
+		
+		//----------------------------------
+		//  creationPolicy
+		//----------------------------------
+		
 		/**
 		 *  @private
-		 *  Note: this property deviates a little from the conventional delegation pattern.
-		 *  If the user explicitly sets ListBase.useVirtualLayout=false and then sets
-		 *  the layout property to a layout with useVirtualLayout=true, the layout's value
-		 *  for this property trumps the ListBase.  The convention dictates opposite
-		 *  however in this case, always honoring the layout's useVirtalLayout property seems 
-		 *  less likely to cause confusion.
+		 *  Storage property for creationPolicy.
 		 */
-		public function set useVirtualLayout(value:Boolean):void
+		private var _creationPolicy		: String;
+		
+		[Inspectable(enumeration="visible,construct,all,none", defaultValue="visible")]
+		/**
+		 *  Content creation policy for this component.
+		 *
+		 *  <p>Possible values are:</p>
+		 *    <ul>
+		 *      <li><code>none</code> - Content must be created manually by calling the <code>createDeferredContent()</code> method.</li>
+		 *      <li><code>visible</code> - Only construct the immediate descendants and initialize those that are visible.</li>
+		 *      <li><code>construct</code> - Construct all decendants immediately but only inialize those that are visible.</li>
+		 *      <li><code>all</code> - Create the content as soon as the parent component is created. This
+		 *          option should only be used as a last resort because it increases startup time and memory usage.</li>
+		 *    </ul>
+		 *  
+		 *  
+		 *  <p>If no <code>creationPolicy</code> is specified for a container, that container inherits the value of 
+		 *  its parent's <code>creationPolicy</code> property.</p>
+		 *
+		 *  <p>The <code>creationPolicy</code> affects <code>useVirtualLayout</code> in he following way:</p>
+		 *     <table class="innertable">
+		 *        <tr>
+		 *           <th>creationPolicy</th>
+		 *           <th>useVirtualLayout</th>
+		 *        </tr>
+		 *        <tr>
+		 *           <td>none</td>
+		 *           <td>false</td>
+		 *        </tr>
+		 *        <tr>
+		 *           <td>visible</td>
+		 *           <td>true</td>
+		 *        </tr>
+		 *        <tr>
+		 *           <td>construct</td>
+		 *           <td>true</td>
+		 *        </tr>
+		 *        <tr>
+		 *           <td>all</td>
+		 *           <td>false</td>
+		 *        </tr>
+		 *     </table>
+		 * 
+		 *  @default visible
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get creationPolicy():String
 		{
-			if( value == _useVirtualLayout ) return;
+			return _creationPolicy;
+		}
+		/**
+		 *  @private
+		 */
+		public function set creationPolicy(value:String):void
+		{
+			if( _creationPolicy == value ) return;
 			
-			_useVirtualLayout = value;
-			if( layout  )
+			_creationPolicy = value;
+			
+			
+			_useVirtualLayout = _creationPolicy != DeferredCreationPolicy.ALL;
+			if( layout )
 			{
 				if( layout is BasicLayout )
 				{
-					if( value ) throw new Error( ResourceManager.getInstance().getString("layout", "basicLayoutNotVirtualized"));
+					if( _useVirtualLayout ) throw new Error( ResourceManager.getInstance().getString("layout", "basicLayoutNotVirtualized"));
 				}
 				else
 				{
-					layout.useVirtualLayout = value;
+					layout.useVirtualLayout = _useVirtualLayout;
 				}
 			}
-		}
-		
-		
-		//----------------------------------
-		//  layout
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 */
-		override public function set layout( value:LayoutBase ):void
-		{
-			if( _useVirtualLayout && !( value is BasicLayout ) ) value.useVirtualLayout = _useVirtualLayout;
 			
-			super.layout = value;
+			createContentIfNeeded();
 		}
 		
 		
+		//----------------------------------
+		//  mxmlContentFactory
+		//----------------------------------
 		
 		/** 
 		 *  @private
@@ -181,6 +322,11 @@ package ws.tink.spark.containers
 			createContentIfNeeded();
 		}
 		
+		
+		//----------------------------------
+		//  mxmlContent
+		//----------------------------------
+		
 		protected var _mxmlContent:Array;
 		
 		[ArrayElementType("mx.core.IVisualElement")]
@@ -200,145 +346,10 @@ package ws.tink.spark.containers
 			invalidateDisplayList();
 		}
 		
-		/**
-		 *  @inheritDoc
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override public function get numElements():int
-		{
-			if (_mxmlContent == null)
-				return 0;
-			
-			return _mxmlContent.length;
-		}
-		
-		mx_internal function getMXMLContent():Array
-		{
-			if (_mxmlContent)
-				return _mxmlContent.concat();
-			else
-				return null;
-		}
-		
 		
 		//----------------------------------
-		//  creationPolicy
+		//  deferredContentCreated
 		//----------------------------------
-		
-		
-		
-		private var _creationPolicyNone		: Boolean;
-		
-		[Inspectable(enumeration="auto,all,none", defaultValue="auto")]
-		/**
-		 *  @inheritDoc
-		 *
-		 *  @default auto
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get creationPolicy():String
-		{
-			// Use an inheriting style as the backing storage for this property.
-			// This allows the property to be inherited by either mx or spark
-			// containers, and also to correctly cascade through containers that
-			// don't have this property (ie Group).
-			// This style is an implementation detail and should be considered
-			// private. Do not set it from CSS.
-			var result:String = getStyle( "_creationPolicy" );
-			
-			if( result == null ) result = ContainerCreationPolicy.AUTO;
-			
-			if( _creationPolicyNone ) result = ContainerCreationPolicy.NONE;
-			
-			return result;
-		}
-		
-		/**
-		 *  @private
-		 */
-		public function set creationPolicy(value:String):void
-		{
-			if( value == ContainerCreationPolicy.NONE )
-			{
-				// creationPolicy of none is not inherited by descendants.
-				// In this case, set the style to "auto" and set a local
-				// flag for subsequent access to the creationPolicy property.
-				_creationPolicyNone = true;
-				value = ContainerCreationPolicy.AUTO;
-			}
-			else
-			{
-				_creationPolicyNone = false;
-				createContentIfNeeded();
-			}
-			
-			setStyle( "_creationPolicy", value );
-		}
-		
-		
-		
-		
-		private var _childrenCreated	: Boolean;
-		/**
-		 *  Create content children, if the <code>creationPolicy</code> property 
-		 *  is not equal to <code>none</code>.
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override protected function createChildren():void
-		{
-			super.createChildren();
-			
-			_childrenCreated = true;
-			
-			createContentIfNeeded();
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function createContentIfNeeded():void
-		{
-			if( !_mxmlContentCreated && 
-				_childrenCreated &&
-				creationPolicy != ContainerCreationPolicy.NONE ) createDeferredContent();
-		}
-		
-		/**
-		 *  Create the content for this component. If creationPolicy is "auto" or "all", this
-		 *  function will be called by the flex framework. If creationPolicy is "none", this 
-		 *  function must be called to create the content for the component.
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function createDeferredContent():void
-		{
-			if( !_mxmlContentCreated )
-			{
-				_mxmlContentCreated = true;
-				if (_mxmlContentFactory)
-				{
-					var deferredContent:Object = _mxmlContentFactory.getInstance();
-					mxmlContent = deferredContent as Array;
-					_deferredContentCreated = true;
-					dispatchEvent(new FlexEvent(FlexEvent.CONTENT_CREATION_COMPLETE));
-				}
-			}
-		}
 		
 		private var _deferredContentCreated:Boolean;
 		/**
@@ -355,100 +366,187 @@ package ws.tink.spark.containers
 		}
 		
 		
-		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override public function getVirtualElementAt(index:int, eltWidth:Number=NaN, eltHeight:Number=NaN):IVisualElement
-		{
-			// check for RangeError:
-			checkForRangeError(index);
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Properties 
+		//
+		//--------------------------------------------------------------------------
 		
-			var elt:IVisualElement = IVisualElement( _mxmlContent[index] );
+		//----------------------------------
+		//  layout
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 */
+		override public function set layout( value:LayoutBase ):void
+		{
+			if( _useVirtualLayout && !( value is BasicLayout ) ) value.useVirtualLayout = _useVirtualLayout;
 			
-			if( !elt.parent )
-			{
-				elementAdded(elt, numChildren);
-				if( elt is IInvalidating ) IInvalidating( elt ).validateNow();
-				if( !isNaN( eltWidth ) || !isNaN( eltHeight ) ) elt.setLayoutBoundsSize(eltWidth, eltHeight);
-			}
-			else
-			{
-				if( elt.parent != this ) throw new Error(resourceManager.getString("components", "mxmlElementNoMultipleParents", [elt]));
-			}
+			super.layout = value;
+		}
+		
+		
+		//----------------------------------
+		//  moduleFactory
+		//----------------------------------
+		/**
+		 *  @private
+		 */
+		override public function set moduleFactory( moduleFactory:IFlexModuleFactory ):void
+		{
+			super.moduleFactory = moduleFactory;
+			
+			// Register the _creationPolicy style as inheriting. See the creationPolicy
+			// getter for details on usage of this style.
+			styleManager.registerInheritingStyle("_creationPolicy");
+		}
+		
+		/**
+		 *  @private
+		 *  Override to ensure we set redrawRequested when appropriate.
+		 */
+		override public function set mouseEnabledWhereTransparent(value:Boolean):void
+		{
+			if (value == mouseEnabledWhereTransparent)
+				return;
+			
+			super.mouseEnabledWhereTransparent = value;
+			redrawRequested = true;
+		}
 
-			return elt;
-		}
-		
+		//----------------------------------
+		//  numElements
+		//----------------------------------
 		
 		/**
 		 *  @inheritDoc
-		 *  
+		 *
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		override public function getElementAt(index:int):IVisualElement
+		override public function get numElements():int
 		{
-			// check for RangeError:
-			checkForRangeError(index);
+			if( _mxmlContent == null ) return 0;
 			
-			var elt:IVisualElement = IVisualElement( _mxmlContent[index] );
-			
-			if( elt.parent )
-			{
-				if( elt.parent != this ) throw new Error(resourceManager.getString("components", "mxmlElementNoMultipleParents", [elt]));
-			}
-			else
-			{
-				elementAdded(elt, index);
-			}
-			
-			return elt;
+			return _mxmlContent.length;
 		}
 		
+		
+		//----------------------------------
+		//  alpha
+		//----------------------------------
+		
+		[Inspectable(defaultValue="1.0", category="General", verbose="1")]
 		
 		/**
-		 *  @private 
-		 *  Checks the range of index to make sure it's valid
-		 */ 
-		private function checkForRangeError(index:int, addingElement:Boolean = false):void
+		 *  @private
+		 */
+		override public function set alpha(value:Number):void
 		{
-			// figure out the maximum allowable index
-			var maxIndex:int = (_mxmlContent == null ? -1 : _mxmlContent.length - 1);
+			if (super.alpha == value)
+				return;
 			
-			// if adding an element, we allow an extra index at the end
-			if (addingElement)
-				maxIndex++;
+			if (_blendMode == "auto")
+			{
+				// If alpha changes from an opaque/transparent (1/0) and translucent
+				// (0 < value < 1), then trigger a blendMode change
+				if ((value > 0 && value < 1 && (super.alpha == 0 || super.alpha == 1)) ||
+					((value == 0 || value == 1) && (super.alpha > 0 && super.alpha < 1)))
+				{
+					blendModeChanged = true;
+					invalidateDisplayObjectOrdering();
+					invalidateProperties();
+				}
+			}
 			
-			if (index < 0 || index > maxIndex)
-				throw new RangeError(resourceManager.getString("components", "indexOutOfRange", [index]));
+			super.alpha = value;
 		}
 		
+		
+		//----------------------------------
+		//  blendMode
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage for the blendMode property.
+		 */
+		private var _blendMode:String = "auto";  
+		private var blendModeChanged:Boolean;
+		private var blendShaderChanged:Boolean;
+		
+		[Inspectable(category="General", enumeration="auto,add,alpha,darken,difference,erase,hardlight,invert,layer,lighten,multiply,normal,subtract,screen,overlay,colordodge,colorburn,exclusion,softlight,hue,saturation,color,luminosity", defaultValue="auto")]
 		
 		/**
 		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */ 
-		override public function getElementIndex( element:IVisualElement ):int
+		 */
+		override public function get blendMode():String
 		{
-			var index:int = _mxmlContent ? _mxmlContent.indexOf( element ) : -1;
-			
-			if( index == -1 )
-				throw ArgumentError(resourceManager.getString("components", "elementNotFoundInGroup", [element]));
-			else
-				return index;
+			return _blendMode; 
 		}
 		
+		/**
+		 *  @private
+		 */
+		override public function set blendMode(value:String):void
+		{
+			if (value == _blendMode)
+				return;
+			
+			invalidateProperties();
+			blendModeChanged = true;
+			
+			//The default blendMode in FXG is 'auto'. There are only
+			//certain cases where this results in a rendering difference,
+			//one being when the alpha of the Group is > 0 and < 1. In that
+			//case we set the blendMode to layer to avoid the performance
+			//overhead that comes with a non-normal blendMode. 
+			
+			if (value == "auto")
+			{
+				_blendMode = value;
+				if (((alpha > 0 && alpha < 1) && super.blendMode != BlendMode.LAYER) ||
+					((alpha == 1 || alpha == 0) && super.blendMode != BlendMode.NORMAL) )
+				{
+					invalidateDisplayObjectOrdering();
+				}
+			}
+			else 
+			{
+				var oldValue:String = _blendMode;
+				_blendMode = value;
+				
+				// If one of the non-native Flash blendModes is set, 
+				// record the new value and set the appropriate 
+				// blendShader on the display object. 
+				if (isAIMBlendMode(value))
+				{
+					blendShaderChanged = true;
+				}
+				
+				// Only need to re-do display object assignment if blendmode was normal
+				// and is changing to something else, or the blend mode was something else 
+				// and is going back to normal.  This is because display object sharing
+				// only happens when blendMode is normal.
+				if ((oldValue == BlendMode.NORMAL || value == BlendMode.NORMAL) && 
+					!(oldValue == BlendMode.NORMAL && value == BlendMode.NORMAL))
+				{
+					invalidateDisplayObjectOrdering();
+				}
+				
+			}
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 *  @inheritDoc
@@ -616,37 +714,185 @@ package ws.tink.spark.containers
 			if( index2Added ) elementAdded(element1, index2, false /*notifyListeners*/);
 		}
 		
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Overridden Properties 
-		//
-		//--------------------------------------------------------------------------
-		
-		//----------------------------------
-		//  moduleFactory
-		//----------------------------------
 		/**
-		 *  @private
+		 *  Create the content for this component. If creationPolicy is "auto" or "all", this
+		 *  function will be called by the flex framework. If creationPolicy is "none", this 
+		 *  function must be called to create the content for the component.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
-		override public function set moduleFactory( moduleFactory:IFlexModuleFactory ):void
+		public function createDeferredContent():void
 		{
-			super.moduleFactory = moduleFactory;
+			if( !_mxmlContentCreated )
+			{
+				_mxmlContentCreated = true;
+				if (_mxmlContentFactory)
+				{
+					var deferredContent:Object = _mxmlContentFactory.getInstance();
+					mxmlContent = deferredContent as Array;
+					_deferredContentCreated = true;
+					
+					switch( _creationPolicy )
+					{
+						
+						case DeferredCreationPolicy.CONSTRUCT :
+						case DeferredCreationPolicy.ALL :
+						{
+							createDeferredChildren();
+							break;
+						}
+						case DeferredCreationPolicy.NONE :
+						case DeferredCreationPolicy.VISIBLE :
+						{
+							// Do nothing
+							break;
+						}
+					}
+					
+					dispatchEvent( new FlexEvent( FlexEvent.CONTENT_CREATION_COMPLETE ) );
+				}
+			}
+		}
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function setElementIndex(element:IVisualElement, index:int):void
+		{
+			// check for RangeError...this is done in addItemAt
+			// but we want to do it before removing the element
+			checkForRangeError(index);
 			
-			// Register the _creationPolicy style as inheriting. See the creationPolicy
-			// getter for details on usage of this style.
-			styleManager.registerInheritingStyle("_creationPolicy");
+			removeElement(element);
+			addElementAt(element, index);
+		}
+		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function removeElement(element:IVisualElement):IVisualElement
+		{
+			return removeElementAt(getElementIndex(element));
 		}
 		
 		/**
 		 *  @private
 		 */
-		override public function invalidateLayering():void
+		mx_internal function getMXMLContent():Array
 		{
-			if( layeringMode == ITEM_ORDERED_LAYERING ) layeringMode = SPARSE_LAYERING;
-			invalidateDisplayObjectOrdering();
+			return ( _mxmlContent ) ? _mxmlContent.concat() : null;
 		}
 		
+		/**
+		 *  @private
+		 */
+		private function createContentIfNeeded():void
+		{
+			if( !_mxmlContentCreated && 
+				_childrenCreated &&
+				creationPolicy != ContainerCreationPolicy.NONE )
+				createDeferredContent();
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function createDeferredChildren():void
+		{
+			var content:Array = getMXMLContent();
+			var element:IVisualElement;
+			
+			var numItems:int = content.length;
+			for( var i:int = 0; i < numItems; i++ )
+			{
+				element = IVisualElement( content[ i ] );
+				if( element is IDeferredContentOwner ) IDeferredContentOwner( element ).createDeferredContent();
+			}
+		}
+		
+		/**
+		 *  @private 
+		 *  Checks the range of index to make sure it's valid
+		 */ 
+		private function checkForRangeError(index:int, addingElement:Boolean = false):void
+		{
+			// figure out the maximum allowable index
+			var maxIndex:int = (_mxmlContent == null ? -1 : _mxmlContent.length - 1);
+			
+			// if adding an element, we allow an extra index at the end
+			if (addingElement)
+				maxIndex++;
+			
+			if (index < 0 || index > maxIndex)
+				throw new RangeError(resourceManager.getString("components", "indexOutOfRange", [index]));
+		}
+		
+		/**
+		 *  @private
+		 *
+		 *  If the displayObject is not a child of this Group, then insert it at the
+		 *  specified index (or at the end of the list, when index is -1).
+		 *  Else, if the displayObject is already a child of the Group, then simply
+		 *  adjust its child index.  
+		 */ 
+		private function addDisplayObjectToDisplayList(child:DisplayObject, index:int = -1):void
+		{
+			var overlayCount:int = _overlay ? _overlay.numDisplayObjects : 0;
+			if (child.parent == this)
+				super.setChildIndex(child, index != -1 ? index : super.numChildren - 1 - overlayCount);
+			else
+				super.addChildAt(child, index != -1 ? index : super.numChildren - overlayCount);
+		}
+		
+		/**
+		 *  @private
+		 *  
+		 *  Invalidates the display object ordering and will run assignDisplayObjects()
+		 *  if necessary.
+		 * 
+		 *  @return true if the display object ordering needed to be invalidated; 
+		 *          false otherwise.
+		 */
+		//FIXME tink cannot be IGraphicElement
+		private function invalidateDisplayObjectOrdering():Boolean
+		{
+			if( layeringMode == SPARSE_LAYERING )
+			{
+				needsDisplayObjectAssignment = true;
+				invalidateProperties();
+				return true;
+			}
+			
+			return false;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function isAIMBlendMode(value:String):Boolean
+		{
+			if (value == "colordodge" || 
+				value =="colorburn" || value =="exclusion" || 
+				value =="softlight" || value =="hue" || 
+				value =="saturation" || value =="color" ||
+				value =="luminosity")
+				return true; 
+			else return false; 
+		}
 		
 		/**
 		 *  Adds an item to this Group.
@@ -663,7 +909,6 @@ package ws.tink.spark.containers
 		 */
 		mx_internal function elementAdded(element:IVisualElement, index:int, notifyListeners:Boolean = true):void
 		{
-			trace( "elementAdded" );
 			if (layout)
 				layout.elementAdded(index);        
 			
@@ -694,11 +939,14 @@ package ws.tink.spark.containers
 			
 			if (element is IGraphicElement) 
 			{
-				//FIXME tink cannot be IGraphicElement
+				// FIXME tink cannot be IGraphicElement due to Adobe typing the paramater
+				// passed to <code>GraphicElement.parentChanged()</code> as a <code>Group</code>.
+				// see https://bugs.adobe.com/jira/browse/SDK-25601
+				// https://bugs.adobe.com/jira/browse/SDK-25333
 				throw new Error( "You cannot use an IGraphicElement in a DeferredGroup, all elements must extend UIComponent" );
-//				numGraphicElements++;
-//				addingGraphicElementChild(element as IGraphicElement);
-//				invalidateDisplayObjectOrdering();
+				numGraphicElements++;
+				addingGraphicElementChild(element as IGraphicElement);
+				invalidateDisplayObjectOrdering();
 			}   
 			else
 			{
@@ -715,7 +963,12 @@ package ws.tink.spark.containers
 				}
 				else
 				{
-					addDisplayObjectToDisplayList(DisplayObject(element), index);
+					// TODO Tink keep and eye on this
+					//					addDisplayObjectToDisplayList(DisplayObject(element), index);
+					// We don't pass the index here either and therefore the child will always 
+					// be added to the end of the display list. This is to ensure that items don't
+					// need to be shown in order.
+					addDisplayObjectToDisplayList(DisplayObject(element));
 				}
 			}
 			
@@ -763,8 +1016,8 @@ package ws.tink.spark.containers
 			{
 				//FIXME tink cannot be IGraphicElement
 				throw new Error( "You cannot use an IGraphicElement in a DeferredGroup, all elements must extend UIComponent" );
-//				numGraphicElements--;
-//				removingGraphicElementChild(element as IGraphicElement);
+				//				numGraphicElements--;
+				//				removingGraphicElementChild(element as IGraphicElement);
 			}
 			else if (childDO && childDO.parent == this)
 			{
@@ -780,6 +1033,31 @@ package ws.tink.spark.containers
 		}
 		
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods 
+		//
+		//--------------------------------------------------------------------------		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */ 
+		override public function getElementIndex( element:IVisualElement ):int
+		{
+			var index:int = _mxmlContent ? _mxmlContent.indexOf( element ) : -1;
+			
+			if( index == -1 )
+				throw ArgumentError(resourceManager.getString("components", "elementNotFoundInGroup", [element]));
+			else
+				return index;
+		}
+		
 		/**
 		 *  @inheritDoc
 		 *  
@@ -788,72 +1066,53 @@ package ws.tink.spark.containers
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function setElementIndex(element:IVisualElement, index:int):void
+		override public function getVirtualElementAt(index:int, eltWidth:Number=NaN, eltHeight:Number=NaN):IVisualElement
 		{
-			// check for RangeError...this is done in addItemAt
-			// but we want to do it before removing the element
+			// check for RangeError:
+			checkForRangeError(index);
+		
+			var elt:IVisualElement = IVisualElement( _mxmlContent[index] );
+			
+			if( !elt.parent )
+			{
+				elementAdded(elt, numChildren);
+				if( elt is IInvalidating ) IInvalidating( elt ).validateNow();
+				if( !isNaN( eltWidth ) || !isNaN( eltHeight ) ) elt.setLayoutBoundsSize(eltWidth, eltHeight);
+			}
+			else
+			{
+				if( elt.parent != this ) throw new Error(resourceManager.getString("components", "mxmlElementNoMultipleParents", [elt]));
+			}
+
+			return elt;
+		}
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override public function getElementAt(index:int):IVisualElement
+		{
+			// check for RangeError:
 			checkForRangeError(index);
 			
-			removeElement(element);
-			addElementAt(element, index);
-		}
-		
-		
-		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function removeElement(element:IVisualElement):IVisualElement
-		{
-			return removeElementAt(getElementIndex(element));
-		}
-		
-		
-		
-		/**
-		 *  @private
-		 *
-		 *  If the displayObject is not a child of this Group, then insert it at the
-		 *  specified index (or at the end of the list, when index is -1).
-		 *  Else, if the displayObject is already a child of the Group, then simply
-		 *  adjust its child index.  
-		 */ 
-		private function addDisplayObjectToDisplayList(child:DisplayObject, index:int = -1):void
-		{
-			var overlayCount:int = _overlay ? _overlay.numDisplayObjects : 0;
-			if (child.parent == this)
-				super.setChildIndex(child, index != -1 ? index : super.numChildren - 1 - overlayCount);
-			else
-				super.addChildAt(child, index != -1 ? index : super.numChildren - overlayCount);
-		}
-		
-		
-		/**
-		 *  @private
-		 *  
-		 *  Invalidates the display object ordering and will run assignDisplayObjects()
-		 *  if necessary.
-		 * 
-		 *  @return true if the display object ordering needed to be invalidated; 
-		 *          false otherwise.
-		 */
-		//FIXME tink cannot be IGraphicElement
-		private function invalidateDisplayObjectOrdering():Boolean
-		{
-			if( layeringMode == SPARSE_LAYERING )
+			var elt:IVisualElement = IVisualElement( _mxmlContent[index] );
+			
+			if( elt.parent )
 			{
-				needsDisplayObjectAssignment = true;
-				invalidateProperties();
-				return true;
+				if( elt.parent != this ) throw new Error(resourceManager.getString("components", "mxmlElementNoMultipleParents", [elt]));
+			}
+			else
+			{
+				elementAdded(elt, index);
 			}
 			
-			return false;
+			return elt;
 		}
-		
 		
 		/**
 		 *  @private
@@ -913,16 +1172,171 @@ package ws.tink.spark.containers
 		
 		/**
 		 *  @private
-		 *  Override to ensure we set redrawRequested when appropriate.
 		 */
-		override public function set mouseEnabledWhereTransparent(value:Boolean):void
+		override public function invalidateLayering():void
 		{
-			if (value == mouseEnabledWhereTransparent)
-				return;
-			
-			super.mouseEnabledWhereTransparent = value;
-			redrawRequested = true;
+			if( layeringMode == ITEM_ORDERED_LAYERING ) layeringMode = SPARSE_LAYERING;
+			invalidateDisplayObjectOrdering();
 		}
+		
+		/**
+		 *  Create content children, if the <code>creationPolicy</code> property 
+		 *  is not equal to <code>none</code>.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function createChildren():void
+		{
+			super.createChildren();
+			
+			_childrenCreated = true;
+			
+			createContentIfNeeded();
+		}
+		
+		/**
+		 *  @private
+		 */
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{       
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			
+			// If the DisplayObject assignment is still not completed, then postpone validation
+			// of the GraphicElements
+			if( needsDisplayObjectAssignment && invalidatePropertiesFlag ) return;
+			//			if (scaleGridChanged)
+			//			{
+			//				scaleGridChanged = false;
+			//				
+			//				if (isValidScaleGrid())
+			//				{
+			//					// Check for DisplayObjects other than overlays
+			//					var overlayCount:int = _overlay ? _overlay.numDisplayObjects : 0;
+			//					if (numChildren - overlayCount > 0)
+			//						throw new Error(resourceManager.getString("components", "scaleGridGroupError"));
+			//					
+			//					super.scale9Grid = new Rectangle(scaleGridLeft, 
+			//						scaleGridTop,    
+			//						scaleGridRight - scaleGridLeft, 
+			//						scaleGridBottom - scaleGridTop);
+			//				} 
+			//				else
+			//				{
+			//					super.scale9Grid = null;
+			//				}                              
+			//			}
+		}
+		
+		/**
+		 *  @private
+		 */ 
+		override protected function commitProperties():void
+		{
+			super.commitProperties();
+			
+			if (blendModeChanged)
+			{
+				blendModeChanged = false;
+				
+				// Figure out the correct blendMode value
+				// to set. 
+				if (_blendMode == "auto")
+				{
+					if (alpha == 0 || alpha == 1) 
+						super.blendMode = BlendMode.NORMAL;
+					else
+						super.blendMode = BlendMode.LAYER;
+				}
+				else if (!isAIMBlendMode(_blendMode))
+				{
+					super.blendMode = _blendMode;
+				}
+				
+				if (blendShaderChanged) 
+				{
+					// The graphic element's blendMode was set to a non-Flash 
+					// blendMode. We mimic the look by instantiating the 
+					// appropriate shader class and setting the blendShader
+					// property on the displayObject. 
+					blendShaderChanged = false; 
+					switch(_blendMode)
+					{
+						case "color": 
+						{
+							super.blendShader = new ColorShader();
+							break; 
+						}
+						case "colordodge":
+						{
+							super.blendShader = new ColorDodgeShader();
+							break; 
+						}
+						case "colorburn":
+						{
+							super.blendShader = new ColorBurnShader();
+							break; 
+						}
+						case "exclusion":
+						{
+							super.blendShader = new ExclusionShader();
+							break; 
+						}
+						case "hue":
+						{
+							super.blendShader = new HueShader();
+							break; 
+						}
+						case "luminosity":
+						{
+							super.blendShader = new LuminosityShader();
+							break; 
+						}
+						case "saturation": 
+						{
+							super.blendShader = new SaturationShader();
+							break; 
+						}
+						case "softlight":
+						{
+							super.blendShader = new SoftLightShader();
+							break; 
+						}
+					}
+				}
+			}
+			
+			if (needsDisplayObjectAssignment)
+			{
+				needsDisplayObjectAssignment = false;
+				assignDisplayObjects();
+			}
+			
+			//FIXME tink address scaleGrid
+			//			if (scaleGridChanged)
+			//			{
+			//				// Don't reset scaleGridChanged since we also check it in updateDisplayList
+			//				if( isValidScaleGrid() ) resizeMode = ResizeMode.SCALE; // Force the resizeMode to scale 
+			//			}
+			
+			//FIXME tink no support for IGraphicElement
+			// Validate element properties
+			//			if (numGraphicElements > 0)
+			//			{
+			//				var length:int = numElements;
+			//				for (var i:int = 0; i < length; i++)
+			//				{
+			//					var element:IGraphicElement = getElementAt(i) as IGraphicElement;
+			//					if (element)
+			//						element.validateProperties();
+			//				}
+			//			}
+		}
+		
+
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -951,7 +1365,6 @@ package ws.tink.spark.containers
 		{
 			return _redrawRequested;
 		}
-		
 		/**
 		 *  @private
 		 */
@@ -963,41 +1376,6 @@ package ws.tink.spark.containers
 		
 		/**
 		 *  @private
-		 */
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-		{       
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			
-			// If the DisplayObject assignment is still not completed, then postpone validation
-			// of the GraphicElements
-			if( needsDisplayObjectAssignment && invalidatePropertiesFlag ) return;
-//			if (scaleGridChanged)
-//			{
-//				scaleGridChanged = false;
-//				
-//				if (isValidScaleGrid())
-//				{
-//					// Check for DisplayObjects other than overlays
-//					var overlayCount:int = _overlay ? _overlay.numDisplayObjects : 0;
-//					if (numChildren - overlayCount > 0)
-//						throw new Error(resourceManager.getString("components", "scaleGridGroupError"));
-//					
-//					super.scale9Grid = new Rectangle(scaleGridLeft, 
-//						scaleGridTop,    
-//						scaleGridRight - scaleGridLeft, 
-//						scaleGridBottom - scaleGridTop);
-//				} 
-//				else
-//				{
-//					super.scale9Grid = null;
-//				}                              
-//			}
-		}
-		
-		
-		/**
-		 *  @private
-		 *  
 		 *  Called to assign display objects to graphic elements
 		 */
 		private function assignDisplayObjects():void
@@ -1169,259 +1547,8 @@ package ws.tink.spark.containers
 			return insertIndex;
 		}
 		
-		private var needsDisplayObjectAssignment:Boolean = false;
-		private var layeringMode:uint = ITEM_ORDERED_LAYERING;
-		
-		private static const ITEM_ORDERED_LAYERING:uint = 0;
-		private static const SPARSE_LAYERING:uint = 1;    
 		
 		
-		/**
-		 *  @private
-		 */ 
-		override protected function commitProperties():void
-		{
-			super.commitProperties();
-			
-			if (blendModeChanged)
-			{
-				blendModeChanged = false;
-				
-				// Figure out the correct blendMode value
-				// to set. 
-				if (_blendMode == "auto")
-				{
-					if (alpha == 0 || alpha == 1) 
-						super.blendMode = BlendMode.NORMAL;
-					else
-						super.blendMode = BlendMode.LAYER;
-				}
-				else if (!isAIMBlendMode(_blendMode))
-				{
-					super.blendMode = _blendMode;
-				}
-				
-				if (blendShaderChanged) 
-				{
-					// The graphic element's blendMode was set to a non-Flash 
-					// blendMode. We mimic the look by instantiating the 
-					// appropriate shader class and setting the blendShader
-					// property on the displayObject. 
-					blendShaderChanged = false; 
-					switch(_blendMode)
-					{
-						case "color": 
-						{
-							super.blendShader = new ColorShader();
-							break; 
-						}
-						case "colordodge":
-						{
-							super.blendShader = new ColorDodgeShader();
-							break; 
-						}
-						case "colorburn":
-						{
-							super.blendShader = new ColorBurnShader();
-							break; 
-						}
-						case "exclusion":
-						{
-							super.blendShader = new ExclusionShader();
-							break; 
-						}
-						case "hue":
-						{
-							super.blendShader = new HueShader();
-							break; 
-						}
-						case "luminosity":
-						{
-							super.blendShader = new LuminosityShader();
-							break; 
-						}
-						case "saturation": 
-						{
-							super.blendShader = new SaturationShader();
-							break; 
-						}
-						case "softlight":
-						{
-							super.blendShader = new SoftLightShader();
-							break; 
-						}
-					}
-				}
-			}
-			
-			if (needsDisplayObjectAssignment)
-			{
-				needsDisplayObjectAssignment = false;
-				assignDisplayObjects();
-			}
-			
-			//FIXME tink address scaleGrid
-//			if (scaleGridChanged)
-//			{
-//				// Don't reset scaleGridChanged since we also check it in updateDisplayList
-//				if( isValidScaleGrid() ) resizeMode = ResizeMode.SCALE; // Force the resizeMode to scale 
-//			}
-			
-			//FIXME tink no support for IGraphicElement
-			// Validate element properties
-//			if (numGraphicElements > 0)
-//			{
-//				var length:int = numElements;
-//				for (var i:int = 0; i < length; i++)
-//				{
-//					var element:IGraphicElement = getElementAt(i) as IGraphicElement;
-//					if (element)
-//						element.validateProperties();
-//				}
-//			}
-		}
-		
-		
-		//----------------------------------
-		//  alpha
-		//----------------------------------
-		
-		[Inspectable(defaultValue="1.0", category="General", verbose="1")]
-		
-		/**
-		 *  @private
-		 */
-		override public function set alpha(value:Number):void
-		{
-			if (super.alpha == value)
-				return;
-			
-			if (_blendMode == "auto")
-			{
-				// If alpha changes from an opaque/transparent (1/0) and translucent
-				// (0 < value < 1), then trigger a blendMode change
-				if ((value > 0 && value < 1 && (super.alpha == 0 || super.alpha == 1)) ||
-					((value == 0 || value == 1) && (super.alpha > 0 && super.alpha < 1)))
-				{
-					blendModeChanged = true;
-					invalidateDisplayObjectOrdering();
-					invalidateProperties();
-				}
-			}
-			
-			super.alpha = value;
-		}
-		
-		//----------------------------------
-		//  blendMode
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 *  Storage for the blendMode property.
-		 */
-		private var _blendMode:String = "auto";  
-		private var blendModeChanged:Boolean;
-		private var blendShaderChanged:Boolean;
-		
-		[Inspectable(category="General", enumeration="auto,add,alpha,darken,difference,erase,hardlight,invert,layer,lighten,multiply,normal,subtract,screen,overlay,colordodge,colorburn,exclusion,softlight,hue,saturation,color,luminosity", defaultValue="auto")]
-		
-		/**
-		 *  A value from the BlendMode class that specifies which blend mode to use. 
-		 *  A bitmap can be drawn internally in two ways. 
-		 *  If you have a blend mode enabled or an external clipping mask, the bitmap is drawn 
-		 *  by adding a bitmap-filled square shape to the vector render. 
-		 *  If you attempt to set this property to an invalid value, 
-		 *  Flash Player or Adobe AIR sets the value to <code>BlendMode.NORMAL</code>. 
-		 *
-		 *  <p>A value of "auto" (the default) is specific to Group's use of 
-		 *  blendMode and indicates that the underlying blendMode should be 
-		 *  <code>BlendMode.NORMAL</code> except when <code>alpha</code> is not
-		 *  equal to either 0 or 1, when it is set to <code>BlendMode.LAYER</code>. 
-		 *  This behavior ensures that groups have correct
-		 *  compositing of their graphic objects when the group is translucent.</p>
-		 * 
-		 *  @default "auto"
-		 *
-		 *  @see flash.display.DisplayObject#blendMode
-		 *  @see flash.display.BlendMode
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override public function get blendMode():String
-		{
-			return _blendMode; 
-		}
-		
-		/**
-		 *  @private
-		 */
-		override public function set blendMode(value:String):void
-		{
-			if (value == _blendMode)
-				return;
-			
-			invalidateProperties();
-			blendModeChanged = true;
-			
-			//The default blendMode in FXG is 'auto'. There are only
-			//certain cases where this results in a rendering difference,
-			//one being when the alpha of the Group is > 0 and < 1. In that
-			//case we set the blendMode to layer to avoid the performance
-			//overhead that comes with a non-normal blendMode. 
-			
-			if (value == "auto")
-			{
-				_blendMode = value;
-				if (((alpha > 0 && alpha < 1) && super.blendMode != BlendMode.LAYER) ||
-					((alpha == 1 || alpha == 0) && super.blendMode != BlendMode.NORMAL) )
-				{
-					invalidateDisplayObjectOrdering();
-				}
-			}
-			else 
-			{
-				var oldValue:String = _blendMode;
-				_blendMode = value;
-				
-				// If one of the non-native Flash blendModes is set, 
-				// record the new value and set the appropriate 
-				// blendShader on the display object. 
-				if (isAIMBlendMode(value))
-				{
-					blendShaderChanged = true;
-				}
-				
-				// Only need to re-do display object assignment if blendmode was normal
-				// and is changing to something else, or the blend mode was something else 
-				// and is going back to normal.  This is because display object sharing
-				// only happens when blendMode is normal.
-				if ((oldValue == BlendMode.NORMAL || value == BlendMode.NORMAL) && 
-					!(oldValue == BlendMode.NORMAL && value == BlendMode.NORMAL))
-				{
-					invalidateDisplayObjectOrdering();
-				}
-				
-			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function isAIMBlendMode(value:String):Boolean
-		{
-			if (value == "colordodge" || 
-				value =="colorburn" || value =="exclusion" || 
-				value =="softlight" || value =="hue" || 
-				value =="saturation" || value =="color" ||
-				value =="luminosity")
-				return true; 
-			else return false; 
-		}
 		
 	}
 }
