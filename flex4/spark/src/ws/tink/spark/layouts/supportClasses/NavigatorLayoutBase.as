@@ -1,36 +1,25 @@
 package ws.tink.spark.layouts.supportClasses
 {
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	import flash.geom.ColorTransform;
-	import flash.geom.Rectangle;
 	
-	import mx.controls.DataGrid;
-	import mx.controls.scrollClasses.ScrollBar;
 	import mx.controls.scrollClasses.ScrollBarDirection;
-	import mx.core.ISelectableList;
 	import mx.core.IVisualElement;
-	import mx.core.IVisualElementContainer;
-	import mx.core.UIComponent;
 	import mx.core.mx_internal;
-	import mx.events.InvalidateRequestData;
-	import mx.utils.OnDemandEventDispatcher;
+	import mx.events.FlexEvent;
 	
 	import spark.components.DataGroup;
-	import spark.components.Group;
 	import spark.components.Scroller;
 	import spark.components.supportClasses.GroupBase;
-	import spark.components.supportClasses.ScrollBarBase;
 	import spark.core.NavigationUnit;
 	import spark.events.IndexChangeEvent;
-	import spark.layouts.HorizontalAlign;
-	import spark.layouts.VerticalAlign;
 	import spark.layouts.supportClasses.LayoutBase;
 	import spark.primitives.supportClasses.GraphicElement;
 	
 	use namespace mx_internal;
 	
 	[Event(name="change", type="spark.events.IndexChangeEvent")]
+	[Event(name="valueCommit", type="mx.events.FlexEvent")]
 	
 	public class NavigatorLayoutBase extends LayoutBase implements INavigatorLayout
 	{
@@ -41,6 +30,7 @@ package ws.tink.spark.layouts.supportClasses
 		private var _selectedIndexOffset	: Number = 0;
 		private var _selectedIndex			: int = -1;
 		private var _selectedIndexChanged	: Boolean;
+		private var _selectedIndexChangedAfterTargetChanged	: Boolean;
 		
 		private var _elementsChanged		: Boolean;
 		
@@ -151,6 +141,11 @@ package ws.tink.spark.layouts.supportClasses
 			}
 		}
 		
+		
+		private var _programmaticSelectedIndex:int;
+		
+		[Bindable( event="change" )]
+		[Bindable( event="valueCommit" )]
 		/**
 		 *  @inheritDoc
 		 *  
@@ -159,13 +154,17 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		[Bindable( event="change" )]
 		public function get selectedIndex():int
 		{
 			return _selectedIndex;
 		}
 		public function set selectedIndex( value:int ):void
 		{
+			if( _selectedIndex == value ) return;
+			
+			_programmaticSelectedIndex = value;
+			if( _targetChanged ) _selectedIndexChangedAfterTargetChanged = true;
+			
 			if( _useScrollBarForNavigation && getScroller() )
 			{
 				updateScrollBar( value, 0 );
@@ -382,7 +381,16 @@ package ws.tink.spark.layouts.supportClasses
 			if( _targetChanged )
 			{
 				_targetChanged = false;
-				scrollPositionChanged();
+				
+				// Only update if the target was changed after the selectedIndex
+				if( !_selectedIndexChangedAfterTargetChanged )
+				{
+					scrollPositionChanged();
+				}
+				else
+				{
+					_selectedIndexChangedAfterTargetChanged = false;
+				}
 			}
 			
 			if( _useScrollBarForNavigation )
@@ -406,7 +414,15 @@ package ws.tink.spark.layouts.supportClasses
 			if( _selectedIndexChanged )
 			{
 				_selectedIndexChanged = false;
-				dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGE ) );
+				if( _programmaticSelectedIndex == selectedIndex )
+				{
+					dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
+				}
+				else
+				{
+					dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGE ) );
+				}
+				_programmaticSelectedIndex = -2;
 			}
 		}
 		
@@ -416,7 +432,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( target is DataGroup )
 			{
 				var dataGroup:DataGroup = DataGroup( target );
-				if( !dataGroup.itemRenderer && dataGroup.itemRendererFunction == null ) elts = dataGroup.dataProvider.toArray();
+				if( !dataGroup.itemRenderer && dataGroup.itemRendererFunction == null && dataGroup.dataProvider ) elts = dataGroup.dataProvider.toArray();
 			}
 			else
 			{
@@ -553,10 +569,8 @@ package ws.tink.spark.layouts.supportClasses
 			
 			if( target.numElements )
 			{
-			
-			updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
+				updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
 								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
-		
 			}
 			else
 			{
@@ -600,7 +614,7 @@ package ws.tink.spark.layouts.supportClasses
 			_firstIndexInView = firstIndexinView;
 			_numIndicesInView = numIndicesInView;
 			
-			_lastIndexInView = _firstIndexInView + _numIndicesInView;
+			_lastIndexInView = _firstIndexInView + ( _numIndicesInView - 1 );
 			
 			invalidateTargetDisplayList();
 		}
@@ -631,7 +645,18 @@ package ws.tink.spark.layouts.supportClasses
 		protected function getScroller():Scroller
 		{
 			if( !target ) return null;
-			return target.parent.parent as Scroller;
+			
+			// TODO changes for NavigatorApplication, look into
+			try
+			{
+				return target.parent.parent as Scroller;
+			}
+			catch( e:Error )
+			{
+				
+			}
+			
+			return null;
 		}
 		
 		/**
@@ -647,10 +672,18 @@ package ws.tink.spark.layouts.supportClasses
 			super.elementAdded( index );
 			
 			_elementsChanged = true;
+			
+			invalidateTargetDisplayList();
 			//TODO maybe add a listener here for "includeInLayoutChanged"
 			// not implement due to risk of not being able to remove the listener
 			// (https://bugs.adobe.com/jira/browse/SDK-25896)
 			
+			
+			// TODO Tink
+			// We should fire this if the index added is less or equal to the
+			// selectedIndex.
+			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+			// AS THE INDEX HASN'T CHANGED
 //			if( selectedIndex == -1 ) scrollPositionChanged();
 		}
 		
@@ -667,7 +700,15 @@ package ws.tink.spark.layouts.supportClasses
 			super.elementRemoved( index );
 			
 			_elementsChanged = true;
+			
 			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
+			
+			// TODO Tink
+			// We should fire this if the index added is less or equal to the
+			// selectedIndex.
+			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+			// AS THE INDEX HASN'T CHANGED
+//			if( selectedIndex == -1 ) scrollPositionChanged();
 		}
 		
 		/**
