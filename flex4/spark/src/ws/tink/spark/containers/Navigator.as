@@ -37,6 +37,7 @@ package ws.tink.spark.containers
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
+	import ws.tink.spark.supportClasses.INavigator;
 	
 	use namespace mx_internal;
 	
@@ -79,6 +80,40 @@ package ws.tink.spark.containers
 	 *  @productversion Flex 4
 	 */
 	[Event(name="elementRemove", type="spark.events.ElementExistenceEvent")]
+	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/**
+	 *  Dispatched when the ISelectableList has been updated in some way.
+	 *
+	 *  @eventType mx.events.CollectionEvent.COLLECTION_CHANGE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
+	 */
+	[Event(name="collectionChange", type="mx.events.CollectionEvent")]
+	
+	/**
+	 *  Dispatched after the selection has changed. 
+	 *  This event is dispatched when the user interacts with the control.
+	 * 
+	 *  <p>When you change the value of the <code>selectedIndex</code> 
+	 *  or <code>selectedItem</code> properties programmatically, 
+	 *  the control does not dispatch the <code>change</code> event. 
+	 *  It dispatches the <code>valueCommit</code> event instead.</p>
+	 *
+	 *  @eventType spark.events.IndexChangeEvent.CHANGE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Event(name="change", type="spark.events.IndexChangeEvent")]
 	
 //	include "../styles/metadata/BasicInheritingTextStyles.as"
 //	include "../styles/metadata/AdvancedInheritingTextStyles.as"
@@ -298,7 +333,7 @@ package ws.tink.spark.containers
 	 *  @productversion Flex 4
 	 */
 	public class Navigator extends SkinnableContainerBase 
-		implements IDeferredContentOwner, IVisualElementContainer, ISelectableList
+		implements IDeferredContentOwner, IVisualElementContainer, INavigator
 	{
 //		include "../core/Version.as";
 		
@@ -442,13 +477,14 @@ package ws.tink.spark.containers
 		//  creationPolicy
 		//----------------------------------
 		
-		[Inspectable(enumeration="auto,all,none", defaultValue="auto")]
+		
 		
 		// Internal flag used when creationPolicy="none".
 		// When set, the value of the backing store _creationPolicy
 		// style is "auto" so descendants inherit the correct value.
 		private var creationPolicyNone:Boolean = false;
 		
+		[Inspectable(enumeration="auto,all,none", defaultValue="auto")]
 		/**
 		 *  @inheritDoc
 		 *
@@ -549,52 +585,52 @@ package ws.tink.spark.containers
 		}
 		
 		
-		//----------------------------------
-		//  useVirtualLayout
-		//----------------------------------
-		
-		/**
-		 *  @private
-		 */
-		private var _useVirtualLayout:Boolean = false;
-		
-		/**
-		 *  Sets the value of the <code>useVirtualLayout</code> property
-		 *  of the layout associated with this control.  
-		 *  If the layout is subsequently replaced and the value of this 
-		 *  property is <code>true</code>, then the new layout's 
-		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
-		 *
-		 *  @default false
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get useVirtualLayout():Boolean
-		{
-			return (layout) ? layout.useVirtualLayout : _useVirtualLayout;
-		}
-		
-		/**
-		 *  @private
-		 *  Note: this property deviates a little from the conventional delegation pattern.
-		 *  If the user explicitly sets ListBase.useVirtualLayout=false and then sets
-		 *  the layout property to a layout with useVirtualLayout=true, the layout's value
-		 *  for this property trumps the ListBase.  The convention dictates opposite
-		 *  however in this case, always honoring the layout's useVirtalLayout property seems 
-		 *  less likely to cause confusion.
-		 */
-		public function set useVirtualLayout(value:Boolean):void
-		{
-			if (value == useVirtualLayout)
-				return;
-			
-			_useVirtualLayout = value;
-			if (layout)
-				layout.useVirtualLayout = value;
-		}
+//		//----------------------------------
+//		//  useVirtualLayout
+//		//----------------------------------
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private var _useVirtualLayout:Boolean = false;
+//		
+//		/**
+//		 *  Sets the value of the <code>useVirtualLayout</code> property
+//		 *  of the layout associated with this control.  
+//		 *  If the layout is subsequently replaced and the value of this 
+//		 *  property is <code>true</code>, then the new layout's 
+//		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
+//		 *
+//		 *  @default false
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get useVirtualLayout():Boolean
+//		{
+//			return (layout) ? layout.useVirtualLayout : _useVirtualLayout;
+//		}
+//		
+//		/**
+//		 *  @private
+//		 *  Note: this property deviates a little from the conventional delegation pattern.
+//		 *  If the user explicitly sets ListBase.useVirtualLayout=false and then sets
+//		 *  the layout property to a layout with useVirtualLayout=true, the layout's value
+//		 *  for this property trumps the ListBase.  The convention dictates opposite
+//		 *  however in this case, always honoring the layout's useVirtalLayout property seems 
+//		 *  less likely to cause confusion.
+//		 */
+//		public function set useVirtualLayout(value:Boolean):void
+//		{
+//			if (value == useVirtualLayout)
+//				return;
+//			
+//			_useVirtualLayout = value;
+//			if (layout)
+//				layout.useVirtualLayout = value;
+//		}
 		
 		
 		//----------------------------------
@@ -611,34 +647,25 @@ package ws.tink.spark.containers
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get layout():LayoutBase
+		public function get layout():INavigatorLayout
 		{
-			return (contentGroup) 
-			? contentGroup.layout 
-				: contentGroupProperties.layout;
+			return ( contentGroup ) ? INavigatorLayout( contentGroup.layout ) 
+				: INavigatorLayout( contentGroupProperties.layout );
 		}
-		
 		/**
 		 *  @private
 		 */
-		public function set layout(value:LayoutBase):void
+		public function set layout( value:INavigatorLayout ):void
 		{
-			if( value is INavigatorLayout )
+			if ( contentGroup )
 			{
-				value.useVirtualLayout = useVirtualLayout;
-				
-				if (contentGroup)
-				{
-					contentGroup.layout = value;
-					contentGroupProperties = BitFlagUtil.update(contentGroupProperties as uint, 
-						LAYOUT_PROPERTY_FLAG, true);
-				}
-				else
-					contentGroupProperties.layout = value;
+				contentGroup.layout = value as LayoutBase;
+				contentGroupProperties = BitFlagUtil.update(contentGroupProperties as uint, 
+					LAYOUT_PROPERTY_FLAG, true);
 			}
 			else
 			{
-				throw new Error( "Layout must implement INavigatorLayout" );
+				contentGroupProperties.layout = value;
 			}
 		}
 		
@@ -952,8 +979,8 @@ package ws.tink.spark.containers
 				}
 				
 				// Not your typical delegation, see 'set useVirtualLayout'
-				if( _useVirtualLayout && contentGroup.layout )
-					contentGroup.layout.useVirtualLayout = true;
+//				if( _useVirtualLayout && contentGroup.layout )
+//					contentGroup.layout.useVirtualLayout = true;
 				
 				// copy proxied values from contentGroupProperties (if set) to contentGroup
 				
@@ -972,6 +999,8 @@ package ws.tink.spark.containers
 					newContentGroupProperties = BitFlagUtil.update(newContentGroupProperties, 
 						LAYOUT_PROPERTY_FLAG, true);
 				}
+				
+				contentGroup.selectedIndex = _selectedIndex;
 				
 				contentGroupProperties = newContentGroupProperties;
 				
@@ -1136,11 +1165,13 @@ package ws.tink.spark.containers
 		 *  IList implementation of selectedIndex sets
 		 *  StackLayout( layout ).focusedIndex
 		 */
-		private var _selectedIndex		: int;
+		private var _selectedIndex		: int = -1;
 		public function set selectedIndex( value:int ):void
 		{
 			_selectedIndex = value;
-			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
+			
+			if( contentGroup ) contentGroup.selectedIndex = value;
+//			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
 		}
 		
 		/**
@@ -1150,7 +1181,7 @@ package ws.tink.spark.containers
 		 */
 		public function get selectedIndex():int
 		{
-			return ( layout ) ? INavigatorLayout( layout ).selectedIndex : _selectedIndex;
+			return ( contentGroup ) ? contentGroup.selectedIndex : _selectedIndex;
 		}
 		
 		/**
