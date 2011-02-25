@@ -76,14 +76,20 @@ package ws.tink.spark.containers
 	[Event(name="change", type="spark.events.IndexChangeEvent")]
 	
 	/**
-	 *  The NavigatorGroup class is the base container for all visual elements.
+	 *  The NavigatorGroup class is the base container for navigating all visual elements.
 	 * 
 	 *  The NavigatorGroup container takes as children any components that implement 
  	 *  the IUIComponent interface, and any components that implement 
 	 *  the IGraphicElement interface. 
  	 *  Use this container when you want to navigate between visual children, 
- 	 *  both visual elements and graphical elements. 
+ 	 *  both visual elements and graphical elements.
+	 *  
+	 *  <p>The layout for a NavigatorGroup must implement INavigatorLayout.</p>
 	 *
+	 *  <p>To improve performance and minimize application size, 
+	 *  the NavigatorGroup container cannot be skinned. 
+	 *  If you want to apply a skin, use the Navigator instead.</p>
+	 * 
 	 *  <p>The NavigatorGroup container has the following default characteristics:</p>
  	 *  <table class="innertable">
 	 *     <tr><th>Characteristic</th><th>Description</th></tr>
@@ -109,6 +115,9 @@ package ws.tink.spark.containers
 	 *  /&gt;
 	 *  </pre>
 	 *  
+	 *  @see ws.tink.spark.containers.Navigator
+	 *  @see ws.tink.spark.layouts.supportClasses.INavigatorLayout
+	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
@@ -180,7 +189,6 @@ package ws.tink.spark.containers
 		{
 			if( _selectedIndex == value ) return;
 			
-			var prevIndex:int = _selectedIndex;
 			_selectedIndex = value;
 			
 			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
@@ -268,6 +276,7 @@ package ws.tink.spark.containers
 			if( value is INavigatorLayout )
 			{
 				removeLayoutListeners();
+				INavigatorLayout( value ).selectedIndex = _selectedIndex;
 				super.layout = value;
 				addLayoutListeners();
 			}
@@ -314,7 +323,7 @@ package ws.tink.spark.containers
 		 */
 		public function addItem( item:Object ):void
 		{
-			addElement( item as IVisualElement );
+			addItemAt( item, length );
 		}
 		
 		/**
@@ -459,8 +468,6 @@ package ws.tink.spark.containers
 		{
 			removeAllElements();
 		}
-		
-		
 		
 		/**
 		 *  Removes the item at the specified index and returns it.  
@@ -610,7 +617,7 @@ package ws.tink.spark.containers
 			if( !layout ) layout = new StackLayout();
 			layout.useVirtualLayout = useVirtualLayout;
 			
-			if( _selectedIndex != -1 ) selectedIndex = _selectedIndex;
+			if( _selectedIndex != -1 ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
 			super.createChildren();
 		}	
 		
