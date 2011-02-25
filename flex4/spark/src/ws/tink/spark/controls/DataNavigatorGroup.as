@@ -37,6 +37,7 @@ package ws.tink.spark.controls
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.layouts.StackLayout;
+	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 	
@@ -200,7 +201,6 @@ package ws.tink.spark.controls
 		{
 			if( _selectedIndex == value ) return;
 			
-			var prevIndex:int = _selectedIndex;
 			_selectedIndex = value;
 			
 			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
@@ -306,6 +306,8 @@ package ws.tink.spark.controls
 		//----------------------------------
 		//  dataProvider
 		//----------------------------------  
+		
+		[Bindable("change")]
 		
 		/**
 		 *  @private
@@ -472,8 +474,19 @@ package ws.tink.spark.controls
 		}
 		
 		/**
-		 *  @private
-		 *  IList implementation of removeItemAt calls removeElementAt
+		 *  Removes the item at the specified index and returns it.  
+		 *  Any items that were after this index are now one index earlier.
+		 *
+		 *  @param index The index from which to remove the item.
+		 *
+		 *  @return The item that was removed.
+		 *
+		 *  @throws RangeError is index is less than 0 or greater than length. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		public function removeItemAt( index:int ):Object
 		{
@@ -525,14 +538,42 @@ package ws.tink.spark.controls
 			return ( !dataProvider ) ? null : dataProvider.toArray();
 		}
 		
+		
+		/**
+		 *  Adjusts the selected index to account for items being added to or 
+		 *  removed from this component.
+		 *
+		 *  @param newIndex The new index.
+		 *   
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function adjustSelection( newIndex:int ):void
+		{
+			var nl:INavigatorLayout = INavigatorLayout( layout );
+			if( nl is EasedNavigatorLayoutBase )
+			{
+				var enl:EasedNavigatorLayoutBase = EasedNavigatorLayoutBase( nl );
+				var stepEasing:Number = enl.stepEasing;
+				enl.stepEasing = 1;
+			}
+			
+			nl.selectedIndex = newIndex;
+			
+			if( enl ) enl.stepEasing = stepEasing;
+		}
+		
+		
 		/**
 		 *  @private
 		 */
 		private function addLayoutListeners():void
 		{
 			if( !layout ) return;
-			layout.addEventListener( IndexChangeEvent.CHANGE, onBubbleLayoutEvent, false, 0, true );
-			layout.addEventListener( FlexEvent.VALUE_COMMIT, onBubbleLayoutEvent, false, 0, true );
+			layout.addEventListener( IndexChangeEvent.CHANGE, onLayoutEvent, false, 0, true );
+			layout.addEventListener( FlexEvent.VALUE_COMMIT, onLayoutEvent, false, 0, true );
 		}
 		
 		/**
@@ -541,16 +582,8 @@ package ws.tink.spark.controls
 		private function removeLayoutListeners():void
 		{
 			if( !layout ) return;
-			layout.removeEventListener( IndexChangeEvent.CHANGE, onBubbleLayoutEvent, false );
-			layout.removeEventListener( FlexEvent.VALUE_COMMIT, onBubbleLayoutEvent, false );
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function onBubbleLayoutEvent( event:Event ):void
-		{
-			if( hasEventListener( event.type ) ) dispatchEvent( event );
+			layout.removeEventListener( IndexChangeEvent.CHANGE, onLayoutEvent, false );
+			layout.removeEventListener( FlexEvent.VALUE_COMMIT, onLayoutEvent, false );
 		}
 		
 		
@@ -579,6 +612,23 @@ package ws.tink.spark.controls
 		
 		
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Listeners
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 */
+		private function onLayoutEvent( event:Event ):void
+		{
+			if( hasEventListener( event.type ) ) dispatchEvent( event );
+		}
+		
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden Event Listeners
@@ -600,6 +650,34 @@ package ws.tink.spark.controls
 		override mx_internal function dataProvider_collectionChangeHandler( event:CollectionEvent ):void
 		{
 			super.dataProvider_collectionChangeHandler( event );
+			
+			if( event is CollectionEvent )
+			{
+				var nl:INavigatorLayout = INavigatorLayout( layout );
+				var ce:CollectionEvent = CollectionEvent(event);
+				switch( ce.kind )
+				{
+					case CollectionEventKind.ADD :
+					{
+						if( ce.location <= selectedIndex ) adjustSelection( selectedIndex + 1 );
+						break;
+					}
+					case CollectionEventKind.REMOVE :
+					{
+						if( ce.location <= selectedIndex )
+						{
+							adjustSelection( length ? selectedIndex == 0 ? 0 : selectedIndex - 1 : -1 );
+						}
+						break;
+					}
+					case CollectionEventKind.RESET :
+					{
+						adjustSelection( length ? 0 : -1 );
+						break;
+					}
+				}
+			}
+			
 			if( hasEventListener( event.type ) ) dispatchEvent( event );
 		}
 	}
