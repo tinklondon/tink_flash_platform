@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<design>
-  <namespaces>
-    <namespace prefix="st" uri="library://ns.tink.ws/flex/spark"/>
-  </namespaces>
-</design>
