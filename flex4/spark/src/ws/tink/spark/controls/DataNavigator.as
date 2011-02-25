@@ -29,6 +29,9 @@ package ws.tink.spark.controls
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.mx_internal;
+	import mx.events.CollectionEvent;
+	import mx.events.CollectionEventKind;
+	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.utils.BitFlagUtil;
 	
@@ -36,13 +39,49 @@ package ws.tink.spark.controls
 	import spark.components.IItemRendererOwner;
 	import spark.components.supportClasses.SkinnableContainerBase;
 	import spark.core.IViewport;
+	import spark.events.IndexChangeEvent;
 	import spark.events.RendererExistenceEvent;
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.controls.DataNavigator;
+	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
 	
 	use namespace mx_internal;
+	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/**
+	 *  Dispatched when the ISelectableList has been updated in some way.
+	 *
+	 *  @eventType mx.events.CollectionEvent.COLLECTION_CHANGE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
+	 */
+	[Event(name="collectionChange", type="mx.events.CollectionEvent")]
+	
+	/**
+	 *  Dispatched after the selection has changed. 
+	 *  This event is dispatched when the user interacts with the control.
+	 * 
+	 *  <p>When you change the value of the <code>selectedIndex</code> 
+	 *  or <code>selectedItem</code> properties programmatically, 
+	 *  the control does not dispatch the <code>change</code> event. 
+	 *  It dispatches the <code>valueCommit</code> event instead.</p>
+	 *
+	 *  @eventType spark.events.IndexChangeEvent.CHANGE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Event(name="change", type="spark.events.IndexChangeEvent")]
 	
 	/**
 	 *  Dispatched when a renderer is added to the container.
@@ -253,6 +292,8 @@ package ws.tink.spark.controls
 		 */
 		private static const TYPICAL_ITEM_PROPERTY_FLAG:uint = 1 << 5;
 		
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -271,6 +312,8 @@ package ws.tink.spark.controls
 		{
 			super();
 		}
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -310,11 +353,113 @@ package ws.tink.spark.controls
 		 */
 		private var dataGroupProperties:Object = {};
 		
+		
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties 
 		//
 		//--------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  selectedIndex
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for selectedIndex.
+		 */
+		private var _selectedIndex		: int = -1;
+		
+		[Bindable("change")]
+		[Bindable("valueCommit")]
+		
+		/**
+		 *  The index of the currently selected item IList item.
+		 *  Setting this property deselects the currently selected 
+		 *  index and selects the newly specified item.
+		 *  
+		 *  @default -1
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function set selectedIndex( value:int ):void
+		{
+			if( _selectedIndex == value ) return;
+			
+			_selectedIndex = value;
+			
+			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
+		}
+		/**
+		 *  @private
+		 */
+		public function get selectedIndex():int
+		{
+			return ( layout ) ? INavigatorLayout( layout ).selectedIndex : _selectedIndex;
+		}
+		
+		
+		//----------------------------------
+		//  selectedItem
+		//---------------------------------- 
+		
+		[Bindable("change")]
+		[Bindable("valueCommit")]
+		
+		/**
+		 *  The item that is currently selected. 
+		 *  Setting this property deselects the currently selected 
+		 *  item and selects the newly specified item.
+		 *
+		 *  @default undefined
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get selectedItem():Object
+		{
+			var index:int = selectedIndex;
+			return index != -1 ? dataProvider.getItemAt( index ) : null;
+		}
+		/**
+		 *  @private
+		 */
+		public function set selectedItem( value:Object ):void
+		{
+			if( dataProvider )
+			{
+				var index:int = dataProvider.getItemIndex( value );
+				if( index != -1 ) selectedIndex = index;
+			}
+		}
+		
+		
+		//----------------------------------
+		//  length
+		//---------------------------------- 
+		
+		/**
+		 *  The number of items in this collection. 
+		 *  0 means no items while -1 means the length is unknown. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get length():int
+		{
+			return dataProvider ? dataProvider.length : 0;
+		}
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -370,6 +515,12 @@ package ws.tink.spark.controls
 		//----------------------------------    
 		
 		/**
+		 *  @private
+		 *  Storage property for dataProvider.
+		 */
+		private var _dataProvider:IList;
+		
+		/**
 		 *  @copy spark.components.DataGroup#dataProvider
 		 *
 		 *  @see #itemRenderer
@@ -385,6 +536,7 @@ package ws.tink.spark.controls
 		 *  @productversion Flex 4
 		 */
 		[Bindable("dataProviderChanged")]
+		[Bindable("change")]
 		
 		public function get dataProvider():IList
 		{       
@@ -395,6 +547,12 @@ package ws.tink.spark.controls
 		
 		public function set dataProvider(value:IList):void
 		{
+			if( _dataProvider == value ) return;
+			
+			if( _dataProvider ) _dataProvider.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onDataProviderCollectionChange, false );
+			
+			_dataProvider = value;
+			
 			if (contentGroup)
 			{
 				contentGroup.dataProvider = value;
@@ -403,7 +561,11 @@ package ws.tink.spark.controls
 			}
 			else
 				dataGroupProperties.dataProvider = value;
-			dispatchEvent(new Event("dataProviderChanged"));
+			
+			if( _dataProvider ) _dataProvider.addEventListener( CollectionEvent.COLLECTION_CHANGE, onDataProviderCollectionChange, false, 0, true );
+			
+			dispatchEvent( new Event( "dataProviderChanged" ) );
+			if( hasEventListener( CollectionEvent.COLLECTION_CHANGE )  ) dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.RESET, -1, -1, toArray() ) );
 		}
 		
 		//----------------------------------
@@ -430,6 +592,8 @@ package ws.tink.spark.controls
 		 */
 		public function set itemRenderer(value:IFactory):void
 		{
+			if( value == itemRenderer ) return;
+			
 			if (contentGroup)
 			{
 				contentGroup.itemRenderer = value;
@@ -494,12 +658,17 @@ package ws.tink.spark.controls
 			? contentGroup.layout 
 				: dataGroupProperties.layout;
 		}
-		
 		/**
 		 *  @private
 		 */
 		public function set layout(value:LayoutBase):void
 		{
+			var layout:LayoutBase = layout;
+			
+			if( layout == value ) return;
+			
+			removeLayoutListeners();
+			
 			if( value is INavigatorLayout )
 			{
 				if (contentGroup)
@@ -509,7 +678,11 @@ package ws.tink.spark.controls
 						LAYOUT_PROPERTY_FLAG, true);
 				}
 				else
+				{
 					dataGroupProperties.layout = value;
+				}
+				
+				addLayoutListeners();
 			}
 			else
 			{
@@ -551,11 +724,224 @@ package ws.tink.spark.controls
 				dataGroupProperties.typicalItem = value;
 		}
 		
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Adds the specified item to the end of the list.
+		 *  Equivalent to <code>addItemAt(item, length)</code>.
+		 *
+		 *  @param item The item to add.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function addItem( item:Object ):void
+		{
+			addItemAt( item, length );
+		}
+		
+		/**
+		 *  Adds the item at the specified index.  
+		 *  The index of any item greater than the index of the added item is increased by one.  
+		 *  If the the specified index is less than zero or greater than the length
+		 *  of the list, a RangeError is thrown.
+		 * 
+		 *  @param item The item to place at the index.
+		 *
+		 *  @param index The index at which to place the item.
+		 *
+		 *  @throws RangeError if index is less than 0 or greater than the length of the list. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function addItemAt( item:Object, index:int ):void
+		{
+			if( !dataProvider ) dataProvider = new ArrayList();
+			dataProvider.addItemAt( item, index );
+		}
+		
+		/**
+		 *  Gets the item at the specified index.
+		 * 
+		 *  @param index The index in the list from which to retrieve the item.
+		 *
+		 *  @param prefetch An <code>int</code> indicating both the direction
+		 *  and number of items to fetch during the request if the item is
+		 *  not local.
+		 *
+		 *  @return The item at that index, or <code>null</code> if there is none.
+		 *
+		 *  @throws mx.collections.errors.ItemPendingError if the data for that index needs to be 
+		 *  loaded from a remote location.
+		 *
+		 *  @throws RangeError if <code>index &lt; 0</code>
+		 *  or <code>index >= length</code>.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function getItemAt( index:int, prefetch:int = 0 ):Object
+		{
+			if( length <= index ) return null;
+			return  dataProvider.getItemAt( index );
+		}
+		
+		/**
+		 *  Returns the index of the item if it is in the list such that
+		 *  getItemAt(index) == item.
+		 * 
+		 *  <p>Note: unlike <code>IViewCursor.find<i>xxx</i>()</code> methods,
+		 *  The <code>getItemIndex()</code> method cannot take a parameter with 
+		 *  only a subset of the fields in the item being serched for; 
+		 *  this method always searches for an item that exactly matches
+		 *  the input parameter.</p>
+		 * 
+		 *  @param item The item to find.
+		 *
+		 *  @return The index of the item, or -1 if the item is not in the list.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function getItemIndex( item:Object ):int
+		{
+			if( !dataProvider ) return -1;
+			return dataProvider.getItemIndex( item );
+		}
+		
+		/**
+		 *  Notifies the view that an item has been updated.  
+		 *  This is useful if the contents of the view do not implement 
+		 *  <code>IEventDispatcher</code> and dispatches a 
+		 *  <code>PropertyChangeEvent</code>.  
+		 *  If a property is specified the view may be able to optimize its 
+		 *  notification mechanism.
+		 *  Otherwise it may choose to simply refresh the whole view.
+		 *
+		 *  @param item The item within the view that was updated.
+		 *
+		 *  @param property The name of the property that was updated.
+		 *
+		 *  @param oldValue The old value of that property. (If property was null,
+		 *  this can be the old value of the item.)
+		 *
+		 *  @param newValue The new value of that property. (If property was null,
+		 *  there's no need to specify this as the item is assumed to be
+		 *  the new value.)
+		 *
+		 *  @see mx.events.CollectionEvent
+		 *  @see mx.events.PropertyChangeEvent
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function itemUpdated( item:Object, property:Object=null, oldValue:Object=null, newValue:Object=null ):void
+		{
+			if( dataProvider ) dataProvider.itemUpdated( item, property, oldValue, newValue );
+		}
+		
+		/** 
+		 *  Removes all items from the list.
+		 *
+		 *  <p>If any item is not local and an asynchronous operation must be
+		 *  performed, an <code>ItemPendingError</code> will be thrown.</p>
+		 *
+		 *  <p>See the ItemPendingError documentation as well as
+		 *  the collections documentation for more information
+		 *   on using the <code>ItemPendingError</code>.</p>
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function removeAll():void
+		{
+			if( !dataProvider ) return;
+			dataProvider.removeAll();
+		}
+		
+		/**
+		 *  Removes the item at the specified index and returns it.  
+		 *  Any items that were after this index are now one index earlier.
+		 *
+		 *  @param index The index from which to remove the item.
+		 *
+		 *  @return The item that was removed.
+		 *
+		 *  @throws RangeError is index is less than 0 or greater than length. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function removeItemAt( index:int ):Object
+		{
+			if( !dataProvider || index >= length ) return null;
+			return dataProvider.removeItemAt( index );
+		}
+		
+		/**
+		 *  Places the item at the specified index.  
+		 *  If an item was already at that index the new item will replace it
+		 *  and it will be returned.
+		 *
+		 *  @param item The new item to be placed at the specified index.
+		 *
+		 *  @param index The index at which to place the item.
+		 *
+		 *  @return The item that was replaced, or <code>null</code> if none.
+		 *
+		 *  @throws RangeError if index is less than 0 or greater than length.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function setItemAt(item:Object, index:int):Object
+		{
+			if( !dataProvider || index > length ) return null;
+			return dataProvider.setItemAt( item, index );
+		}
+		
+		/**
+		 *  Returns an Array that is populated in the same order as the IList
+		 *  implementation.
+		 *  This method can throw an ItemPendingError.
+		 *
+		 *  @return The array.
+		 *  
+		 *  @throws mx.collections.errors.ItemPendingError If the data is not yet completely loaded
+		 *  from a remote location.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function toArray():Array
+		{
+			return ( !dataProvider ) ? null : dataProvider.toArray();
+		}
 		
 		/**
 		 *  From the specified data item, return the String representation 
@@ -614,9 +1000,57 @@ package ws.tink.spark.controls
 				IDataRenderer(renderer).data = data;
 		}
 		
+		/**
+		 *  Adjusts the selected index to account for items being added to or 
+		 *  removed from this component.
+		 *
+		 *  @param newIndex The new index.
+		 *   
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function adjustSelection( newIndex:int ):void
+		{
+			var nl:INavigatorLayout = INavigatorLayout( layout );
+			if( nl is EasedNavigatorLayoutBase )
+			{
+				var enl:EasedNavigatorLayoutBase = EasedNavigatorLayoutBase( nl );
+				var stepEasing:Number = enl.stepEasing;
+				enl.stepEasing = 1;
+			}
+			
+			nl.selectedIndex = newIndex;
+			
+			if( enl ) enl.stepEasing = stepEasing;
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function addLayoutListeners():void
+		{
+			if( !layout ) return;
+			layout.addEventListener( IndexChangeEvent.CHANGE, onLayoutEvent, false, 0, true );
+			layout.addEventListener( FlexEvent.VALUE_COMMIT, onLayoutEvent, false, 0, true );
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function removeLayoutListeners():void
+		{
+			if( !layout ) return;
+			layout.removeEventListener( IndexChangeEvent.CHANGE, onLayoutEvent, false );
+			layout.removeEventListener( FlexEvent.VALUE_COMMIT, onLayoutEvent, false );
+		}
+		
+		
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden methods
+		//  Overridden Methods
 		//
 		//--------------------------------------------------------------------------
 		
@@ -808,122 +1242,57 @@ package ws.tink.spark.controls
 		
 		
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Listeners.
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 *  @private
-		 *  IList implementation of selectedIndex sets
-		 *  StackLayout( layout ).focusedIndex
 		 */
-		public function set selectedIndex( value:int ):void
+		private function onLayoutEvent( event:Event ):void
 		{
-			INavigatorLayout( layout ).selectedIndex = value;
+			if( hasEventListener( event.type ) ) dispatchEvent( event );
 		}
 		
 		/**
 		 *  @private
-		 *  IList implementation of selectedIndex returns
-		 *  StackLayout( layout ).focusedIndex
 		 */
-		public function get selectedIndex():int
+		private function onDataProviderCollectionChange( event:CollectionEvent ):void
 		{
-			return INavigatorLayout( layout ).selectedIndex;
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of length returns numChildren
-		 */
-		public function get length():int
-		{
-			return ( dataProvider ) ? dataProvider.length : 0;
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of addItem calls addChild
-		 */
-		public function addItem( item:Object ):void
-		{
-			addItemAt( item, length );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of addItemAt calls addChildAt
-		 */
-		public function addItemAt( item:Object, index:int ):void
-		{
-			var dp:IList = ( !dataProvider ) ? new ArrayList() : dataProvider;
-			dp.addItemAt( item, index );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of getItemAt calls getVirtualElementAt
-		 */
-		public function getItemAt( index:int, prefetch:int = 0 ):Object
-		{
-			if( length <= index ) return null;
-			return  dataProvider.getItemAt( index );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of getItemIndex calls getElementIndex
-		 */
-		public function getItemIndex( item:Object ):int
-		{
-			if( !dataProvider ) return -1;
-			return dataProvider.getItemIndex( item );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of itemUpdated doesn't do anything
-		 */
-		public function itemUpdated( item:Object, property:Object=null, oldValue:Object=null, newValue:Object=null ):void
-		{
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of removeAll calls removeAllElements
-		 */
-		public function removeAll():void
-		{
-			if( !dataProvider ) return;
-			dataProvider.removeAll();
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of removeItemAt calls removeElementAt
-		 */
-		public function removeItemAt( index:int ):Object
-		{
-			if( !dataProvider || index >= length ) return null;
-			return dataProvider.removeItemAt( index );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of setItemAt calls removeElementAt
-		 *  to remove the old child and removeElementAt to add the
-		 *  new one.
-		 */
-		public function setItemAt(item:Object, index:int):Object
-		{
-			if( !dataProvider || index > length ) return null;
-			return dataProvider.setItemAt( item, index );
-		}
-		
-		/**
-		 *  @private
-		 *  IList implementation of toArray returns array of children
-		 */
-		public function toArray():Array
-		{
-			return ( !dataProvider ) ? null : dataProvider.toArray();
+			// If there is a contentGroup it will take care of adjusting the selection
+			if( !contentGroup )
+			{
+				if( event is CollectionEvent )
+				{
+					var nl:INavigatorLayout = INavigatorLayout( layout );
+					var ce:CollectionEvent = CollectionEvent(event);
+					switch( ce.kind )
+					{
+						case CollectionEventKind.ADD :
+						{
+							if( ce.location <= selectedIndex ) adjustSelection( selectedIndex + 1 );
+							break;
+						}
+						case CollectionEventKind.REMOVE :
+						{
+							if( ce.location <= selectedIndex )
+							{
+								adjustSelection( length ? selectedIndex == 0 ? 0 : selectedIndex - 1 : -1 );
+							}
+							break;
+						}
+						case CollectionEventKind.RESET :
+						{
+							adjustSelection( length ? 0 : -1 );
+							break;
+						}
+					}
+				}
+			}
+			
+			if( hasEventListener( event.type ) ) dispatchEvent( event );
 		}
 	}
 }
