@@ -713,6 +713,67 @@ package ws.tink.spark.containers
 			return removed;
 		}
 		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override public function swapElementsAt( index1:int, index2:int ):void
+		{
+			super.swapElementsAt( index1, index2 );
+			
+			if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
+			{
+				dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, index1, index2, [ getElementAt( index1 ) ] ) );
+				dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, index2, index1, [ getElementAt( index2 ) ] ) );
+			}
+		}
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override public function setElementIndex( element:IVisualElement, index:int ):void
+		{
+			const oldIndex:int = hasEventListener( CollectionEvent.COLLECTION_CHANGE ) ? getElementIndex( element ) : -1;
+			
+			super.setElementIndex( element, index );
+			
+			if( oldIndex != -1 )
+			{
+				var i:int;
+				var loops:int;
+				var direction:int;
+				if( oldIndex < index )
+				{
+					i = oldIndex;
+					loops = index;
+					for( i; i < loops; i++ )
+					{
+						dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, i, i + 1, [ getElementAt( i ) ] ) );
+					}
+					dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, index, oldIndex, [ element ] ) );
+				}
+				else
+				{
+					i = index;
+					loops = oldIndex;
+					dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, index, oldIndex, [ element ] ) );
+					for( i; i < loops; i++ )
+					{
+						dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.MOVE, i, i - 1, [ getElementAt( i ) ] ) )
+					}
+				}
+			}
+		}
+		
 		
 		
 		
