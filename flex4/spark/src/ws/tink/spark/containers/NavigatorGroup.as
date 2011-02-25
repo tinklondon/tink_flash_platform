@@ -37,6 +37,7 @@ package ws.tink.spark.containers
 	
 	import ws.tink.spark.containers.supportClasses.DeferredCreationPolicy;
 	import ws.tink.spark.layouts.StackLayout;
+	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 	
@@ -299,6 +300,8 @@ package ws.tink.spark.containers
 		{
 			super.mxmlContent = value;
 			
+			adjustSelection( length ? 0 : -1 );
+			
 			dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.RESET, -1, -1, toArray() ) );
 		}
 		
@@ -547,6 +550,32 @@ package ws.tink.spark.containers
 		}
 		
 		/**
+		 *  Adjusts the selected index to account for items being added to or 
+		 *  removed from this component.
+		 *
+		 *  @param newIndex The new index.
+		 *   
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function adjustSelection( newIndex:int ):void
+		{
+			var nl:INavigatorLayout = INavigatorLayout( layout );
+			if( nl is EasedNavigatorLayoutBase )
+			{
+				var enl:EasedNavigatorLayoutBase = EasedNavigatorLayoutBase( nl );
+				var stepEasing:Number = enl.stepEasing;
+				enl.stepEasing = 1;
+			}
+			
+			nl.selectedIndex = newIndex;
+			
+			if( enl ) enl.stepEasing = stepEasing;
+		}
+		
+		/**
 		 *  @private
 		 */
 		private function addLayoutListeners():void
@@ -588,6 +617,25 @@ package ws.tink.spark.containers
 		 */
 		private function internalDispatchEvent( kind:String, item:Object = null, location:int = -1):void
 		{
+			switch( kind )
+			{
+				case CollectionEventKind.ADD :
+				{
+					if( location <= selectedIndex ) adjustSelection( selectedIndex + 1 );
+					break;
+				}
+				case CollectionEventKind.REMOVE :
+				{
+					if( location <= selectedIndex ) adjustSelection( length ? selectedIndex == 0 ? 0 : selectedIndex - 1 : -1 );
+					break;
+				}
+				case CollectionEventKind.RESET :
+				{
+					adjustSelection( length ? 0 : -1 );
+					break;
+				}
+			}
+			
 			if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
 			{
 				var event:CollectionEvent = new CollectionEvent( CollectionEvent.COLLECTION_CHANGE );
