@@ -671,6 +671,11 @@ package ws.tink.spark.controls
 						adjustSelection( length ? 0 : -1 );
 						break;
 					}
+					case CollectionEventKind.MOVE :
+					{
+						if( ce.oldLocation == selectedIndex ) adjustSelection( ce.location );
+						break;
+					}
 				}
 			}
 			
