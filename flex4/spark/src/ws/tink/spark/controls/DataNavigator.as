@@ -1266,8 +1266,7 @@ package ws.tink.spark.controls
 			{
 				if( event is CollectionEvent )
 				{
-					var nl:INavigatorLayout = INavigatorLayout( layout );
-					var ce:CollectionEvent = CollectionEvent(event);
+					var ce:CollectionEvent = CollectionEvent( event );
 					switch( ce.kind )
 					{
 						case CollectionEventKind.ADD :

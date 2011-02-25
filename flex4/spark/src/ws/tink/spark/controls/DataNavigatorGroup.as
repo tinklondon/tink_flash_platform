@@ -653,8 +653,7 @@ package ws.tink.spark.controls
 			
 			if( event is CollectionEvent )
 			{
-				var nl:INavigatorLayout = INavigatorLayout( layout );
-				var ce:CollectionEvent = CollectionEvent(event);
+				var ce:CollectionEvent = CollectionEvent( event );
 				switch( ce.kind )
 				{
 					case CollectionEventKind.ADD :
@@ -664,10 +663,7 @@ package ws.tink.spark.controls
 					}
 					case CollectionEventKind.REMOVE :
 					{
-						if( ce.location <= selectedIndex )
-						{
-							adjustSelection( length ? selectedIndex == 0 ? 0 : selectedIndex - 1 : -1 );
-						}
+						if( ce.location <= selectedIndex ) adjustSelection( length ? selectedIndex == 0 ? 0 : selectedIndex - 1 : -1 );
 						break;
 					}
 					case CollectionEventKind.RESET :
