@@ -31,33 +31,35 @@ package ws.tink.spark.layouts
 	import ws.tink.spark.layouts.supportClasses.PerspectiveNavigatorLayoutBase;
 
 	/**
-	 *  The NavigatorGroup class is the base navigator container class for visual elements.
-	 *  The NavigatorGroup container takes as children any components that implement 
-	 *  the IUIComponent interface, and any components that implement 
-	 *  the IGraphicElement interface giving one focus by way of the layout which must
-	 *  implement INavigatorLayout.
-	 *  Use this container when you want to manage visual children, 
-	 *  both visual components and graphical components that you want to switch between. 
+	 *  The TimeMachineLayout class arranges the layout elements in a depth sequence,
+	 *  front to back, with optional depths between the elements and optional aligment
+	 *  the sequence of elements.
 	 *
-	 *  <p>To improve performance and minimize application size, 
-	 *  the NavigatorGroup container cannot be skinned. 
-	 *  If you want to apply a skin, use the Navigator instead. </p>
-	 *  
-	 *  <p>The NavigatorGroup container has the following default characteristics:</p>
-	 *  <table class="innertable">
-	 *     <tr><th>Characteristic</th><th>Description</th></tr>
-	 *     <tr><td>Default size</td><td>Large enough to display its children</td></tr>
-	 *     <tr><td>Minimum size</td><td>0 pixels</td></tr>
-	 *     <tr><td>Maximum size</td><td>10000 pixels wide and 10000 pixels high</td></tr>
-	 *  </table>
+	 *  <p>The vertical position of the elements is determined by a combination
+	 *  of the <code>verticalAlign</code>, <code>verticalOffset</code>,
+	 *  <code>verticalDisplacement</code> and the number of indices the element
+	 *  is from the <code>selectedIndex</code> property.
+	 *  First the element is aligned using the <code>verticalAlign</code> property
+	 *  and then the <code>verticalOffset</code> is applied. The value of
+	 *  <code>verticalDisplacement</code> is then multiplied of the number of
+	 *  elements the element is from the selected element.</p>
+	 *
+	  *  <p>The horizontal position of the elements is determined by a combination
+	 *  of the <code>horizontalAlign</code>, <code>horizontalOffset</code>,
+	 *  <code>horizontalDisplacement</code> and the number of indices the element
+	 *  is from the <code>selectedIndex</code> property.
+	 *  First the element is aligned using the <code>horizontalAlign</code> property
+	 *  and then the <code>determined</code> is applied. The value of
+	 *  <code>horizontalDisplacement</code> is then multiplied of the number of
+	 *  elements the element is from the selected element.</p>
 	 * 
 	 *  @mxml
 	 *
-	 *  <p>The <code>&lt;s:NavigatorGroup&gt;</code> tag inherits all of the tag 
+	 *  <p>The <code>&lt;st:TimeMachineLayout&gt;</code> tag inherits all of the tag 
 	 *  attributes of its superclass and adds the following tag attributes:</p>
 	 *
 	 *  <pre>
-	 *  &lt;s:TimeMachineLayout
+	 *  &lt;st:TimeMachineLayout
 	 *    <strong>Properties</strong>
 	 *    numVisibleElements="3"
 	 *    depthColor="-1"
@@ -86,16 +88,6 @@ package ws.tink.spark.layouts
 
 		
 		
-		private var _zDelta : Number;
-		private var _colorDelta : Number;
-		
-		private var _zChanged			: Boolean;
-		
-		
-		private var _visibleElements	: Vector.<IVisualElement>;
-		private var _colorTransform	: ColorTransform;
-		
-		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -115,7 +107,7 @@ package ws.tink.spark.layouts
 		{
 			super();
 			
-			_zChanged = true;
+			_maximumZChanged = true;
 			useVirtualLayout = true
 			_numVisibleElements = 3;
 			_colorTransform = new ColorTransform();
@@ -123,11 +115,37 @@ package ws.tink.spark.layouts
 		}
 		
 		
-//		public function get numIndicesInView():int
-//		{
-//			return _numIndicesInView;
-//		}
-//		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *  The difference between the z property of displayed elements.
+		 */
+		private var _zDelta : Number;
+		
+		/**
+		 *  @private
+		 *  The difference in color of displayed elements express as a Numer from 0 - 1.
+		 */
+		private var _colorDelta : Number;
+		
+		/**
+		 *  @private
+		 *  A list of the elements in view.
+		 */
+		private var _visibleElements	: Vector.<IVisualElement>;
+		
+		/**
+		 *  @private
+		 *  The colorTransform used to apply the depthColor.
+		 */
+		private var _colorTransform	: ColorTransform;
+		
 		
 		
 		//--------------------------------------------------------------------------
@@ -168,7 +186,6 @@ package ws.tink.spark.layouts
 			_numVisibleElements = value;
 			invalidateTargetDisplayList();
 		}
-		
 		
 		
 		//----------------------------------
@@ -285,7 +302,7 @@ package ws.tink.spark.layouts
 		 *  @private
 		 *  Storage property for horizontalOffset.
 		 */
-		private var _horizontalAlignOffset:Number = 0;
+		private var _horizontalOffset:Number = 0;
 		
 		[Inspectable(category="General", defaultValue="0")]
 		/**
@@ -298,16 +315,16 @@ package ws.tink.spark.layouts
 		 */
 		public function get horizontalOffset():Number
 		{
-			return _horizontalAlignOffset;
+			return _horizontalOffset;
 		}
 		/**
 		 *  @private
 		 */
 		public function set horizontalOffset(value:Number):void
 		{
-			if( _horizontalAlignOffset == value ) return;
+			if( _horizontalOffset == value ) return;
 			
-			_horizontalAlignOffset = value;
+			_horizontalOffset = value;
 			invalidateTargetDisplayList();
 		}    
 		
@@ -320,7 +337,7 @@ package ws.tink.spark.layouts
 		 *  @private
 		 *  Storage property for verticalOffset.
 		 */
-		private var _verticalAlignOffset:Number = 0;
+		private var _verticalOffset:Number = 0;
 		
 		[Inspectable(category="General", defaultValue="0")]
 		/**
@@ -333,16 +350,16 @@ package ws.tink.spark.layouts
 		 */
 		public function get verticalOffset():Number
 		{
-			return _verticalAlignOffset;
+			return _verticalOffset;
 		}
 		/**
 		 *  @private
 		 */
 		public function set verticalOffset(value:Number):void
 		{
-			if( _verticalAlignOffset == value ) return;
+			if( _verticalOffset == value ) return;
 			
-			_verticalAlignOffset = value;
+			_verticalOffset = value;
 			invalidateTargetDisplayList();
 		}    
 
@@ -355,11 +372,19 @@ package ws.tink.spark.layouts
 		 *  @private
 		 *  Storage property for maximumZ.
 		 */
-		private var _maximumZ 		: Number = 300;
+		private var _maximumZ : Number = 300;
 		
 		/**
-		 * Distance between each item
+		 *  @private
+		 *  Flag to indicate whether maximumZ has changed.
+		 */
+		private var _maximumZChanged : Boolean;
+		
+		/**
+		 *  The z difference between the first and last element in view.
 		 *  
+		 *  @default 300
+		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
@@ -377,7 +402,7 @@ package ws.tink.spark.layouts
 		{
 			if( _maximumZ == value ) return;
 			
-			_zChanged = true;
+			_maximumZChanged = true;
 			_maximumZ = value;
 			invalidateTargetDisplayList();
 		}
@@ -395,7 +420,11 @@ package ws.tink.spark.layouts
 		
 		[Inspectable(category="General")]
 		/**
+		 *  The amount to offset elements on the horizontal axis
+		 *  depending on their z property.
 		 *  
+		 *  @depth 0
+		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
@@ -430,6 +459,10 @@ package ws.tink.spark.layouts
 		
 		[Inspectable(category="General")]
 		/**
+		 *  The amount to offset elements on the vertical axis
+		 *  depending on their z property.
+		 *  
+		 *  @depth 0
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -460,6 +493,10 @@ package ws.tink.spark.layouts
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @private
+		 *  Util function for setting the color and depth of the first element in the layout.
+		 */
 		protected function updateFirstElementInView( element:IVisualElement, firstIndexInViewOffsetPercent:Number ):void
 		{
 			setElementLayoutBoundsSize( element, false );
@@ -480,6 +517,11 @@ package ws.tink.spark.layouts
 			element.visible = true;
 		}
 		
+		/**
+		 *  @private
+		 *  Util function for setting the color and depth of all elements in view
+		 *  other than the first element.
+		 */
 		protected function updateElementInView( element:IVisualElement, viewIndex:int, firstIndexInViewOffsetPercent:Number, alphaDeltaOffset:Number, zDeltaOffset:Number ):void
 		{
 			var colorValue:Number = ( ( _colorDelta * viewIndex ) - alphaDeltaOffset );
@@ -575,11 +617,19 @@ package ws.tink.spark.layouts
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
 		{
-			if( _zChanged )
+			if( _maximumZChanged )
 			{
-				_zChanged = false;
+				_maximumZChanged = false;
 				
 				_zDelta = _maximumZ / ( _numVisibleElements + 1 );
 				_colorDelta = 1 / ( _numVisibleElements );
@@ -588,6 +638,9 @@ package ws.tink.spark.layouts
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 		}
 		
+		/**
+		 *  @private
+		 */
 		override protected function updateDisplayListVirtual():void
 		{
 			super.updateDisplayListVirtual();
@@ -626,6 +679,9 @@ package ws.tink.spark.layouts
 			
 		}
 		
+		/**
+		 *  @private
+		 */
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
