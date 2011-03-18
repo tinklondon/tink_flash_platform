@@ -25,7 +25,7 @@ package ws.tink.spark.layouts.supportClasses
 	{
 		
 		
-		private var _scrollBarDirection		: String;
+		
 		
 		private var _selectedIndexOffset	: Number = 0;
 		private var _selectedIndex			: int = -1;
@@ -190,6 +190,19 @@ package ws.tink.spark.layouts.supportClasses
 			invalidateTargetDisplayList();
 		}
 		
+		
+		//----------------------------------
+		//  scrollBarDirection
+		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for scrollBarDirection.
+		 */
+		private var _scrollBarDirection		: String;
+		
+		[Inspectable(category="General", enumeration="horizontal,vertical", defaultValue="vertical")]
+		
 		/**
 		 *  The direction of the ScrollBar to use for navigation.
 		 * 
@@ -211,12 +224,10 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		[Inspectable(category="General", enumeration="horizontal,vertical", defaultValue="vertical")]
 		public function get scrollBarDirection():String
 		{
 			return _scrollBarDirection;
 		}
-		
 		/**
 		 *  @private
 		 */
@@ -231,6 +242,7 @@ package ws.tink.spark.layouts.supportClasses
 				{
 					_scrollBarDirection = value;
 					if( target ) scrollPositionChanged();
+					invalidateTargetDisplayList();
 					break;
 				}
 				default :
@@ -518,6 +530,10 @@ package ws.tink.spark.layouts.supportClasses
 			target.setContentSize( unscaledWidth, unscaledHeight );
 		}
 		
+		/**
+		 *  @private
+		 *  Update the layout of the virtualized elements in view.
+		 */
 		protected function updateDisplayListVirtual():void
 		{
 			var numElementsNoInLayout:int = _indicesNotInLayout.length;
@@ -527,6 +543,10 @@ package ws.tink.spark.layouts.supportClasses
 			}
 		}
 		
+		/**
+		 *  @private
+		 *  Update the layout of all elements that in target.
+		 */
 		protected function updateDisplayListReal():void
 		{
 			var numElementsNoInLayout:int = _indicesNotInLayout.length;
