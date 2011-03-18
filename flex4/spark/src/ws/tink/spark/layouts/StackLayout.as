@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2010 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package ws.tink.spark.layouts
 {
 	import flash.display.BitmapData;
@@ -6,6 +24,7 @@ package ws.tink.spark.layouts
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.core.IInvalidating;
 	import mx.core.ILayoutElement;
 	import mx.core.IUIComponent;
 	import mx.core.IVisualElement;
@@ -52,7 +71,16 @@ package ws.tink.spark.layouts
 		private var _numElementsNotInLayout		: int;
 		
 		
-
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  verticalAlign
+		//----------------------------------    
+		
 		private var _verticalAlign:String = VerticalAlign.TOP;
 		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="top")]
 		public function get verticalAlign():String
@@ -69,6 +97,9 @@ package ws.tink.spark.layouts
 		}
 		
 		
+		//----------------------------------
+		//  horizontalAlign
+		//----------------------------------  
 		
 		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
 		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="left")]
@@ -85,6 +116,18 @@ package ws.tink.spark.layouts
 			invalidateTargetDisplayList();
 		}
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  target
+		//----------------------------------    
+		
 		override public function set target(value:GroupBase):void
 		{
 			if( target == value ) return;
@@ -93,6 +136,14 @@ package ws.tink.spark.layouts
 			
 			_elementMaxDimensions = new ElementMaxDimensions();
 		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 *  @inheritDoc
@@ -171,7 +222,7 @@ package ws.tink.spark.layouts
 			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
 				Math.max( 0, unscaledWidth ) : NaN;
 			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ?
-				Math.max( 0, unscaledHeight ) : NaN;;
+				Math.max( 0, unscaledHeight ) : NaN;
 			
 			_selectedElement = target.getVirtualElementAt( indicesInLayout[
 				firstIndexInView ], eltWidth, eltHeight );
@@ -203,6 +254,11 @@ package ws.tink.spark.layouts
 			
 			if( target.numElements == 0 ) return;
 			
+			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
+				Math.max( 0, unscaledWidth ) : NaN;
+			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ?
+				Math.max( 0, unscaledHeight ) : NaN;
+			
 			var i:int;
 			var element:IVisualElement;
 			for( i = 0; i < numElementsInLayout; i++ )
@@ -214,13 +270,17 @@ package ws.tink.spark.layouts
 				_elementMaxDimensions.update( element );
 			}
 			
-			for( i = 0; i < numElementsInLayout; i++ )
-			{
-				element = target.getElementAt( indicesInLayout[ i ] );
-				updateSelectedElementSizeAndPosition( element );
-			}
+//			for( i = 0; i < numElementsInLayout; i++ )
+//			{
+//				element = target.getElementAt( indicesInLayout[ i ] );
+//				updateSelectedElementSizeAndPosition( element );
+//			}
 			
-			if( _selectedElement ) _selectedElement.visible = true;
+			if( _selectedElement )
+			{
+				updateSelectedElementSizeAndPosition( _selectedElement );
+				_selectedElement.visible = true;
+			}
 			
 			updateDepths( null );
 		}
@@ -247,17 +307,17 @@ package ws.tink.spark.layouts
 		 */
 		private function updateDepths( depths:Vector.<int> ):void
 		{
-			var element:IVisualElement;
-			var i:int;
-			var numElementsNotInLayout:int = indicesNotInLayout.length;
-			for( i = 0; i < numElementsNotInLayout; i++ )
-			{
-				element = target.getElementAt( indicesNotInLayout[ i ] );
-				element.depth = indicesNotInLayout[ i ];
-			}
-			
-			//FIXME tink, -1 to allow for bug
-			_selectedElement.depth = ( indicesInLayout[ selectedIndex ] == 0 ) ? -1 : indicesInLayout[ selectedIndex ];
+//			var element:IVisualElement;
+//			var i:int;
+//			var numElementsNotInLayout:int = indicesNotInLayout.length;
+//			for( i = 0; i < numElementsNotInLayout; i++ )
+//			{
+//				element = target.getElementAt( indicesNotInLayout[ i ] );
+//				element.depth = indicesNotInLayout[ i ];
+//			}
+//			
+//			//FIXME tink, -1 to allow for bug
+//			_selectedElement.depth = ( indicesInLayout[ selectedIndex ] == 0 ) ? -1 : indicesInLayout[ selectedIndex ];
 		}
 		
 		
@@ -417,21 +477,31 @@ package ws.tink.spark.layouts
 			
 			super.updateSelectedIndex( index, offset );
 			
-			var firstIndexInView:int;
-			
-			if( selectedIndexOffset < 0 )
+			if( !target.numElements )
 			{
-				firstIndexInView = selectedIndex - 1;
+				indicesInView( 0, 0 );
 			}
 			else
 			{
-				firstIndexInView = selectedIndex;
+				var firstIndexInView:int;
+				
+				if( selectedIndexOffset < 0 )
+				{
+					firstIndexInView = selectedIndex - 1;
+				}
+				else
+				{
+					firstIndexInView = selectedIndex;
+				}
+				
+				indicesInView( firstIndexInView, 1 );
 			}
-			
-			indicesInView( firstIndexInView, 1 );
 		}
-		
-	}
+
+        public function StackLayout()
+        {
+        }
+    }
 }
 import mx.core.ILayoutElement;
 
