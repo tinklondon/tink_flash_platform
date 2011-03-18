@@ -183,7 +183,7 @@ package ws.tink.spark.controls
 		 *  @playerversion AIR 1.1
 		 *  @productversion Flex 3
 		 */
-		public static var buttonHeight:Number = 50;
+		public static var buttonHeight:Number = 21;
 		
 		//----------------------------------
 		//  buttonWidth
