@@ -136,7 +136,7 @@ package ws.tink.spark.containers
 		{
 			super();
 			
-			creationPolicy = DeferredCreationPolicy.CONSTRUCT;
+			creationPolicy = DeferredCreationPolicy.VISIBLE;
 		}
 		
 		
@@ -262,6 +262,7 @@ package ws.tink.spark.containers
 		 */
 		public function set creationPolicy(value:String):void
 		{
+			trace( "creationPolicy", value, _creationPolicy, layout );
 			if( _creationPolicy == value ) return;
 			
 			_creationPolicy = value;
@@ -276,6 +277,7 @@ package ws.tink.spark.containers
 				}
 				else
 				{
+					trace( "useVitual", _useVirtualLayout );
 					layout.useVirtualLayout = _useVirtualLayout;
 				}
 			}
@@ -381,8 +383,23 @@ package ws.tink.spark.containers
 		 */
 		override public function set layout( value:LayoutBase ):void
 		{
-			if( _useVirtualLayout && !( value is BasicLayout ) ) value.useVirtualLayout = _useVirtualLayout;
+			if( _useVirtualLayout )
+			{
+				if( value is BasicLayout )
+				{
+					throw new Error( "BasicLayout does not support virtualLayout and therefore cannot be using with the creationPolicy: " + creationPolicy );	
+				}
+				else
+				{
+					value.useVirtualLayout = _useVirtualLayout;
+				}
+			}
+			else
+			{
+				value.useVirtualLayout = _useVirtualLayout;
+			}
 			
+			trace( "added", _useVirtualLayout, _creationPolicy );
 			super.layout = value;
 		}
 		
@@ -1203,6 +1220,17 @@ package ws.tink.spark.containers
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{       
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			
+			// Quick hack to help TimeMchineLayout
+			// When items are added to the displayList they are added
+			// at the front, and the validation of the depth
+			// being changed, doesn't happen until the next frame due
+			// to it being in commitProperties().
+			if (needsDisplayObjectAssignment)
+			{
+				needsDisplayObjectAssignment = false;
+				assignDisplayObjects();
+			}
 			
 			// If the DisplayObject assignment is still not completed, then postpone validation
 			// of the GraphicElements
