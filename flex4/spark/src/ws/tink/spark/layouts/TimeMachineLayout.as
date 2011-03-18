@@ -1,4 +1,5 @@
 /*
+
 Copyright (c) 2010 Tink Ltd - http://www.tink.ws
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -14,6 +15,7 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 */
 
 package ws.tink.spark.layouts
@@ -461,7 +463,7 @@ package ws.tink.spark.layouts
 		protected function updateFirstElementInView( element:IVisualElement, firstIndexInViewOffsetPercent:Number ):void
 		{
 			setElementLayoutBoundsSize( element, false );
-			element.depth = numIndicesInView - 1;//getDepthForIndex( 0, firstIndexInViewOffsetPercent );
+			element.depth = numIndicesInView - 1;
 			
 			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1;
 			_colorTransform.alphaMultiplier = 1 - firstIndexInViewOffsetPercent;
@@ -483,9 +485,6 @@ package ws.tink.spark.layouts
 			var colorValue:Number = ( ( _colorDelta * viewIndex ) - alphaDeltaOffset );
 			setElementLayoutBoundsSize( element, false );
 			element.depth = numIndicesInView - ( viewIndex + 1 );
-			
-			trace( viewIndex, firstIndexInView, numIndicesInView, element );
-//			element.depth = getDepthForIndex( viewIndex, firstIndexInViewOffsetPercent );
 			
 			if( _depthColor > -1 )
 			{
@@ -625,37 +624,6 @@ package ws.tink.spark.layouts
 				IVisualElement( prevVirtualElements[ i ] ).visible = false;
 			}
 			
-//			
-//			
-//			
-//			const firstIndexInViewOffsetPercent:Number = ( selectedIndexOffset < 0 ) ? 1 + selectedIndexOffset : selectedIndexOffset;
-//			const zDeltaOffset:Number = _zDelta * firstIndexInViewOffsetPercent;
-//			const alphaDeltaOffset:Number = _colorDelta * firstIndexInViewOffsetPercent;
-//			
-//			var i:int;
-//			var element:IVisualElement;
-//			
-//			// Manage first item outside the loop as its slightly different
-//			element = target.getVirtualElementAt( firstIndexInView );
-//			if( element )
-//			{
-//				updateFirstElementInView( element, firstIndexInViewOffsetPercent );
-//				updateVisibleElements( element, prevVirtualElements );
-//			}
-//			
-//			for( i = 1; i < numIndicesInView; i++ )
-//			{
-//				element = target.getVirtualElementAt( firstIndexInView + i );
-//				if( !element ) continue;
-//				updateElementInView( element, i, firstIndexInViewOffsetPercent, alphaDeltaOffset, zDeltaOffset );
-//				updateVisibleElements( element, prevVirtualElements );
-//			}
-//			
-//			var numPrev:int = prevVirtualElements.length;
-//			for( i = 0; i < numPrev; i++ )
-//			{
-//				IVisualElement( prevVirtualElements[ i ] ).visible = false;
-//			}
 		}
 		
 		override protected function updateDisplayListReal():void
@@ -670,7 +638,6 @@ package ws.tink.spark.layouts
 			const alphaDeltaOffset:Number = _colorDelta * firstIndexInViewOffsetPercent;
 			
 			var element:IVisualElement;
-//			var numElements:int = numElementsInLayout;
 			for( var i:int = 0; i < numElementsInLayout; i++ )
 			{
 				if( i < firstIndexInView || i > lastIndexInView )
@@ -711,52 +678,6 @@ package ws.tink.spark.layouts
 			
 			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
 		}
-		
-		
-//		override protected function updateLayoutDepths():void
-//		{
-//			trace( "updateLayoutDepths", numVisibleElements );
-//			_depths = new Vector.<int>();
-//			
-//			var i:int;
-//			if( numElementsNotInLayout )
-//			{
-//				var reservedDepths:Vector.<int> = new Vector.<int>();
-//				
-//				for( i = 0; i < numElementsNotInLayout; i++ )
-//				{
-//					reservedDepths.push( elements[ indicesNotInLayout[ i ] ].depth );
-//				}
-//				
-//				var depth:int = -1;
-//				for( i = 0; i <= numVisibleElements; i++ )
-//				{
-//					depth = getNextAvailableDepth( depth + 1, reservedDepths );
-//					_depths.push( depth );
-//				}
-//			}
-//			else
-//			{
-//				for( i = 0; i <= numVisibleElements; i++ )
-//				{
-//					_depths.push( i );
-//				}
-//			}
-//			
-//			trace( "_depths", _depths );
-//		}
-		
-//		protected function getDepthForIndex( index:int, firstIndexInViewOffsetPercent:Number ):int
-//		{
-//			if( firstIndexInViewOffsetPercent > 0.5 )
-//			{
-//				return depths[ ( numVisibleElements ) - index ];
-//			}
-//			else
-//			{
-//				return depths[ ( numVisibleElements - 1  ) - index  ];
-//			}
-//		}
 
 	}
 }
