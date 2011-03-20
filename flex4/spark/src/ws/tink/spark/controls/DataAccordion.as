@@ -239,6 +239,67 @@ package ws.tink.spark.controls
 		
 		
 		//----------------------------------
+		//  duration
+		//----------------------------------    
+		
+		/**
+		 *  @copy ws.tink.spark.layouts.AccordionLayout#duration
+		 */
+		public function get duration():Number
+		{
+			return accordionLayout ? accordionLayout.duration : _accordionLayoutProperties.duration;
+		}
+		/**
+		 *  @private
+		 */
+		public function set duration(value:Number):void
+		{
+			if( duration == value ) return;
+			
+			if( accordionLayout )
+			{
+				accordionLayout.duration = value;
+				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, DURATION_PROPERTY_FLAG, true );
+			}
+			else
+			{
+				_accordionLayoutProperties.duration = value;
+			}
+		}
+		
+		
+		
+		//----------------------------------
+		//  easer
+		//----------------------------------    
+		
+		/**
+		 *  @copy ws.tink.spark.layouts.AccordionLayout#easer
+		 */
+		public function get easer():IEaser
+		{
+			return accordionLayout ? accordionLayout.easer : _accordionLayoutProperties.easer;
+		}
+		/**
+		 *  @private
+		 */
+		public function set easer(value:IEaser):void
+		{
+			if( easer == value ) return;
+			
+			if( accordionLayout )
+			{
+				accordionLayout.easer = value;
+				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, EASER_PROPERTY_FLAG, true );
+			}
+			else
+			{
+				_accordionLayoutProperties.easer = value;
+			}
+		}
+		
+		
+		//----------------------------------
 		//  minElementSize
 		//----------------------------------    
 		
@@ -299,62 +360,31 @@ package ws.tink.spark.controls
 		
 		
 		//----------------------------------
-		//  duration
+		//  useScrollRect
 		//----------------------------------    
 		
 		/**
-		 *  @copy ws.tink.spark.layouts.AccordionLayout#duration
+		 *  @copy ws.tink.spark.layouts.AccordionLayout#useScrollRect
 		 */
-		public function get duration():Number
+		public function get useVirtualLayout():Boolean
 		{
-			return accordionLayout ? accordionLayout.duration : _accordionLayoutProperties.duration;
+			return accordionLayout ? accordionLayout.useVirtualLayout : _accordionLayoutProperties.useVirtualLayout;
 		}
 		/**
 		 *  @private
 		 */
-		public function set duration(value:Number):void
+		public function set useVirtualLayout( value:Boolean ):void
 		{
-			if( duration == value ) return;
+			if( useVirtualLayout == value ) return;
 			
 			if( accordionLayout )
 			{
-				accordionLayout.duration = value;
-				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, DURATION_PROPERTY_FLAG, true );
+				accordionLayout.useVirtualLayout = value;
+				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, USE_VIRTUAL_LAYOUT_PROPERTY_FLAG, true );
 			}
 			else
 			{
-				_accordionLayoutProperties.duration = value;
-			}
-		}
-		
-		
-		
-		//----------------------------------
-		//  easer
-		//----------------------------------    
-		
-		/**
-		 *  @copy ws.tink.spark.layouts.AccordionLayout#easer
-		 */
-		public function get easer():IEaser
-		{
-			return accordionLayout ? accordionLayout.easer : _accordionLayoutProperties.easer;
-		}
-		/**
-		 *  @private
-		 */
-		public function set easer(value:IEaser):void
-		{
-			if( easer == value ) return;
-			
-			if( accordionLayout )
-			{
-				accordionLayout.easer = value;
-				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, EASER_PROPERTY_FLAG, true );
-			}
-			else
-			{
-				_accordionLayoutProperties.easer = value;
+				_accordionLayoutProperties.useVirtualLayout = value;
 			}
 		}
 		
@@ -490,28 +520,6 @@ package ws.tink.spark.controls
 			
 			switch( instance )
 			{
-				case buttonBar :
-				{// copy proxied values from _buttonBarProperties (if set) to buttonBar
-					var newButtonBarProperties:uint = 0;
-					
-					if( _buttonBarProperties.labelField !== undefined )
-					{
-						buttonBar.labelField = _buttonBarProperties.labelField;
-						newButtonBarProperties = BitFlagUtil.update( newButtonBarProperties as uint, LABEL_FIELD_PROPERTY_FLAG, true );
-					}
-					
-					if( _buttonBarProperties.labelFunction !== undefined )
-					{
-						buttonBar.labelFunction = _buttonBarProperties.labelFunction;
-						newButtonBarProperties = BitFlagUtil.update( newButtonBarProperties as uint, LABEL_FUNCTION_PROPERTY_FLAG, true );
-					}
-					
-					_buttonBarProperties = newButtonBarProperties;
-					
-					buttonBar.dataProvider = this;
-					if( accordionLayout ) accordionLayout.buttonBar = buttonBar;
-					break;
-				}
 				case accordionLayout :
 				{
 					// copy proxied values from _accordionLayoutProperties (if set) to accordionLayout
@@ -553,9 +561,37 @@ package ws.tink.spark.controls
 						newAccordionLayoutProperties = BitFlagUtil.update( newAccordionLayoutProperties as uint, USE_SCROLL_RECT_PROPERTY_FLAG, true );
 					}
 					
+					if( _accordionLayoutProperties.useVirtualLayout !== undefined )
+					{
+						accordionLayout.useVirtualLayout = _accordionLayoutProperties.useVirtualLayout;
+						newAccordionLayoutProperties = BitFlagUtil.update( newAccordionLayoutProperties as uint, USE_VIRTUAL_LAYOUT_PROPERTY_FLAG, true );
+					}
+					
 					_accordionLayoutProperties = newAccordionLayoutProperties;
 					
 					if( buttonBar ) accordionLayout.buttonBar = buttonBar;
+					break;
+				}
+				case buttonBar :
+				{// copy proxied values from _buttonBarProperties (if set) to buttonBar
+					var newButtonBarProperties:uint = 0;
+					
+					if( _buttonBarProperties.labelField !== undefined )
+					{
+						buttonBar.labelField = _buttonBarProperties.labelField;
+						newButtonBarProperties = BitFlagUtil.update( newButtonBarProperties as uint, LABEL_FIELD_PROPERTY_FLAG, true );
+					}
+					
+					if( _buttonBarProperties.labelFunction !== undefined )
+					{
+						buttonBar.labelFunction = _buttonBarProperties.labelFunction;
+						newButtonBarProperties = BitFlagUtil.update( newButtonBarProperties as uint, LABEL_FUNCTION_PROPERTY_FLAG, true );
+					}
+					
+					_buttonBarProperties = newButtonBarProperties;
+					
+					buttonBar.dataProvider = this;
+					if( accordionLayout ) accordionLayout.buttonBar = buttonBar;
 					break;
 				}
 			}
@@ -575,22 +611,6 @@ package ws.tink.spark.controls
 			
 			switch( instance )
 			{
-				case buttonBar :
-				{
-					// copy proxied values from buttonBar (if explicitly set) to _buttonBarProperties
-					var newButtonBarProperties:Object = {};
-					
-					if ( BitFlagUtil.isSet( _buttonBarProperties as uint, LABEL_FIELD_PROPERTY_FLAG ) )
-						newButtonBarProperties.labelField = buttonBar.labelField;
-					
-					if ( BitFlagUtil.isSet( _buttonBarProperties as uint, LABEL_FUNCTION_PROPERTY_FLAG ) )
-						newButtonBarProperties.labelFunction = buttonBar.labelFunction;
-					
-					_buttonBarProperties = newButtonBarProperties;
-					
-					if( accordionLayout ) accordionLayout.buttonBar = null;
-					break;
-				}
 				case accordionLayout :
 				{
 					// copy proxied values from accordionLayout (if explicitly set) to _accordionLayoutProperties
@@ -614,7 +634,26 @@ package ws.tink.spark.controls
 					if ( BitFlagUtil.isSet( _accordionLayoutProperties as uint, USE_SCROLL_RECT_PROPERTY_FLAG ) )
 						newAccordionLayoutProperties.useScrollRect = accordionLayout.useScrollRect;
 					
+					if ( BitFlagUtil.isSet( _accordionLayoutProperties as uint, USE_VIRTUAL_LAYOUT_PROPERTY_FLAG ) )
+						newAccordionLayoutProperties.useVirtualLayout = accordionLayout.useVirtualLayout;
+					
 					_accordionLayoutProperties = newAccordionLayoutProperties;
+					break;
+				}
+				case buttonBar :
+				{
+					// copy proxied values from buttonBar (if explicitly set) to _buttonBarProperties
+					var newButtonBarProperties:Object = {};
+					
+					if ( BitFlagUtil.isSet( _buttonBarProperties as uint, LABEL_FIELD_PROPERTY_FLAG ) )
+						newButtonBarProperties.labelField = buttonBar.labelField;
+					
+					if ( BitFlagUtil.isSet( _buttonBarProperties as uint, LABEL_FUNCTION_PROPERTY_FLAG ) )
+						newButtonBarProperties.labelFunction = buttonBar.labelFunction;
+					
+					_buttonBarProperties = newButtonBarProperties;
+					
+					if( accordionLayout ) accordionLayout.buttonBar = null;
 					break;
 				}
 			}
