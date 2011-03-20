@@ -36,28 +36,127 @@ package ws.tink.spark.primatives
 	import ws.tink.graphics.utils.RectUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
 	
+	/**
+	 *  The Ellipse class is a filled graphic element that draws an ellipse.
+	 *  The st:Ellipse differs from the s:Ellipse as it enables the use of custom
+	 *  strokes and fills by using a IGraphicsCreator to implement the drawing.
+	 *  
+	 *  <p>If a standard stroke and fill is used this class calls the <code>Graphics.drawEllipse()</code> method.
+	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>EllipseUtil.drawEllipse</code>.</p>
+	 * 
+	 *  @see flash.display.Graphics
+	 *  @see ws.tink.graphics.IGraphicsCreator
+	 *  @see ws.tink.graphics.utils.EllipseUtil
+	 *  @see ws.tink.spark.graphics.IGraphicsDefiner
+	 *  
+	 *  @includeExample examples/EllipseExample.mxml
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class Ellipse extends spark.primitives.Ellipse
 	{
 		
-		private var _origin	: Point;
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function Ellipse()
 		{
 			super();
 		}
 		
+		
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden methods
+		//  Variables
 		//
 		//--------------------------------------------------------------------------
 		
-		override protected function beginDraw(g:Graphics):void
+		private var _origin	: Point;
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Set up the stroke properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function setupStroke( g:Graphics ):void
 		{
-			_origin = new Point(drawX, drawY);
+			g.endFill();
 			
-			// Don't call super.beginDraw() since it will also set up an 
-			// invisible fill.
+			var strokeBounds:Rectangle = getStrokeBounds();
+			strokeBounds.offset( drawX, drawY );
+			stroke.apply( g, strokeBounds, _origin );
+		}
+		
+		/**
+		 *  Set up the fill properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function setupFill( g:Graphics ):void
+		{
+			var fillBounds:Rectangle = new Rectangle(drawX, drawY, width, height);
+			fill.begin( g, fillBounds, _origin );
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function beginDraw( g:Graphics ):void
+		{
+			// Don't call super.beginDraw() as this won't let us use
+			// our custom strokes and fills.
+			
+			_origin = new Point( drawX, drawY );
+			
+			
 			if( stroke )
 			{
 				if( stroke is IGraphicsDefiner )
@@ -87,24 +186,6 @@ package ws.tink.spark.primatives
 			}
 		}
 		
-		
-		protected function setupStroke( g:Graphics ):void
-		{
-			g.endFill();
-			
-			var strokeBounds:Rectangle = getStrokeBounds();
-			strokeBounds.offset(drawX, drawY);
-			stroke.apply( g, strokeBounds, _origin );
-		}
-		
-		protected function setupFill( g:Graphics ):void
-		{
-			var fillBounds:Rectangle = new Rectangle(drawX, drawY, width, height);
-			fill.begin( g, fillBounds, _origin );
-		}
-		
-		
-		
 		/**
 		 *  @inheritDoc
 		 *  
@@ -113,7 +194,7 @@ package ws.tink.spark.primatives
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		override protected function draw(g:Graphics):void
+		override protected function draw( g:Graphics ):void
 		{
 			var strokeCreator:IGraphicsCreator = ( stroke is IGraphicsDefiner ) ? IGraphicsDefiner( stroke ).graphicsCreator : null;
 			var fillCreator:IGraphicsCreator = ( fill is IGraphicsDefiner ) ? IGraphicsDefiner( fill ).graphicsCreator : null;
