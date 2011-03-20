@@ -36,22 +36,107 @@ package ws.tink.spark.primatives
 	import ws.tink.graphics.utils.RectUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
 	
+	/**
+	 *  The Line class is a graphic element that draws a line between two points.
+	 *  The <code>st:Line</code> differs from the <code>s:Line</code> as it enables the use of custom
+	 *  strokes and fills by using a IGraphicsCreator to implement the drawing.
+	 * 
+	 *  <p>If a standard stroke is used this class calls the <code>Graphics.moveTo()</code>
+	 *  and <code>Graphics.lineTo()</code> methods.
+	 *  If the stroke implements IGraphicsDefiner, this class uses <code>IGraphicsCreator.moveTo()</code>
+	 *  and <code>IGraphicsCreator.lineTo() methods.</p>
+	 *  
+	 *  @see flash.display.Graphics
+	 *  @see ws.tink.graphics.IGraphicsCreator
+	 *  @see ws.tink.spark.graphics.IGraphicsDefiner
+	 *  
+	 *  @includeExample examples/LineExample.mxml
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class Line extends spark.primitives.Line
 	{
 		
-		private var _origin	: Point;
+
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function Line()
 		{
 			super();
 		}
 		
+		
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden methods
+		//  Variables
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @private
+		 */
+		private var _origin	: Point;
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Set up the stroke properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		private function setupStroke( g:Graphics ):void
+		{
+			g.endFill();
+			
+			var strokeBounds:Rectangle = getStrokeBounds();
+			strokeBounds.offset(drawX, drawY);
+			stroke.apply( g, strokeBounds, _origin );
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override protected function beginDraw(g:Graphics):void
 		{
 			_origin = new Point(drawX, drawY);
@@ -74,18 +159,6 @@ package ws.tink.spark.primatives
 				g.lineStyle();
 			}
 		}
-		
-		
-		private function setupStroke( g:Graphics ):void
-		{
-			g.endFill();
-			
-			var strokeBounds:Rectangle = getStrokeBounds();
-			strokeBounds.offset(drawX, drawY);
-			stroke.apply( g, strokeBounds, _origin );
-		}
-		
-		
 		
 		/**
 		 *  @inheritDoc

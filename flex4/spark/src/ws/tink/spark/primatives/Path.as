@@ -40,7 +40,6 @@ package ws.tink.spark.primatives
 	 *  
 	 *  @see flash.display.Graphics
 	 *  @see ws.tink.graphics.IGraphicsCreator
-	 *  @see ws.tink.graphics.utils.EllipseUtil
 	 *  @see ws.tink.spark.graphics.IGraphicsDefiner
 	 * 
 	 *  @includeExample examples/PathExample.mxml
