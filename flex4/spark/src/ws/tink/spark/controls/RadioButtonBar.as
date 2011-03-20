@@ -58,6 +58,7 @@ package ws.tink.spark.controls
 		public function RadioButtonBar()
 		{
 			super();
+			requireSelection = true;
 		}
 	}
 }
