@@ -38,11 +38,11 @@ package ws.tink.spark.primatives
 	
 	/**
 	 *  The Ellipse class is a filled graphic element that draws an ellipse.
-	 *  The st:Ellipse differs from the s:Ellipse as it enables the use of custom
+	 *  The <code>st:Ellipse</code> differs from the <code>s:Ellipse</code> as it enables the use of custom
 	 *  strokes and fills by using a IGraphicsCreator to implement the drawing.
 	 *  
 	 *  <p>If a standard stroke and fill is used this class calls the <code>Graphics.drawEllipse()</code> method.
-	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>EllipseUtil.drawEllipse</code>.</p>
+	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>EllipseUtil.drawEllipse()</code>.</p>
 	 * 
 	 *  @see flash.display.Graphics
 	 *  @see ws.tink.graphics.IGraphicsCreator

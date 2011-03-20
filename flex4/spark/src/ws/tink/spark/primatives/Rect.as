@@ -34,6 +34,27 @@ package ws.tink.spark.primatives
 	import ws.tink.graphics.utils.RectUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
 	
+	/**
+	 *  The Rect class is a filled graphic element that draws an rectangle.
+	 *  The <code>st:Rect</code> differs from the <code>s:Rect</code> as it enables the use of custom
+	 *  strokes and fills by using a IGraphicsCreator to implement the drawing.
+	 *  
+	 *  <p>If a standard stroke and fill is used this class calls the <code>Graphics.drawRect()</code>
+	 *  and <code>Graphics.drawRoundRect()</code> methods.
+	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>RectUtil.drawRoundRectComplex2()</code>.</p>
+	 * 
+	 *  @see flash.display.Graphics
+	 *  @see ws.tink.graphics.IGraphicsCreator
+	 *  @see ws.tink.graphics.utils.RectUtil
+	 *  @see ws.tink.spark.graphics.IGraphicsDefiner
+	 *  
+	 *  @includeExample examples/RectExample.mxml
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class Rect extends spark.primitives.Rect
 	{
 		

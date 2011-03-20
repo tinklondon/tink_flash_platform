@@ -33,7 +33,7 @@ package ws.tink.spark.primatives
 	 *  The Annulus class is a filled graphic element that draws an annulus or ring.
 	 *  
 	 *  <p>If a standard stroke and fill is used this class calls the <code>Graphics.drawEllipse()</code> method.
-	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>EllipseUtil.drawEllipse</code>.</p>
+	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>EllipseUtil.drawEllipse()</code>.</p>
 	 * 
 	 *  @see flash.display.Graphics
 	 *  @see ws.tink.graphics.IGraphicsCreator
