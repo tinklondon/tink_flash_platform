@@ -56,22 +56,22 @@ package ws.tink.spark.containers
 		/**
 		 *  @private
 		 */
-		private static const DURATION_PROPERTY_FLAG:uint = 1 << 4;
+		private static const DURATION_PROPERTY_FLAG:uint = 1 << 2;
 		
 		/**
 		 *  @private
 		 */
-		private static const EASER_PROPERTY_FLAG:uint = 1 << 5;
+		private static const EASER_PROPERTY_FLAG:uint = 1 << 3;
 		
 		/**
 		 *  @private
 		 */
-		private static const MIN_ELEMENT_SIZE_PROPERTY_FLAG:uint = 1 << 2;
+		private static const MIN_ELEMENT_SIZE_PROPERTY_FLAG:uint = 1 << 4;
 		
 		/**
 		 *  @private
 		 */
-		private static const USE_SCROLL_RECT_PROPERTY_FLAG:uint = 1 << 3;
+		private static const USE_SCROLL_RECT_PROPERTY_FLAG:uint = 1 << 5;
 		
 		
 		// Constants used for buttonBar proxied properties.
