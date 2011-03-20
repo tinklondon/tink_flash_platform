@@ -41,6 +41,8 @@ package ws.tink.spark.containers
 		//
 		//--------------------------------------------------------------------------
 		
+		// Constants used for accordionLayout proxied properties.
+		
 		/**
 		 *  @private
 		 */
@@ -54,6 +56,16 @@ package ws.tink.spark.containers
 		/**
 		 *  @private
 		 */
+		private static const DURATION_PROPERTY_FLAG:uint = 1 << 4;
+		
+		/**
+		 *  @private
+		 */
+		private static const EASER_PROPERTY_FLAG:uint = 1 << 5;
+		
+		/**
+		 *  @private
+		 */
 		private static const MIN_ELEMENT_SIZE_PROPERTY_FLAG:uint = 1 << 2;
 		
 		/**
@@ -61,15 +73,8 @@ package ws.tink.spark.containers
 		 */
 		private static const USE_SCROLL_RECT_PROPERTY_FLAG:uint = 1 << 3;
 		
-		/**
-		 *  @private
-		 */
-		private static const DURATION_PROPERTY_FLAG:uint = 1 << 4;
 		
-		/**
-		 *  @private
-		 */
-		private static const EASER_PROPERTY_FLAG:uint = 1 << 5;
+		// Constants used for buttonBar proxied properties.
 		
 		/**
 		 *  @private
@@ -229,66 +234,6 @@ package ws.tink.spark.containers
 		
 		
 		//----------------------------------
-		//  minElementSize
-		//----------------------------------    
-		
-		/** 
-		 *  @copy ws.tink.spark.layouts.AccordionLayout#minElementSize
-		 */
-		public function get minElementSize():Number
-		{
-			return accordionLayout ? accordionLayout.minElementSize : _accordionLayoutProperties.minElementSize;
-		}
-		/**
-		 *  @private
-		 */
-		public function set minElementSize( value:Number ):void
-		{
-			if( minElementSize == value ) return;
-			
-			if( accordionLayout )
-			{
-				accordionLayout.minElementSize = value;
-				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, MIN_ELEMENT_SIZE_PROPERTY_FLAG, true );
-			}
-			else
-			{
-				_accordionLayoutProperties.minElementSize = value;
-			}
-		}
-		
-		
-		//----------------------------------
-		//  useScrollRect
-		//----------------------------------    
-		
-		/**
-		 *  @copy ws.tink.spark.layouts.AccordionLayout#useScrollRect
-		 */
-		public function get useScrollRect():Boolean
-		{
-			return accordionLayout ? accordionLayout.useScrollRect : _accordionLayoutProperties.useScrollRect;
-		}
-		/**
-		 *  @private
-		 */
-		public function set useScrollRect( value:Boolean ):void
-		{
-			if( useScrollRect == value ) return;
-			
-			if( accordionLayout )
-			{
-				accordionLayout.useScrollRect = value;
-				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, USE_SCROLL_RECT_PROPERTY_FLAG, true );
-			}
-			else
-			{
-				_accordionLayoutProperties.useScrollRect = value;
-			}
-		}
-		
-		
-		//----------------------------------
 		//  duration
 		//----------------------------------    
 		
@@ -345,6 +290,66 @@ package ws.tink.spark.containers
 			else
 			{
 				_accordionLayoutProperties.easer = value;
+			}
+		}
+		
+		
+		//----------------------------------
+		//  minElementSize
+		//----------------------------------    
+		
+		/** 
+		 *  @copy ws.tink.spark.layouts.AccordionLayout#minElementSize
+		 */
+		public function get minElementSize():Number
+		{
+			return accordionLayout ? accordionLayout.minElementSize : _accordionLayoutProperties.minElementSize;
+		}
+		/**
+		 *  @private
+		 */
+		public function set minElementSize( value:Number ):void
+		{
+			if( minElementSize == value ) return;
+			
+			if( accordionLayout )
+			{
+				accordionLayout.minElementSize = value;
+				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, MIN_ELEMENT_SIZE_PROPERTY_FLAG, true );
+			}
+			else
+			{
+				_accordionLayoutProperties.minElementSize = value;
+			}
+		}
+		
+		
+		//----------------------------------
+		//  useScrollRect
+		//----------------------------------    
+		
+		/**
+		 *  @copy ws.tink.spark.layouts.AccordionLayout#useScrollRect
+		 */
+		public function get useScrollRect():Boolean
+		{
+			return accordionLayout ? accordionLayout.useScrollRect : _accordionLayoutProperties.useScrollRect;
+		}
+		/**
+		 *  @private
+		 */
+		public function set useScrollRect( value:Boolean ):void
+		{
+			if( useScrollRect == value ) return;
+			
+			if( accordionLayout )
+			{
+				accordionLayout.useScrollRect = value;
+				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, USE_SCROLL_RECT_PROPERTY_FLAG, true );
+			}
+			else
+			{
+				_accordionLayoutProperties.useScrollRect = value;
 			}
 		}
 		
