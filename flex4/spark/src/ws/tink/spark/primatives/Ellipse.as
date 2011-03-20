@@ -88,7 +88,7 @@ package ws.tink.spark.primatives
 		}
 		
 		
-		private function setupStroke( g:Graphics ):void
+		protected function setupStroke( g:Graphics ):void
 		{
 			g.endFill();
 			
@@ -97,7 +97,7 @@ package ws.tink.spark.primatives
 			stroke.apply( g, strokeBounds, _origin );
 		}
 		
-		private function setupFill( g:Graphics ):void
+		protected function setupFill( g:Graphics ):void
 		{
 			var fillBounds:Rectangle = new Rectangle(drawX, drawY, width, height);
 			fill.begin( g, fillBounds, _origin );
