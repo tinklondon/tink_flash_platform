@@ -226,111 +226,111 @@ package ws.tink.spark.layouts
 		}
 		
 		
-		//----------------------------------
-		//  verticalAlign
-		//----------------------------------    
-		
-		/**
-		 *  @private
-		 *  Storage property for verticalAlign.
-		 */
-		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
-		
-		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="justify")]
-		
-		/** 
-		 *  The vertical alignment of layout elements.
-		 * 
-		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
-		 *  or <code>"top"</code> then the layout elements are aligned relative 
-		 *  to the container's <code>contentHeight</code> property.</p>
-		 * 
-		 *  <p>If the value is <code>"contentJustify"</code> then the actual
-		 *  height of the layout element is set to 
-		 *  the container's <code>contentHeight</code> property. 
-		 *  The content height of the container is the height of the largest layout element. 
-		 *  If all layout elements are smaller than the height of the container, 
-		 *  then set the height of all the layout elements to the height of the container.</p>
-		 * 
-		 *  <p>If the value is <code>"justify"</code> then the actual height
-		 *  of the layout elements is set to the container's height.</p>
-		 *
-		 *  <p>This property does not affect the layout's measured size.</p>
-		 *  
-		 *  @default "justify"
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get verticalAlign():String
-		{
-			return _verticalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set verticalAlign( value:String ):void
-		{
-			if( value == _verticalAlign ) return;
-			
-			_verticalAlign = value;
-			
-			invalidateTargetDisplayList();
-		}
-		
-		
-		//----------------------------------
-		//  horizontalAlign
-		//----------------------------------  
-		
-		/**
-		 *  @private
-		 *  Storage property for horizontalAlign.
-		 */
-		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
-		
-		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="justify")]
-		
-		/** 
-		 *  The horizontal alignment of layout elements.
-		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
-		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
-		 * 
-		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
-		 *  width is set to the <code>contentWidth</code> of the container.
-		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
-		 *  If all layout elements are smaller than the width of the container, 
-		 *  then set the width of all layout elements to the width of the container.</p>
-		 * 
-		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
-		 *  is set to the container's width.</p>
-		 *
-		 *  <p>This property does not affect the layout's measured size.</p>
-		 *  
-		 *  @default "justify"
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get horizontalAlign():String
-		{
-			return _horizontalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set horizontalAlign( value:String ):void
-		{
-			if( value == _horizontalAlign ) return;
-			
-			_horizontalAlign = value;
-			
-			invalidateTargetDisplayList();
-		}
+//		//----------------------------------
+//		//  verticalAlign
+//		//----------------------------------    
+//		
+//		/**
+//		 *  @private
+//		 *  Storage property for verticalAlign.
+//		 */
+//		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
+//		
+//		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="justify")]
+//		
+//		/** 
+//		 *  The vertical alignment of layout elements.
+//		 * 
+//		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
+//		 *  or <code>"top"</code> then the layout elements are aligned relative 
+//		 *  to the container's <code>contentHeight</code> property.</p>
+//		 * 
+//		 *  <p>If the value is <code>"contentJustify"</code> then the actual
+//		 *  height of the layout element is set to 
+//		 *  the container's <code>contentHeight</code> property. 
+//		 *  The content height of the container is the height of the largest layout element. 
+//		 *  If all layout elements are smaller than the height of the container, 
+//		 *  then set the height of all the layout elements to the height of the container.</p>
+//		 * 
+//		 *  <p>If the value is <code>"justify"</code> then the actual height
+//		 *  of the layout elements is set to the container's height.</p>
+//		 *
+//		 *  <p>This property does not affect the layout's measured size.</p>
+//		 *  
+//		 *  @default "justify"
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get verticalAlign():String
+//		{
+//			return _verticalAlign;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set verticalAlign( value:String ):void
+//		{
+//			if( value == _verticalAlign ) return;
+//			
+//			_verticalAlign = value;
+//			
+//			invalidateTargetDisplayList();
+//		}
+//		
+//		
+//		//----------------------------------
+//		//  horizontalAlign
+//		//----------------------------------  
+//		
+//		/**
+//		 *  @private
+//		 *  Storage property for horizontalAlign.
+//		 */
+//		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
+//		
+//		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="justify")]
+//		
+//		/** 
+//		 *  The horizontal alignment of layout elements.
+//		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
+//		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
+//		 * 
+//		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
+//		 *  width is set to the <code>contentWidth</code> of the container.
+//		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
+//		 *  If all layout elements are smaller than the width of the container, 
+//		 *  then set the width of all layout elements to the width of the container.</p>
+//		 * 
+//		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
+//		 *  is set to the container's width.</p>
+//		 *
+//		 *  <p>This property does not affect the layout's measured size.</p>
+//		 *  
+//		 *  @default "justify"
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get horizontalAlign():String
+//		{
+//			return _horizontalAlign;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set horizontalAlign( value:String ):void
+//		{
+//			if( value == _horizontalAlign ) return;
+//			
+//			_horizontalAlign = value;
+//			
+//			invalidateTargetDisplayList();
+//		}
 		
 		
 		//----------------------------------
