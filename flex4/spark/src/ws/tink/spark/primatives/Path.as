@@ -32,24 +32,18 @@ package ws.tink.spark.primatives
 	
 	/**
 	 *  The Path class is a filled graphic element that draws a series of path segments.
-	 *  In vector graphics, a path is a series of points connected by straight or curved line segments. 
-	 *  Together the lines form an image. In Flex, you use the Path class to define a complex vector shape 
-	 *  constructed from a set of line segments. 
+	 *  The <code>st:Path</code> differs from the <code>s:Path</code> as it enables the use of custom
+	 *  strokes and fills by using a IGraphicsCreator to implement the drawing.
 	 * 
-	 *  <p>Typically, the first element of a path definition is a Move segment to specify the starting pen 
-	 *  position of the graphic. You then use the Line, CubicBezier and QuadraticBezier segments to  
-	 *  draw the lines of the graphic. When using these classes, you only specify the x and y coordinates 
-	 *  of the end point of the line; the x and y coordinate of the starting point is defined by the current 
-	 *  pen position.</p>
+	 *  <p>If a standard stroke and fill is used this class calls the <code>Graphics.drawPath()</code> method.
+	 *  If the stroke or fill implement IGraphicsDefiner, this class uses <code>IGraphicsCreator.drawPath()</code>.</p>
 	 *  
-	 *  <p>After drawing a line segment, the current pen position becomes the x and y coordinates of the end 
-	 *  point of the line. You can use multiple Move segments in the path definition to 
-	 *  reposition the pen.</p>
-	 *  
-	 *  <p>The syntax used by the Path class to define the shape is the same as the SVG path syntax, 
-	 *  which makes it easy to convert SVG paths to Flex paths.</p>
-	 *  
-	 *  @includeExample examples/ArrowExample.mxml
+	 *  @see flash.display.Graphics
+	 *  @see ws.tink.graphics.IGraphicsCreator
+	 *  @see ws.tink.graphics.utils.EllipseUtil
+	 *  @see ws.tink.spark.graphics.IGraphicsDefiner
+	 * 
+	 *  @includeExample examples/PathExample.mxml
 	 *    
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
@@ -58,7 +52,8 @@ package ws.tink.spark.primatives
 	 */
 	public class Path extends FilledElement
 	{
-//		include "../core/Version.as";
+
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -78,6 +73,8 @@ package ws.tink.spark.primatives
 		{
 			super();
 		}
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -116,6 +113,8 @@ package ws.tink.spark.primatives
 		 *  drawn to screen. 
 		 */ 
 		mx_internal var graphicsPath:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -221,7 +220,6 @@ package ws.tink.spark.primatives
 			
 			_data = value;
 		}
-		
 		/** 
 		 *  @private
 		 */
@@ -229,6 +227,7 @@ package ws.tink.spark.primatives
 		{
 			return _data;
 		}
+		
 		
 		//----------------------------------
 		//  winding
@@ -258,7 +257,6 @@ package ws.tink.spark.primatives
 				invalidateDisplayList();
 			} 
 		}
-		
 		/** 
 		 *  @private
 		 */
@@ -266,6 +264,7 @@ package ws.tink.spark.primatives
 		{
 			return _winding; 
 		}
+		
 		
 		//----------------------------------
 		//  bounds
@@ -276,9 +275,10 @@ package ws.tink.spark.primatives
 			return segments ? segments.getBounds() : new Rectangle();
 		}
 		
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden methods
+		//  Overridden Methods
 		//
 		//--------------------------------------------------------------------------
 		
@@ -859,11 +859,20 @@ package ws.tink.spark.primatives
 					setupFill( g );
 				}
 			}
-
 		}
 		
 		
-		private function setupStroke( g:Graphics ):void
+		/**
+		 *  Set up the stroke properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function setupStroke( g:Graphics ):void
 		{
 			g.endFill();
 			
@@ -872,7 +881,17 @@ package ws.tink.spark.primatives
 			stroke.apply( g, strokeBounds, _origin );
 		}
 		
-		private function setupFill( g:Graphics ):void
+		/**
+		 *  Set up the fill properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected function setupFill( g:Graphics ):void
 		{
 			var naturalBounds:Rectangle = getBounds();
 			var sx:Number = naturalBounds.width == 0 ? 1 : width / naturalBounds.width;
