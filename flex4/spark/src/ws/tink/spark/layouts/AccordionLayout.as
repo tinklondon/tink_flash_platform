@@ -188,14 +188,14 @@ package ws.tink.spark.layouts
 		
 		
 		//----------------------------------
-		//  minimumElementSize
+		//  minElementSize
 		//----------------------------------    
 		
 		/**
 		 *  @private
-		 *  Storage property for minimumElementSize.
+		 *  Storage property for minElementSize.
 		 */
-		private var _minimumElementSize:Number = 0;
+		private var _minElementSize:Number = 0;
 		
 		/** 
 		 *  The minumm size of an element when it's element index isn't the
@@ -208,18 +208,18 @@ package ws.tink.spark.layouts
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get minimumElementSize():Number
+		public function get minElementSize():Number
 		{
-			return _minimumElementSize;
+			return _minElementSize;
 		}
 		/**
 		 *  @private
 		 */
-		public function set minimumElementSize( value:Number ):void
+		public function set minElementSize( value:Number ):void
 		{
-			if( value == _minimumElementSize ) return;
+			if( value == _minElementSize ) return;
 			
-			_minimumElementSize = value;
+			_minElementSize = value;
 			
 			_elementSizesInvalid = true;
 			invalidateTargetDisplayList();
@@ -579,7 +579,7 @@ package ws.tink.spark.layouts
 				{
 					elementSize.element = target.getElementAt( elementSize.index );
 				}
-				else if( minimumElementSize > 0 || elementSize.size > 0 )
+				else if( minElementSize > 0 || elementSize.size > 0 )
 				{
 					elementSize.element = target.getVirtualElementAt( elementSize.index );
 				}
@@ -668,7 +668,7 @@ package ws.tink.spark.layouts
 		private function updateElementSizes( selectedElement:IVisualElement ):void
 		{
 			var size:Number = direction == TileDirection.VERTICAL ? unscaledHeight : unscaledWidth;
-			var availableSpace:Number = size - _buttonLayout._totalSize - ( minimumElementSize * ( numElementsInLayout - 1 ) );
+			var availableSpace:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
 			var numElementSizes:int = _elementSizes.length;
 			
 			var i:int
@@ -705,7 +705,7 @@ package ws.tink.spark.layouts
 					if( indicesFound.indexOf( index ) == -1 )
 					{
 						elementSize = new ElementSize();
-						elementSize.start = minimumElementSize;
+						elementSize.start = minElementSize;
 						elementSize.diff = 0;
 						elementSize.size = 0;
 						elementSize.index = index;
@@ -734,7 +734,7 @@ package ws.tink.spark.layouts
 			if( elementSize.element && ( elementSize.start != 0 || elementSize.diff != 0 || i == selectedIndex ) )
 			{
 				elementSize.start = elementSize.size;
-				elementSize.diff = ( i == selectedIndex ) ? availableSpace - elementSize.start : minimumElementSize - elementSize.start;
+				elementSize.diff = ( i == selectedIndex ) ? availableSpace - elementSize.start : minElementSize - elementSize.start;
 			}
 		}
 		
