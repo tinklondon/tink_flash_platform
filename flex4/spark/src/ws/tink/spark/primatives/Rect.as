@@ -26,10 +26,8 @@ package ws.tink.spark.primatives
 	
 	import mx.utils.GraphicsUtil;
 	
-	import spark.primitives.Graphic;
 	import spark.primitives.Rect;
 	
-	import ws.tink.graphics.Dash;
 	import ws.tink.graphics.IGraphicsCreator;
 	import ws.tink.graphics.utils.RectUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
@@ -58,25 +56,107 @@ package ws.tink.spark.primatives
 	public class Rect extends spark.primitives.Rect
 	{
 		
-		private var _origin	: Point;
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor. 
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function Rect()
 		{
 			super();
 		}
 		
+		
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden methods
+		//  Variables
 		//
 		//--------------------------------------------------------------------------
 		
-		override protected function beginDraw(g:Graphics):void
+		/**
+		 *  @private
+		 */
+		private var _origin	: Point;
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Set up the stroke properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		private function setupStroke( g:Graphics ):void
 		{
-			_origin = new Point(drawX, drawY);
+			g.endFill();
 			
+			var strokeBounds:Rectangle = getStrokeBounds();
+			strokeBounds.offset(drawX, drawY);
+			stroke.apply( g, strokeBounds, _origin );
+		}
+		
+		/**
+		 *  Set up the fill properties for this drawing element.
+		 *  
+		 *  @param g The graphic element to draw.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		private function setupFill( g:Graphics ):void
+		{
+			var fillBounds:Rectangle = new Rectangle(drawX, drawY, width, height);
+			fill.begin( g, fillBounds, _origin );
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function beginDraw( g:Graphics ):void
+		{
 			// Don't call super.beginDraw() since it will also set up an 
 			// invisible fill.
+			
+			_origin = new Point(drawX, drawY);
+			
 			if( stroke )
 			{
 				if( stroke is IGraphicsDefiner )
@@ -107,20 +187,7 @@ package ws.tink.spark.primatives
 		}
 		
 		
-		private function setupStroke( g:Graphics ):void
-		{
-			g.endFill();
-			
-			var strokeBounds:Rectangle = getStrokeBounds();
-			strokeBounds.offset(drawX, drawY);
-			stroke.apply( g, strokeBounds, _origin );
-		}
 		
-		private function setupFill( g:Graphics ):void
-		{
-			var fillBounds:Rectangle = new Rectangle(drawX, drawY, width, height);
-			fill.begin( g, fillBounds, _origin );
-		}
 		
 		
 		

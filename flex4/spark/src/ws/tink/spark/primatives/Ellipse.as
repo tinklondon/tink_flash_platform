@@ -88,6 +88,9 @@ package ws.tink.spark.primatives
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @private
+		 */
 		private var _origin	: Point;
 		
 		
