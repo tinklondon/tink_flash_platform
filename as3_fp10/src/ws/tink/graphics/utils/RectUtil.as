@@ -158,10 +158,9 @@ package ws.tink.graphics.utils
 		}
 		
 		/**
-		 * Draws a rounded rectangle using the size of individual x and y radii to 
+		 * Draws a rounded rectangle using the size of individual x and y radius to 
 		 * draw the rounded corners. 
-		 * You must set the line style, fill, or both 
-		 * on the Graphics object before 
+		 * You must set the line style, fill, or both on the Graphics object before 
 		 * you call the <code>drawRoundRectComplex2()</code> method 
 		 * by calling the <code>linestyle()</code>, 
 		 * <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
