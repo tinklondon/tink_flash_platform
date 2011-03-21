@@ -739,8 +739,6 @@ package ws.tink.spark.layouts
 		}
 		
 		
-		
-		
 		override protected function updateSelectedIndex( index:int, offset:Number ):void
 		{
 			if( index == selectedIndex && selectedIndexOffset == _proposedSelectedIndexOffset ) return;
