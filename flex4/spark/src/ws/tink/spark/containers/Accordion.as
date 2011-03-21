@@ -393,7 +393,6 @@ package ws.tink.spark.containers
 		{
 			return buttonBar ? buttonBar.labelField : _buttonBarProperties.labelField;
 		}
-		
 		/**
 		 *  @private
 		 */

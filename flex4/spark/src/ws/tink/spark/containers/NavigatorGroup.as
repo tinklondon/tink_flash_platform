@@ -266,7 +266,6 @@ package ws.tink.spark.containers
 		//----------------------------------
 		//  layout
 		//----------------------------------    
-		
 		/**
 		 *  @private
 		 */
@@ -277,8 +276,8 @@ package ws.tink.spark.containers
 			if( value is INavigatorLayout )
 			{
 				removeLayoutListeners();
-				INavigatorLayout( value ).selectedIndex = _selectedIndex;
 				super.layout = value;
+				INavigatorLayout( value ).selectedIndex = _selectedIndex;
 				addLayoutListeners();
 			}
 			else
@@ -570,7 +569,7 @@ package ws.tink.spark.containers
 				enl.stepEasing = 1;
 			}
 			
-			nl.selectedIndex = newIndex;
+			if( nl ) nl.selectedIndex = newIndex;
 			
 			if( enl ) enl.stepEasing = stepEasing;
 		}

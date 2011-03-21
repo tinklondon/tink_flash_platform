@@ -262,13 +262,11 @@ package ws.tink.spark.containers
 		 */
 		public function set creationPolicy(value:String):void
 		{
-			trace( "creationPolicy", value, _creationPolicy, layout );
 			if( _creationPolicy == value ) return;
 			
 			_creationPolicy = value;
-			
-			
 			_useVirtualLayout = _creationPolicy != DeferredCreationPolicy.ALL;
+			
 			if( layout )
 			{
 				if( layout is BasicLayout )
@@ -277,7 +275,6 @@ package ws.tink.spark.containers
 				}
 				else
 				{
-					trace( "useVitual", _useVirtualLayout );
 					layout.useVirtualLayout = _useVirtualLayout;
 				}
 			}
@@ -399,7 +396,6 @@ package ws.tink.spark.containers
 				value.useVirtualLayout = _useVirtualLayout;
 			}
 			
-			trace( "added", _useVirtualLayout, _creationPolicy );
 			super.layout = value;
 		}
 		
