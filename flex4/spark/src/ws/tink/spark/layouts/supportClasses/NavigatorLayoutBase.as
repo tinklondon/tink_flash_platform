@@ -45,7 +45,7 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		private var _targetChanged					: Boolean;
-		private var _useScrollBarForNavigation			: Boolean;
+		
 		
 		
 		private var _indicesInLayout				: Vector.<int>;
@@ -53,21 +53,23 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		
-		public function get lastIndexInView():int
-		{
-			return _lastIndexInView;
-		}
-		public function get firstIndexInView():int
-		{
-			return _firstIndexInView;
-		}
-		public function get numIndicesInView():int
-		{
-			return _numIndicesInView;
-		}
 		
 		
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function NavigatorLayoutBase()
 		{
 			super();
@@ -80,6 +82,79 @@ package ws.tink.spark.layouts.supportClasses
 		}	
 		
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  lastIndexInView
+		//---------------------------------- 
+		
+		/**
+		 *  lastIndexInView
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get lastIndexInView():int
+		{
+			return _lastIndexInView;
+		}
+		
+		
+		//----------------------------------
+		//  firstIndexInView
+		//---------------------------------- 
+		
+		/**
+		 *  firstIndexInView
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get firstIndexInView():int
+		{
+			return _firstIndexInView;
+		}
+		
+		
+		//----------------------------------
+		//  numVisibleElements
+		//---------------------------------- 
+		
+		/**
+		 *  inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get numIndicesInView():int
+		{
+			return _numIndicesInView;
+		}
+		
+		
+		//----------------------------------
+		//  renderingData
+		//---------------------------------- 
+		
+		/**
+		 *  inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function get renderingData():Boolean
 		{
 			if( target is DataGroup )
@@ -105,30 +180,26 @@ package ws.tink.spark.layouts.supportClasses
 //			invalidateTargetDisplayList();
 //		}
 		
+		
+		//----------------------------------
+		//  selectedIndexOffset
+		//---------------------------------- 
+		
 		/**
-		 *  @inheritDoc
+		 *  inheritDoc
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		override public function set target( value:GroupBase ):void
-		{
-			if( target == value ) return;
-			
-			if( target ) restoreElements();
-			super.target = value;
-			
-			_targetChanged = true;
-		}
-		
-		
-		
 		public function get selectedIndexOffset():Number
 		{
 			return _selectedIndexOffset;
 		}
+		/**
+		 *  @private
+		 */
 		public function set selectedIndexOffset( value:Number ):void
 		{
 			if( _useScrollBarForNavigation )
@@ -158,6 +229,9 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			return _selectedIndex;
 		}
+		/**
+		 *  @private
+		 */
 		public function set selectedIndex( value:int ):void
 		{
 			if( _selectedIndex == value ) return;
@@ -176,11 +250,32 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		//----------------------------------
+		//  useScrollBarForNavigation
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for useScrollBarForNavigation.
+		 */
+		private var _useScrollBarForNavigation:Boolean;
+		
 		[Inspectable(category="General", enumeration="false,true", defaultValue="true")]
+		/**
+		 *  useScrollBarForNavigation
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function get useScrollBarForNavigation():Boolean
 		{
 			return _useScrollBarForNavigation;
 		}
+		/**
+		 *  @private
+		 */
 		public function set useScrollBarForNavigation(value:Boolean):void
 		{
 			if( value == _useScrollBarForNavigation ) return;
@@ -253,6 +348,10 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		//----------------------------------
+		//  scrollBarDirection
+		//----------------------------------  
+		
 		/**
 		 *  Returns an <code>int</code> specifying number of elements included in the layout.
 		 * 
@@ -269,6 +368,10 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		//----------------------------------
+		//  scrollBarDirection
+		//----------------------------------  
+		
 		/**
 		 *  Returns an <code>int</code> specifying number of elements not included in the layout.
 		 * 
@@ -284,6 +387,10 @@ package ws.tink.spark.layouts.supportClasses
 			return _numElementsNotInLayout;
 		}
 		
+		
+		//----------------------------------
+		//  scrollBarDirection
+		//----------------------------------  
 		
 		/**
 		 *  A convenience method for determining the elements included in the layout.
@@ -302,6 +409,11 @@ package ws.tink.spark.layouts.supportClasses
 			return _indicesInLayout;
 		}
 		
+		
+		//----------------------------------
+		//  scrollBarDirection
+		//----------------------------------  
+		
 		/**
 		 *  A convenience method for determining the elements excluded from the layout.
 		 * 
@@ -319,6 +431,17 @@ package ws.tink.spark.layouts.supportClasses
 			return _indicesNotInLayout;
 		}
 		
+		
+		//----------------------------------
+		//  unscaledWidth
+		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for unscaledWidth.
+		 */
+		private var _unscaledWidth	: Number;
+		
 		/**
 		 *  A convenience method for determining the unscaled width of the viewport.
 		 *
@@ -333,6 +456,17 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			return _unscaledWidth;
 		}
+		
+		
+		//----------------------------------
+		//  unscaledHeight
+		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for unscaledHeight.
+		 */
+		private var _unscaledHeight	: Number;
 		
 		/**
 		 *  A convenience method for determining the unscaled height of the viewport.
@@ -350,8 +484,8 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
-		private var _unscaledWidth	: Number;
-		private var _unscaledHeight	: Number;
+		
+		
 		
 		//TODO tink comment and implement properly
 		protected var _elements	: Vector.<IVisualElement>;
@@ -360,6 +494,48 @@ package ws.tink.spark.layouts.supportClasses
 			return _elements;
 		}
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override public function set target( value:GroupBase ):void
+		{
+			if( target == value ) return;
+			
+			if( target ) restoreElements();
+			super.target = value;
+			
+			_targetChanged = true;
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
@@ -373,11 +549,16 @@ package ws.tink.spark.layouts.supportClasses
 				updateElements();
 			}
 			
+			var scrollPositionInvalid:Boolean;
+			var numElementsInLayout:int = _numElementsInLayout;
+			
 			//TODO support includeInLayout
 			// Only really want to do this if...
 			// a) the number of elements have changed
 			// b) includeLayout has changed on an element
 			updateElementsInLayout();
+			
+			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
 			
 			// If the selected index has changed exit the method as its handle in selectedIndex
 			if( _numElementsInLayout == 0 )
@@ -387,7 +568,8 @@ package ws.tink.spark.layouts.supportClasses
 			else if( selectedIndex == -1 )
 			{
 				selectedIndex = 0;
-				scrollPositionChanged();
+//				scrollPositionChanged();
+				scrollPositionInvalid = true;
 			}
 			
 			if( _targetChanged )
@@ -397,13 +579,16 @@ package ws.tink.spark.layouts.supportClasses
 				// Only update if the target was changed after the selectedIndex
 				if( !_selectedIndexChangedAfterTargetChanged )
 				{
-					scrollPositionChanged();
+//					scrollPositionChanged();
+					scrollPositionInvalid = true;
 				}
 				else
 				{
 					_selectedIndexChangedAfterTargetChanged = false;
 				}
 			}
+			
+			if( scrollPositionInvalid ) scrollPositionChanged();
 			
 			if( _useScrollBarForNavigation )
 			{
@@ -501,6 +686,7 @@ package ws.tink.spark.layouts.supportClasses
 			}
 			_numElementsInLayout = _indicesInLayout.length;
 			_numElementsNotInLayout = _indicesNotInLayout.length;
+			trace( "updateElementsInLayout", _indicesInLayout );
 		}
 		
 		protected function updateScrollerForNavigation():void
@@ -772,6 +958,9 @@ package ws.tink.spark.layouts.supportClasses
 		
 		/**
 		 *  Restores the element to reset any changes to is visible properties. 
+		 *  This method should be overridden in a subclass to return any elements
+		 *  used in the layout to its default state when it is removed from the
+		 *  targets displayList or when the target is removed from the layout.
 		 * 
 		 *  @param element The element to be restored.
 		 *  
