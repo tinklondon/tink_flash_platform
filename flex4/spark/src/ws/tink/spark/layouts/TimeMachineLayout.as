@@ -635,6 +635,7 @@ package ws.tink.spark.layouts
 				_colorDelta = 1 / ( _numVisibleElements );
 			}
 			
+			trace( "updateDisplayList", useVirtualLayout );
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 		}
 		
@@ -662,6 +663,8 @@ package ws.tink.spark.layouts
 				updateFirstElementInView( element, firstIndexInViewOffsetPercent );
 				updateVisibleElements( element, prevVirtualElements );
 			}
+			
+			trace( "num", numIndicesInView, indicesInLayout );
 			
 			for( i = 1; i < numIndicesInView; i++ )
 			{
@@ -732,6 +735,7 @@ package ws.tink.spark.layouts
 				firstIndexInView = selectedIndex;
 			}
 			
+			trace( "selectedIndexChange", firstIndexInView, _numVisibleElements, numElementsInLayout, indicesInLayout );
 			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
 		}
 
