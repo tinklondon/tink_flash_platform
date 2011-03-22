@@ -28,7 +28,7 @@ package ws.tink.spark.layouts
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.VerticalAlign;
 	
-	import ws.tink.spark.layouts.supportClasses.PerspectiveNavigatorLayoutBase;
+	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
 
 	/**
 	 *  The TimeMachineLayout class arranges the layout elements in a depth sequence,
@@ -83,7 +83,7 @@ package ws.tink.spark.layouts
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public class TimeMachineLayout extends PerspectiveNavigatorLayoutBase
+	public class TimeMachineLayout extends PerspectiveAnimationNavigatorLayoutBase
 	{
 
 		
@@ -105,7 +105,7 @@ package ws.tink.spark.layouts
 		 */
 		public function TimeMachineLayout()
 		{
-			super();
+			super( INDIRECT );
 			
 			_maximumZChanged = true;
 			useVirtualLayout = true
@@ -635,7 +635,6 @@ package ws.tink.spark.layouts
 				_colorDelta = 1 / ( _numVisibleElements );
 			}
 			
-			trace( "updateDisplayList", useVirtualLayout );
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 		}
 		
@@ -664,7 +663,7 @@ package ws.tink.spark.layouts
 				updateVisibleElements( element, prevVirtualElements );
 			}
 			
-			trace( "num", numIndicesInView, indicesInLayout );
+			
 			
 			for( i = 1; i < numIndicesInView; i++ )
 			{
@@ -719,25 +718,36 @@ package ws.tink.spark.layouts
 			}
 		}
 		
+//		override protected function updateSelectedIndex( index:int, offset:Number ):void
+//		{
+//			super.updateSelectedIndex( index, offset );
+//			
+//		}
 		
-		override protected function selectedIndexChange():void
+		override protected function updateIndicesInView():void
 		{
-			super.selectedIndexChange();
-			
-			var firstIndexInView:int;
-			
-			if( selectedIndexOffset < 0 )
-			{
-				firstIndexInView = selectedIndex - 1;
-			}
-			else
-			{
-				firstIndexInView = selectedIndex;
-			}
-			
-			trace( "selectedIndexChange", firstIndexInView, _numVisibleElements, numElementsInLayout, indicesInLayout );
+			super.updateIndicesInView();
+			var firstIndexInView:int = selectedIndexOffset < 0 ? selectedIndex - 1 : selectedIndex;
 			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
 		}
+//		override protected function selectedIndexChange():void
+//		{
+//			super.selectedIndexChange();
+//			
+//			var firstIndexInView:int;
+//			
+//			if( selectedIndexOffset < 0 )
+//			{
+//				firstIndexInView = selectedIndex - 1;
+//			}
+//			else
+//			{
+//				firstIndexInView = selectedIndex;
+//			}
+//			
+//			trace( "selectedIndexChange", firstIndexInView, _numVisibleElements, numElementsInLayout, indicesInLayout );
+//			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
+//		}
 
 	}
 }
