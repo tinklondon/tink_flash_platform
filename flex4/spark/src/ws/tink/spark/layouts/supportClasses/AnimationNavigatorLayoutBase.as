@@ -241,8 +241,6 @@ package ws.tink.spark.layouts.supportClasses
 			animation.play();
 		}
 		
-		
-		
 		/**
 		 *  @private
 		 */
