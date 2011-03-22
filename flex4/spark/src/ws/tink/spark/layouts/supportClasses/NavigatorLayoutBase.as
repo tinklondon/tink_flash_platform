@@ -27,16 +27,13 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		
-		private var _selectedIndexOffset	: Number = 0;
-		private var _selectedIndex			: int = -1;
+		
 		private var _selectedIndexChanged	: Boolean;
 		private var _selectedIndexChangedAfterTargetChanged	: Boolean;
 		
 		private var _elementsChanged		: Boolean;
 		
-		private var _firstIndexInView		: int = -1;
-		private var _lastIndexInView		: int = -1;
-		private var _numIndicesInView		: int = -1;
+		
 		
 		private var _numElementsInLayout	: int = -1;
 		private var _numElementsNotInLayout	: int = -1;
@@ -94,6 +91,12 @@ package ws.tink.spark.layouts.supportClasses
 		//---------------------------------- 
 		
 		/**
+		 *  @private
+		 *	Storage property for lastIndexInView.
+		 */
+		private var _lastIndexInView		: int = -1;
+		
+		/**
 		 *  lastIndexInView
 		 *  
 		 *  @langversion 3.0
@@ -112,6 +115,12 @@ package ws.tink.spark.layouts.supportClasses
 		//---------------------------------- 
 		
 		/**
+		 *  @private
+		 *	Storage property for firstIndexInView.
+		 */
+		private var _firstIndexInView		: int = -1;
+		
+		/**
 		 *  firstIndexInView
 		 *  
 		 *  @langversion 3.0
@@ -128,6 +137,12 @@ package ws.tink.spark.layouts.supportClasses
 		//----------------------------------
 		//  numVisibleElements
 		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *	Storage property for numIndicesInView.
+		 */
+		private var _numIndicesInView		: int = -1;
 		
 		/**
 		 *  inheritDoc
@@ -186,6 +201,12 @@ package ws.tink.spark.layouts.supportClasses
 		//---------------------------------- 
 		
 		/**
+		 *  @private
+		 *	Storage property for selectedIndexOffset.
+		 */
+		private var _selectedIndexOffset	: Number = 0;
+		
+		/**
 		 *  inheritDoc
 		 *  
 		 *  @langversion 3.0
@@ -213,6 +234,19 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		//----------------------------------
+		//  selectedIndex
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *	Storage property for selectedIndex.
+		 */
+		private var _selectedIndex			: int = -1;
+		
+		/**
+		 *  @private
+		 */
 		private var _programmaticSelectedIndex:int;
 		
 		[Bindable( event="change" )]
@@ -686,7 +720,6 @@ package ws.tink.spark.layouts.supportClasses
 			}
 			_numElementsInLayout = _indicesInLayout.length;
 			_numElementsNotInLayout = _indicesNotInLayout.length;
-			trace( "updateElementsInLayout", _indicesInLayout );
 		}
 		
 		protected function updateScrollerForNavigation():void
@@ -809,7 +842,6 @@ package ws.tink.spark.layouts.supportClasses
 			_selectedIndexChanged = _selectedIndex != index;
 			_selectedIndex = index;
 			_selectedIndexOffset = offset;
-			
 			invalidateTargetDisplayList();
 		}
 		
