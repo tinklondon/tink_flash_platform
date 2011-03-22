@@ -26,21 +26,11 @@ package ws.tink.spark.layouts
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
 	
-	import spark.components.DataGroup;
 	import spark.components.supportClasses.ButtonBarBase;
 	import spark.components.supportClasses.GroupBase;
 	import spark.effects.animation.Animation;
-	import spark.effects.animation.MotionPath;
-	import spark.effects.animation.SimpleMotionPath;
-	import spark.effects.easing.IEaser;
-	import spark.effects.easing.Linear;
-	import spark.layouts.HorizontalAlign;
-	import spark.layouts.VerticalAlign;
 	
-	import ws.tink.spark.controls.supportClasses.AnimationTarget;
 	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
-	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
-	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 
 	use namespace mx_internal;
 	
@@ -67,10 +57,8 @@ package ws.tink.spark.layouts
 		 */  
 		public function AccordionLayout()
 		{
-			super( AnimationNavigatorLayoutBase.DIRECT );
+			super( DIRECT );
 			_buttonLayout = new ButtonLayout( this );
-			easer = new Linear( 0, 1 );
-			duration = 700;
 		}
 		
 		
@@ -409,74 +397,6 @@ package ws.tink.spark.layouts
 			_useScrollRect = value;
 		}
 		
-
-		//----------------------------------
-		//  duration
-		//----------------------------------    
-		
-		/**
-		 *  @private
-		 *  Storage property for easer.
-		 */
-		private var _duration:Number;
-		
-		/**
-		 *  easer
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get duration():Number
-		{
-			return _duration;
-		}
-		/**
-		 *  @private
-		 */
-		public function set duration(value:Number):void
-		{
-			if( _duration == value ) return;
-			
-			_duration = value;
-			animator.duration = _duration;
-		}
-		
-		
-		
-		//----------------------------------
-		//  easer
-		//----------------------------------    
-		
-		/**
-		 *  @private
-		 *  Storage property for easer.
-		 */
-		private var _easer:IEaser;
-		
-		/**
-		 *  easer
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get easer():IEaser
-		{
-			return _easer;
-		}
-		/**
-		 *  @private
-		 */
-		public function set easer(value:IEaser):void
-		{
-			if( _easer == value ) return;
-			
-			_easer = value;
-			animator.easer = _easer;
-		}
 		
 		
 		//--------------------------------------------------------------------------
