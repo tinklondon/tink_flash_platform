@@ -38,6 +38,7 @@ package ws.tink.spark.layouts
 	import spark.layouts.VerticalAlign;
 	
 	import ws.tink.spark.controls.supportClasses.AnimationTarget;
+	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 
@@ -46,7 +47,7 @@ package ws.tink.spark.layouts
 	/**
 	 * Flex 4 Accordion Layout
 	 */
-	public class AccordionLayout extends NavigatorLayoutBase
+	public class AccordionLayout extends AnimationNavigatorLayoutBase
 	{
 		
 		
@@ -66,6 +67,7 @@ package ws.tink.spark.layouts
 		 */  
 		public function AccordionLayout()
 		{
+			super( AnimationNavigatorLayoutBase.DIRECT );
 			_buttonLayout = new ButtonLayout( this );
 			easer = new Linear( 0, 1 );
 			duration = 700;
@@ -507,7 +509,7 @@ package ws.tink.spark.layouts
 		
 		private var _elementSizesInvalid:Boolean;
 		
-		public function update():void
+		public function invalidateElementSizes():void
 		{
 			_elementSizesInvalid = true;
 			if( target ) target.invalidateDisplayList();
@@ -741,54 +743,14 @@ package ws.tink.spark.layouts
 		
 		override protected function updateSelectedIndex( index:int, offset:Number ):void
 		{
-			if( index == selectedIndex && selectedIndexOffset == _proposedSelectedIndexOffset ) return;
-			
-			var offset:Number = ( selectedIndex == -1 ) ? offset : 1;
-			_proposedSelectedIndexOffset = offset;
 			super.updateSelectedIndex( index, offset );
-			update();
-			if( offset ) startAnimation();
-		}
-			
-		/**
-		 *  @private
-		 */
-		private function get animator():Animation
-		{
-			if( _animator ) return _animator;
-			_animator = new Animation();
-			var animTarget:AnimationTarget = new AnimationTarget();
-			animTarget.updateFunction = animationTargetUpdateFunction;
-			animTarget.endFunction = animationTargetEndFunction;
-			_animator.animationTarget = animTarget;
-			return _animator;
+			invalidateElementSizes();
 		}
 		
-		/**
-		 *  @private
-		 */
-		private function animationTargetUpdateFunction( animation:Animation ):void
+		override protected function updateIndicesInView():void
 		{
-			super.updateSelectedIndex( selectedIndex, animation.currentValue[ "selectIndexOffset" ] );
-		}
-		
-		/**
-		 *  @private
-		 */
-		private function animationTargetEndFunction( animation:Animation ):void
-		{
-			super.updateSelectedIndex( selectedIndex, animation.currentValue[ "selectIndexOffset" ] );
-		}
-		
-		
-		/**
-		 *  @private
-		 */
-		private function startAnimation():void
-		{
-			animator.stop();
-			animator.motionPaths = new <MotionPath>[ new SimpleMotionPath("selectIndexOffset", 1, 0 ) ];
-			animator.play();
+			super.updateIndicesInView();
+			indicesInView( 0, numElementsInLayout );
 		}
 		
 		/**
@@ -904,7 +866,7 @@ internal class ButtonLayout extends LayoutBase
 			_buttonSizes[ i ] = size;
 		}
 		
-		_parentLayout.update();
+		_parentLayout.invalidateElementSizes();
 	}
 	
 }
