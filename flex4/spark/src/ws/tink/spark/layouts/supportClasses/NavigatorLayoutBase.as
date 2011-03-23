@@ -835,6 +835,14 @@ package ws.tink.spark.layouts.supportClasses
 			}
 		}
 		
+		/**
+		 *  Updates the selectedIndex and selectedIndexOffset properties if they have changed.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */  
 		protected function updateSelectedIndex( index:int, offset:Number ):void
 		{
 			if( _selectedIndex == index && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
