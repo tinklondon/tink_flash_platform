@@ -19,8 +19,29 @@ package ws.tink.spark.layouts.supportClasses
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  An animationType value passed to the constructor.
+		 *  When the animation type is "direct", the selectedIndex is immediately set
+		 *  to the proposedIndex and the selectedIndexOffset is animated from 1 to 0.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected static const DIRECT:String = "direct";
 		
-		
+		/**
+		 *  An animationType value passed to the constructor.
+		 *  When the animation type is "indirect", the selectedIndex and selectedIndexOffset
+		 *  are both animated. The selectedIndexOffset gets a value between -0.5 and 0.5.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		protected static const INDIRECT:String = "indirect";
 		
 		
 		
@@ -56,30 +77,6 @@ package ws.tink.spark.layouts.supportClasses
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 *  An animationType value passed to the constructor.
-		 *  When the animation type is "direct", the selectedIndex is immediately set
-		 *  to the proposedIndex and the selectedIndexOffset is animated from 1 to 0.
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		protected const DIRECT:String = "direct";
-		
-		/**
-		 *  An animationType value passed to the constructor.
-		 *  When the animation type is "indirect", the selectedIndex and selectedIndexOffset
-		 *  are both animated. The selectedIndexOffset gets a value between -0.5 and 0.5.
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		protected const INDIRECT:String = "indirect";
 		
 		/**
 		 *  @private
@@ -305,7 +302,6 @@ package ws.tink.spark.layouts.supportClasses
 			_proposedSelectedIndex = index;
 			_proposedSelectedIndexOffset = offset;
 			
-			
 			if( selectedIndex == -1 || !duration || isNaN( duration ) )
 			{
 				super.updateSelectedIndex( _proposedSelectedIndex, 0 );
@@ -328,6 +324,7 @@ package ws.tink.spark.layouts.supportClasses
 				}
 				
 			}
+
 			updateIndicesInView();
 		}
 	}
