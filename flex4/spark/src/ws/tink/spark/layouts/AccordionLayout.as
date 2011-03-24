@@ -57,7 +57,8 @@ package ws.tink.spark.layouts
 		 */  
 		public function AccordionLayout()
 		{
-			super( DIRECT );
+			trace( "AccordionLayout", DIRECT );
+			super( AnimationNavigatorLayoutBase.DIRECT );
 			_buttonLayout = new ButtonLayout( this );
 		}
 		
