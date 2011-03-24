@@ -645,6 +645,9 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
+			// Hack to force indices in view to be updated.
+			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
+			
 			var prevVirtualElements:Vector.<IVisualElement> = ( _visibleElements ) ? _visibleElements.concat() : new Vector.<IVisualElement>();
 			_visibleElements = new Vector.<IVisualElement>();
 			
@@ -663,8 +666,6 @@ package ws.tink.spark.layouts
 				updateVisibleElements( element, prevVirtualElements );
 			}
 			
-			
-			
 			for( i = 1; i < numIndicesInView; i++ )
 			{
 				element = target.getVirtualElementAt( indicesInLayout[ firstIndexInView + i ] );
@@ -678,7 +679,6 @@ package ws.tink.spark.layouts
 			{
 				IVisualElement( prevVirtualElements[ i ] ).visible = false;
 			}
-			
 		}
 		
 		/**
@@ -688,6 +688,9 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
  			
+			// Hack to force indices in view to be updated.
+			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
+			
 			var prevVirtualElements:Vector.<IVisualElement> = ( _visibleElements ) ? _visibleElements.concat() : new Vector.<IVisualElement>();
 			_visibleElements = new Vector.<IVisualElement>();
 			
@@ -726,6 +729,7 @@ package ws.tink.spark.layouts
 		
 		override protected function updateIndicesInView():void
 		{
+			
 			super.updateIndicesInView();
 			var firstIndexInView:int = selectedIndexOffset < 0 ? selectedIndex - 1 : selectedIndex;
 			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
