@@ -27,32 +27,6 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		
-		
-		private var _selectedIndexChanged	: Boolean;
-		private var _selectedIndexChangedAfterTargetChanged	: Boolean;
-		
-		private var _elementsChanged		: Boolean;
-		
-		
-		
-		private var _numElementsInLayout	: int = -1;
-		private var _numElementsNotInLayout	: int = -1;
-//		private var _elementsInLayout		: Vector.<IVisualElement>;
-//		private var _stepScrollBar			: Boolean = true;
-		
-		
-		private var _targetChanged					: Boolean;
-		
-		
-		
-		private var _indicesInLayout				: Vector.<int>;
-		private var _indicesNotInLayout				: Vector.<int>;
-		
-		
-		
-		
-		
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -77,6 +51,38 @@ package ws.tink.spark.layouts.supportClasses
 			
 			_scrollBarDirection = ScrollBarDirection.VERTICAL;
 		}	
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *	Flag to indicate the selectedIndex has changed.
+		 */
+		private var _selectedIndexChanged	: Boolean;
+		
+		/**
+		 *  @private
+		 *	Flag to indicate the selectedIndex changed after the target was changed.
+		 */
+		private var _selectedIndexChangedAfterTargetChanged	: Boolean;
+		
+		/**
+		 *  @private
+		 *	Flag to indicate the IVisualElements in the target have changed.
+		 */
+		private var _elementsChanged: Boolean;
+		
+		/**
+		 *  @private
+		 *	Flag to indicate the target has changed.
+		 */
+		private var _targetChanged:Boolean;
 		
 		
 		
@@ -218,20 +224,20 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			return _selectedIndexOffset;
 		}
-		/**
-		 *  @private
-		 */
-		public function set selectedIndexOffset( value:Number ):void
-		{
-			if( _useScrollBarForNavigation )
-			{
+//		/**
+//		 *  @private
+//		 */
+//		public function set selectedIndexOffset( value:Number ):void
+//		{
+//			if( _useScrollBarForNavigation )
+//			{
 //				updateScrollBar( _selectedIndex, value );
-			}
-			else
-			{
+//			}
+//			else
+//			{
 //				updateSelectedIndex( _selectedIndex, value );
-			}
-		}
+//			}
+//		}
 		
 		
 		//----------------------------------
@@ -383,8 +389,14 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
-		//  scrollBarDirection
+		//  numElementsInLayout
 		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for numElementsInLayout.
+		 */
+		private var _numElementsInLayout:int = -1;
 		
 		/**
 		 *  Returns an <code>int</code> specifying number of elements included in the layout.
@@ -403,8 +415,14 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
-		//  scrollBarDirection
+		//  numElementsNotInLayout
 		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for numElementsNotInLayout.
+		 */
+		private var _numElementsNotInLayout:int = -1;
 		
 		/**
 		 *  Returns an <code>int</code> specifying number of elements not included in the layout.
@@ -423,8 +441,14 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
-		//  scrollBarDirection
+		//  indicesInLayout
 		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for indicesInLayout.
+		 */
+		private var _indicesInLayout:Vector.<int>;
 		
 		/**
 		 *  A convenience method for determining the elements included in the layout.
@@ -445,8 +469,14 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
-		//  scrollBarDirection
+		//  indicesNotInLayout
 		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for indicesNotInLayout.
+		 */
+		private var _indicesNotInLayout:Vector.<int>;
 		
 		/**
 		 *  A convenience method for determining the elements excluded from the layout.
