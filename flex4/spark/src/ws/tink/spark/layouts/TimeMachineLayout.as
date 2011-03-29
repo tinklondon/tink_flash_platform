@@ -28,6 +28,7 @@ package ws.tink.spark.layouts
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.VerticalAlign;
 	
+	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
 
 	/**
@@ -105,7 +106,7 @@ package ws.tink.spark.layouts
 		 */
 		public function TimeMachineLayout()
 		{
-			super( INDIRECT );
+			super( AnimationNavigatorLayoutBase.INDIRECT );
 			
 			_maximumZChanged = true;
 			useVirtualLayout = true
@@ -179,7 +180,7 @@ package ws.tink.spark.layouts
 		/**
 		 *  @private
 		 */
-		public function set numVisibleElements( value:int ) : void
+		public function set numVisibleElements( value:int ):void
 		{
 			if( _numVisibleElements == value ) return;
 			
@@ -213,7 +214,7 @@ package ws.tink.spark.layouts
 		/**
 		 *  @private
 		 */
-		public function set depthColor( value:int ) : void
+		public function set depthColor( value:int ):void
 		{
 			if( _depthColor == value ) return;
 			
@@ -380,6 +381,7 @@ package ws.tink.spark.layouts
 		 */
 		private var _maximumZChanged : Boolean;
 		
+		[Inspectable(category="General", defaultValue="300")]
 		/**
 		 *  The z difference between the first and last element in view.
 		 *  
@@ -390,7 +392,6 @@ package ws.tink.spark.layouts
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		[Inspectable(category="General", defaultValue="300")]
 		public function get maximumZ() : Number
 		{
 			return _maximumZ;
@@ -398,7 +399,7 @@ package ws.tink.spark.layouts
 		/**
 		 *  @private
 		 */
-		public function set maximumZ( value : Number ) : void
+		public function set maximumZ( value:Number ):void
 		{
 			if( _maximumZ == value ) return;
 			
@@ -430,16 +431,16 @@ package ws.tink.spark.layouts
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get horizontalDisplacement() : Number
+		public function get horizontalDisplacement():Number
 		{
 			return _horizontalDisplacement;
 		}
 		/**
 		 *  @private
 		 */
-		public function set horizontalDisplacement( value : Number ) : void
+		public function set horizontalDisplacement( value:Number ):void
 		{
-			if ( _horizontalDisplacement != value )
+			if( _horizontalDisplacement != value )
 			{
 				_horizontalDisplacement = value;
 				invalidateTargetDisplayList();
@@ -469,22 +470,98 @@ package ws.tink.spark.layouts
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get verticalDisplacement() : Number
+		public function get verticalDisplacement():Number
 		{
 			return _verticalDisplacement;
 		}
 		/**
 		 *  @private
 		 */
-		public function set verticalDisplacement( value : Number ) : void
+		public function set verticalDisplacement( value:Number ):void
 		{
-			if ( _verticalDisplacement != value )
-			{
-				_verticalDisplacement = value;
-				invalidateTargetDisplayList();
-			}
+			if( _verticalDisplacement == value ) return;
+
+			_verticalDisplacement = value;
+			invalidateTargetDisplayList();
 		}
 
+		//----------------------------------
+		//  alphaOutStart
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for alphaOutStart.
+		 */
+		private var _alphaOutStart:Number = 0;
+		
+		[Inspectable(category="General")]
+		/**
+		 *  The amount to offset elements on the vertical axis
+		 *  depending on their z property.
+		 *  
+		 *  @alphaOutStart 0
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get alphaOutStart():Number
+		{
+			return _alphaOutStart;
+		}
+		/**
+		 *  @private
+		 */
+		public function set alphaOutStart( value:Number ):void
+		{
+			if( _alphaOutStart == value ) return
+			
+			_alphaOutStart = value < 0 ? 0 : value;
+			if( _alphaOutStart > _alphaOutEnd ) _alphaOutEnd = _alphaOutStart;
+			invalidateTargetDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  alphaOutEnd
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for alphaOutEnd.
+		 */
+		private var _alphaOutEnd:Number = 1;
+		
+		[Inspectable(category="General")]
+		/**
+		 *  The amount to offset elements on the vertical axis
+		 *  depending on their z property.
+		 *  
+		 *  @alphaOutStart 0
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get alphaOutEnd():Number
+		{
+			return _alphaOutEnd;
+		}
+		/**
+		 *  @private
+		 */
+		public function set alphaOutEnd( value:Number ):void
+		{
+			if( _alphaOutEnd == value ) return
+				
+			_alphaOutEnd = value > 1 ? 1 : value;
+			if( _alphaOutStart > _alphaOutEnd ) _alphaOutStart = _alphaOutEnd;
+			invalidateTargetDisplayList();
+		}
+		
 		
 		
 		//--------------------------------------------------------------------------
@@ -495,40 +572,51 @@ package ws.tink.spark.layouts
 		
 		/**
 		 *  @private
-		 *  Util function for setting the color and depth of the first element in the layout.
-		 */
-		protected function updateFirstElementInView( element:IVisualElement, firstIndexInViewOffsetPercent:Number ):void
-		{
-			setElementLayoutBoundsSize( element, false );
-			element.depth = numIndicesInView - 1;
-			
-			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1;
-			_colorTransform.alphaMultiplier = 1 - firstIndexInViewOffsetPercent;
-			_colorTransform.redOffset = _colorTransform.greenOffset = _colorTransform.blueOffset = _colorTransform.alphaOffset = 0;
-			applyColorTransformToElement( element, _colorTransform );
-			
-			var matrix:Matrix3D = new Matrix3D();
-			matrix.appendTranslation( 
-				getTimeMachineElementX( unscaledWidth, element.getLayoutBoundsWidth( false ), 0 , firstIndexInViewOffsetPercent ),
-				getTimeMachineElementY( unscaledHeight, element.getLayoutBoundsHeight( false ), 0 , firstIndexInViewOffsetPercent ),
-				-_zDelta * firstIndexInViewOffsetPercent
-			);
-			element.setLayoutMatrix3D( matrix, false );
-			element.visible = true;
-		}
-		
-		/**
-		 *  @private
 		 *  Util function for setting the color and depth of all elements in view
 		 *  other than the first element.
+		 * 
+		 *  @param element The element to transform.
+		 *  @param viewIndex The index of this element in the layout.
+		 *  @param indexOffset The decimal value of <code>animationValue</code>.
+		 *  @para The alpha offset taking into account <code>alphaOutStart</code> and <code>alphaOutEnd/code>.
+		 *  @para The alpha offset taking into account <code>alphaOutStart</code> and <code>alphaOutEnd/code>.
+		 *  @param The percentage value of an elements z delta taking into account <code>maximumZ</code>
+		 *  @param isFirst Whether this is the first index in the layout.
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
-		protected function updateElementInView( element:IVisualElement, viewIndex:int, firstIndexInViewOffsetPercent:Number, alphaDeltaOffset:Number, zDeltaOffset:Number ):void
+		protected function transformElement( element:IVisualElement, viewIndex:int, indexOffset:Number, alphaDeltaOffset:Number, zDeltaOffset:Number, isFirst:Boolean ):void
 		{
 			var colorValue:Number = ( ( _colorDelta * viewIndex ) - alphaDeltaOffset );
 			setElementLayoutBoundsSize( element, false );
 			element.depth = numIndicesInView - ( viewIndex + 1 );
 			
-			if( _depthColor > -1 )
+			if( isFirst )
+			{
+				_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1;
+				
+				if( indexOffset < _alphaOutStart )
+				{
+					_colorTransform.alphaMultiplier = 1;
+				}
+				else if( indexOffset > _alphaOutEnd )
+				{
+					_colorTransform.alphaMultiplier = 0;
+				}
+				else
+				{
+					var zeroed:Number = indexOffset - _alphaOutStart;
+					var diff:Number = _alphaOutEnd - _alphaOutStart;
+					
+					_colorTransform.alphaMultiplier = 1 - ( 1 * ( zeroed / diff ) );
+				}
+				
+				_colorTransform.redOffset = _colorTransform.greenOffset = _colorTransform.blueOffset = _colorTransform.alphaOffset = 0;
+			}
+			else if( _depthColor > -1 )
 			{
 				_colorTransform.color = _depthColor;
 				_colorTransform.redOffset *= colorValue;
@@ -546,8 +634,8 @@ package ws.tink.spark.layouts
 			applyColorTransformToElement( element, _colorTransform );
 			
 			var matrix:Matrix3D = new Matrix3D();
-			matrix.appendTranslation( getTimeMachineElementX( unscaledWidth, element.getLayoutBoundsWidth( false ), viewIndex, firstIndexInViewOffsetPercent ),
-				getTimeMachineElementY( unscaledHeight, element.getLayoutBoundsHeight( false ), viewIndex, firstIndexInViewOffsetPercent ),
+			matrix.appendTranslation( getTimeMachineElementX( unscaledWidth, element.getLayoutBoundsWidth( false ), viewIndex, indexOffset ),
+				getTimeMachineElementY( unscaledHeight, element.getLayoutBoundsHeight( false ), viewIndex, indexOffset ),
 				( _zDelta * viewIndex ) - zDeltaOffset );
 			element.setLayoutMatrix3D( matrix, false );
 			element.visible = true;
@@ -639,38 +727,37 @@ package ws.tink.spark.layouts
 		}
 		
 		/**
-		 *  @private
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		override protected function updateDisplayListVirtual():void
 		{
 			super.updateDisplayListVirtual();
 			
-			// Hack to force indices in view to be updated.
-			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
-			
 			var prevVirtualElements:Vector.<IVisualElement> = ( _visibleElements ) ? _visibleElements.concat() : new Vector.<IVisualElement>();
 			_visibleElements = new Vector.<IVisualElement>();
 			
-			const firstIndexInViewOffsetPercent:Number = ( selectedIndexOffset < 0 ) ? 1 + selectedIndexOffset : selectedIndexOffset;
-			const zDeltaOffset:Number = _zDelta * firstIndexInViewOffsetPercent;
-			const alphaDeltaOffset:Number = _colorDelta * firstIndexInViewOffsetPercent;
+			// The first index that this layout is showing
+			// This may not be an element at all if the index is less than
+			// the firstIndexInView or more than lastIndexInView.
+			const firstIndexInLayout:Number = Math.floor( animationValue );
 			
-			var i:int;
+			// This decimal value of animationValue.
+			const indexOffset:Number = animationValue - firstIndexInLayout;
+			
+			const zDeltaOffset:Number = _zDelta * indexOffset;
+			const alphaDeltaOffset:Number = _colorDelta * indexOffset;
+			
 			var element:IVisualElement;
-			
-			// Manage first item outside the loop as its slightly different
-			element = target.getVirtualElementAt( indicesInLayout[ firstIndexInView ] );
-			if( element )
+			for( var i:int = firstIndexInView; i < lastIndexInView; i++ )
 			{
-				updateFirstElementInView( element, firstIndexInViewOffsetPercent );
-				updateVisibleElements( element, prevVirtualElements );
-			}
-			
-			for( i = 1; i < numIndicesInView; i++ )
-			{
-				element = target.getVirtualElementAt( indicesInLayout[ firstIndexInView + i ] );
+				element = target.getVirtualElementAt( indicesInLayout[ i ] );
 				if( !element ) continue;
-				updateElementInView( element, i, firstIndexInViewOffsetPercent, alphaDeltaOffset, zDeltaOffset );
+				transformElement( element, Math.abs( i - firstIndexInLayout ), indexOffset, alphaDeltaOffset, zDeltaOffset, i == firstIndexInLayout );
 				updateVisibleElements( element, prevVirtualElements );
 			}
 			
@@ -682,21 +769,30 @@ package ws.tink.spark.layouts
 		}
 		
 		/**
-		 *  @private
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
  			
-			// Hack to force indices in view to be updated.
-			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
+//			var prevVirtualElements:Vector.<IVisualElement> = ( _visibleElements ) ? _visibleElements.concat() : new Vector.<IVisualElement>();
+//			_visibleElements = new Vector.<IVisualElement>();
 			
-			var prevVirtualElements:Vector.<IVisualElement> = ( _visibleElements ) ? _visibleElements.concat() : new Vector.<IVisualElement>();
-			_visibleElements = new Vector.<IVisualElement>();
+			// The first index that this layout is showing
+			// This may not be an element at all if the index is less than
+			// the firstIndexInView or more than lastIndexInView.
+			const firstIndexInLayout:Number = Math.floor( animationValue );
 			
-			const firstIndexInViewOffsetPercent:Number = ( selectedIndexOffset < 0 ) ? 1 + selectedIndexOffset : selectedIndexOffset;
-			const zDeltaOffset:Number = _zDelta * firstIndexInViewOffsetPercent;
-			const alphaDeltaOffset:Number = _colorDelta * firstIndexInViewOffsetPercent;
+			// This decimal value of animationValue.
+			const indexOffset:Number = animationValue - firstIndexInLayout;
+			
+			const zDeltaOffset:Number = _zDelta * indexOffset;
+			const alphaDeltaOffset:Number = _colorDelta * indexOffset;
 			
 			var element:IVisualElement;
 			for( var i:int = 0; i < numElementsInLayout; i++ )
@@ -706,52 +802,30 @@ package ws.tink.spark.layouts
 					element = target.getElementAt( indicesInLayout[ i ] );
 					element.visible = false;
 				}
-				else if( i == firstIndexInView )
-				{
-					element = target.getElementAt( indicesInLayout[ i ] );
-					updateFirstElementInView( element, firstIndexInViewOffsetPercent );
-					updateVisibleElements( element, prevVirtualElements );
-				}
 				else
 				{
-					element = target.getElementAt( indicesInLayout[ i ] );
-					updateElementInView( element, i - firstIndexInView, firstIndexInViewOffsetPercent, alphaDeltaOffset, zDeltaOffset );
-					updateVisibleElements( element, prevVirtualElements );
+					element = target.getVirtualElementAt( indicesInLayout[ i ] );
+					transformElement( element, Math.abs( i - firstIndexInLayout ), indexOffset, alphaDeltaOffset, zDeltaOffset, i == firstIndexInLayout );
+//					updateVisibleElements( element, prevVirtualElements );
 				}
 			}
 		}
 		
-//		override protected function updateSelectedIndex( index:int, offset:Number ):void
-//		{
-//			super.updateSelectedIndex( index, offset );
-//			
-//		}
-		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		override protected function updateIndicesInView():void
 		{
-			
 			super.updateIndicesInView();
-			var firstIndexInView:int = selectedIndexOffset < 0 ? selectedIndex - 1 : selectedIndex;
+			
+			const firstIndexInView:int = Math.max( Math.min( Math.floor( animationValue ), numElementsInLayout - 1 ), 0 );
 			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
 		}
-//		override protected function selectedIndexChange():void
-//		{
-//			super.selectedIndexChange();
-//			
-//			var firstIndexInView:int;
-//			
-//			if( selectedIndexOffset < 0 )
-//			{
-//				firstIndexInView = selectedIndex - 1;
-//			}
-//			else
-//			{
-//				firstIndexInView = selectedIndex;
-//			}
-//			
-//			trace( "selectedIndexChange", firstIndexInView, _numVisibleElements, numElementsInLayout, indicesInLayout );
-//			indicesInView( firstIndexInView, Math.min( _numVisibleElements, numElementsInLayout - firstIndexInView ) );
-//		}
 
 	}
 }

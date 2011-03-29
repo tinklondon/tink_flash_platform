@@ -441,7 +441,7 @@ package ws.tink.spark.layouts
 		public function invalidateElementSizes():void
 		{
 			_elementSizesInvalid = true;
-			if( target ) target.invalidateDisplayList();
+			invalidateTargetDisplayList();
 		}
 		
 		/**
@@ -483,7 +483,7 @@ package ws.tink.spark.layouts
 			var elementSize:ElementSize;
 			var element:IVisualElement;
 			var elementPos:Number = 0;
-			const offsetMultiplier:Number = 1 - selectedIndexOffset;
+			const offsetMultiplier:Number = 1 - animationValue;
 			const numElements:int = _elementSizes.length;
 			for( var i:int = 0; i < numElements; i++ )
 			{
@@ -670,9 +670,9 @@ package ws.tink.spark.layouts
 		}
 		
 		
-		override protected function updateSelectedIndex( index:int, offset:Number ):void
+		override protected function invalidateSelectedIndex(index:int, offset:Number):void
 		{
-			super.updateSelectedIndex( index, offset );
+			super.invalidateSelectedIndex( index, offset );
 			invalidateElementSizes();
 		}
 		

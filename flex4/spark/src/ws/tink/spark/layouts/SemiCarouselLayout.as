@@ -772,6 +772,8 @@ package ws.tink.spark.layouts
 		{
 			if( !depths || !depths.length ) return;
 			
+			var animationIndex:int = Math.max( 0, Math.min( Math.round( animationValue ), numElementsInLayout - 1 ) );
+			
 			var element:IVisualElement;
 			var index:int;
 			var i:int
@@ -783,11 +785,12 @@ package ws.tink.spark.layouts
 			{
 				index = indicesInLayout[ i ];
 				element = target.getElementAt( index );
-				if( index <  indicesInLayout[ selectedIndex ] )
+				if( !element ) continue;
+				if( index <  indicesInLayout[ animationIndex ] )
 				{
 					element.depth = depths.shift();
 				}
-				else if ( index > indicesInLayout[ selectedIndex ] )
+				else if ( index > indicesInLayout[ animationIndex ] )
 				{
 					element.depth = depths.pop();
 				}
@@ -807,7 +810,7 @@ package ws.tink.spark.layouts
 			var numElementsNotInLayout:int = indicesNotInLayout.length;
 			for( i = 0; i < numElementsNotInLayout; i++ )
 			{
-				if( indicesNotInLayout[ i ] > indicesInLayout[ selectedIndex ] )
+				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
 				{
 					break;
 				}
@@ -821,7 +824,8 @@ package ws.tink.spark.layouts
 			for( i = 0; i < numElementsNotInLayout; i++ )
 			{
 				element = target.getElementAt( indicesNotInLayout[ i ] );
-				if( indicesNotInLayout[ i ] > indicesInLayout[ selectedIndex ] )
+				if( !element ) continue;
+				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
 				{
 					element.depth = maxDepth;
 					maxDepth++;
@@ -974,23 +978,37 @@ package ws.tink.spark.layouts
 				}
 			}
 			
-			if( _sizeChanged )
+			super.updateDisplayList( unscaledWidth, unscaledHeight );
+		}
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override protected function updateDisplayListBetween():void
+		{
+			super.updateDisplayListBetween();
+			
+			if( sizeChangedInLayoutPass )
 			{
-				_sizeChanged = false;
 				_indicesInViewChanged = true;
-				
 				if( !isNaN( _horizontalAlignOffsetPercent ) ) _horizontalAlignOffset = unscaledHeight * ( _horizontalAlignOffsetPercent / 100 );
 				if( !isNaN( _verticalAlignOffsetPercent ) ) _verticalAlignOffset = unscaledHeight * ( _verticalAlignOffsetPercent / 100 );
 			}
 			
-			if( _indicesInViewChanged )
-			{
-				_indicesInViewChanged = false;
-//				selectedIndexChange();
-				updateIndicesInView();
-			}
+			_transformCalculator.updateForLayoutPass( _horizontalCenterMultiplier, _verticalCenterMultiplier );
 			
-			super.updateDisplayList( unscaledWidth, unscaledHeight );
+			//TODO Done in animation class
+//			if( _indicesInViewChanged )
+//			{
+//				_indicesInViewChanged = false;
+//				//				selectedIndexChange();
+//				updateIndicesInView();
+//			}
 		}
 		
 		/**
@@ -1005,10 +1023,6 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
-			// Hack to force indices in view to be updated.
-			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
-			
-			_transformCalculator.updateForLayoutPass( _horizontalCenterMultiplier, _verticalCenterMultiplier );
 			
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
@@ -1041,11 +1055,6 @@ package ws.tink.spark.layouts
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
-			
-			// Hack to force indices in view to be updated.
-			if( numIndicesInView == -1 && numElementsInLayout ) updateIndicesInView();
-			
-			_transformCalculator.updateForLayoutPass( _horizontalCenterMultiplier, _verticalCenterMultiplier );
 			
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
@@ -1100,8 +1109,12 @@ package ws.tink.spark.layouts
 		{
 			super.updateIndicesInView();
 			
-			var firstIndexInView:int = Math.max( 0, selectedIndex  - _numUnselectedElements );
-			indicesInView( firstIndexInView, Math.min( numElementsInLayout, selectedIndex + _numUnselectedElements ) - firstIndexInView );
+			const animationIndex:int = Math.round( animationValue );
+			const firstIndexInView:int = Math.max( animationIndex - _numUnselectedElements, 0 );
+			const numIndicesInView:int = Math.min( numElementsInLayout, animationIndex + _numUnselectedElements ) - firstIndexInView;
+			
+//			var firstIndexInView:int = Math.max( 0, selectedIndex  - _numUnselectedElements );
+			indicesInView( firstIndexInView, numIndicesInView );
 		}
 		
 		
@@ -1300,8 +1313,12 @@ internal class TransformValues
 	 */
 	public function updateForLayoutPass( centerMultiplierX:Number, centerMultiplierY:Number ):void
 	{
-		_index = _layout.selectedIndex;
-		_indexOffset = _layout.selectedIndexOffset;
+//		_index = _layout.selectedIndex;
+//		_indexOffset = 0;//TODO _layout.selectedIndexOffset;
+		
+		_index = Math.floor( _layout.animationValue );
+		_indexOffset = _layout.animationValue - _index;
+		
 		
 		_cx = _layout.unscaledWidth * centerMultiplierX;
 		_cy = _layout.unscaledHeight * centerMultiplierY;
