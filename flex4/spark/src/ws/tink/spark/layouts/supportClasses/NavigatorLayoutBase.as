@@ -205,25 +205,25 @@ package ws.tink.spark.layouts.supportClasses
 		//----------------------------------
 		//  selectedIndexOffset
 		//---------------------------------- 
-		
-		/**
-		 *  @private
-		 *	Storage property for selectedIndexOffset.
-		 */
-		private var _selectedIndexOffset	: Number = 0;
-		
-		/**
-		 *  inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get selectedIndexOffset():Number
-		{
-			return _selectedIndexOffset;
-		}
+//		
+//		/**
+//		 *  @private
+//		 *	Storage property for selectedIndexOffset.
+//		 */
+//		private var _selectedIndexOffset	: Number = 0;
+//		
+//		/**
+//		 *  inheritDoc
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get selectedIndexOffset():Number
+//		{
+//			return _selectedIndexOffset;
+//		}
 //		/**
 //		 *  @private
 //		 */
@@ -267,7 +267,7 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		public function get selectedIndex():int
 		{
-			return _selectedIndex;
+			return _proposedSelectedIndex == -1 ? _selectedIndex : _proposedSelectedIndex;
 		}
 		/**
 		 *  @private
@@ -285,7 +285,8 @@ package ws.tink.spark.layouts.supportClasses
 			}
 			else
 			{
-				updateSelectedIndex( value, 0 );
+//				updateSelectedIndex( value, 0 );
+				invalidateSelectedIndex( value, 0 );
 			}
 		}
 		
@@ -559,6 +560,12 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		private var _sizeChangedInLayoutPass:Boolean;
+		public function get sizeChangedInLayoutPass():Boolean
+		{
+			return _sizeChangedInLayoutPass;
+		}
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -604,6 +611,7 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
 			
+			_sizeChangedInLayoutPass = _unscaledWidth != unscaledWidth || _unscaledHeight != unscaledHeight;
 			_unscaledWidth = unscaledWidth;
 			_unscaledHeight = unscaledHeight;
 			
@@ -627,11 +635,14 @@ package ws.tink.spark.layouts.supportClasses
 			// If the selected index has changed exit the method as its handle in selectedIndex
 			if( _numElementsInLayout == 0 )
 			{
-				selectedIndex = -1;
+//				_selectedIndex = -1;
+				_proposedSelectedIndex = -1;
+//				_proposedSelectedIndexOffset = 0;
 			}
 			else if( selectedIndex == -1 )
 			{
-				selectedIndex = 0;
+				_proposedSelectedIndex = 0;
+//				_proposedSelectedIndexOffset = 0;
 //				scrollPositionChanged();
 				scrollPositionInvalid = true;
 			}
@@ -663,6 +674,17 @@ package ws.tink.spark.layouts.supportClasses
 				updateScrollerForContent();
 			}
 			
+			if( _selectedIndexInvalid )
+			{
+				_selectedIndexInvalid = false;
+				_selectedIndex = _proposedSelectedIndex;
+				_proposedSelectedIndex = -1;
+//				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
+//				updateSelectedIndex( _proposedSelectedIndex, 0 );
+			}
+			
+			updateDisplayListBetween();
+			
 			if( useVirtualLayout )
 			{
 				updateDisplayListVirtual();
@@ -671,6 +693,8 @@ package ws.tink.spark.layouts.supportClasses
 			{
 				updateDisplayListReal();
 			}
+			
+			_sizeChangedInLayoutPass = false;
 			
 			if( _selectedIndexChanged )
 			{
@@ -685,6 +709,10 @@ package ws.tink.spark.layouts.supportClasses
 				}
 				_programmaticSelectedIndex = -2;
 			}
+		}
+		
+		protected function updateDisplayListBetween():void
+		{
 		}
 		
 		protected function updateElements():void
@@ -785,11 +813,11 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function updateDisplayListVirtual():void
 		{
-			var numElementsNoInLayout:int = _indicesNotInLayout.length;
-			for( var i:int = 0; i < numElementsNoInLayout; i++ )
-			{
-				target.getVirtualElementAt( _indicesNotInLayout[ i ] );
-			}
+//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
+//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
+//			{
+//				target.getVirtualElementAt( _indicesNotInLayout[ i ] );
+//			}
 		}
 		
 		/**
@@ -798,11 +826,11 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function updateDisplayListReal():void
 		{
-			var numElementsNoInLayout:int = _indicesNotInLayout.length;
-			for( var i:int = 0; i < numElementsNoInLayout; i++ )
-			{
-				target.getElementAt( _indicesNotInLayout[ i ] );
-			}
+//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
+//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
+//			{
+//				target.getElementAt( _indicesNotInLayout[ i ] );
+//			}
 		}
 		
 		protected function setElementLayoutBoundsSize( element:IVisualElement, postLayoutTransform:Boolean = true ):void
@@ -838,12 +866,15 @@ package ws.tink.spark.layouts.supportClasses
 			
 			if( target.numElements )
 			{
-				updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
-								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
+//				updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
+//								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
+				invalidateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
+					( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
 			}
 			else
 			{
-				updateSelectedIndex( -1, NaN );
+//				updateSelectedIndex( -1, NaN );
+				invalidateSelectedIndex( -1, NaN );
 			}
 		}
 		
@@ -873,13 +904,30 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */  
-		protected function updateSelectedIndex( index:int, offset:Number ):void
+//		protected function updateSelectedIndex( index:int, offset:Number ):void
+//		{
+////			trace( "updateSelectedIndex", index, offset );
+//			if( _selectedIndex == index ) return;// && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
+//			
+//			_proposedSelectedIndex = -1;
+////			_proposedSelectedIndexOffset = 0;
+//			
+//			_selectedIndexChanged = _selectedIndex != index;
+//			_selectedIndex = index;
+////			_selectedIndexOffset = offset;
+////			invalidateTargetDisplayList();
+//		}
+		
+		private var _proposedSelectedIndex:int = -1;
+//		private var _proposedSelectedIndexOffset:Number = 0;;
+		private var _selectedIndexInvalid:Boolean;
+		protected function invalidateSelectedIndex( index:int, offset:Number ):void
 		{
-			if( _selectedIndex == index && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
+			if( _proposedSelectedIndex == index ) return;// && ( _proposedSelectedIndexOffset == offset || ( isNaN( _proposedSelectedIndexOffset ) && isNaN( offset ) ) ) ) return;
 			
-			_selectedIndexChanged = _selectedIndex != index;
-			_selectedIndex = index;
-			_selectedIndexOffset = offset;
+			_selectedIndexInvalid = true;
+			_proposedSelectedIndex = index;
+//			_proposedSelectedIndexOffset = offset;
 			invalidateTargetDisplayList();
 		}
 		

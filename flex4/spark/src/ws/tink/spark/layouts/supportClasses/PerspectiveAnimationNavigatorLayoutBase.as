@@ -30,8 +30,8 @@ package ws.tink.spark.layouts.supportClasses
 		
 		private var _projectionChanged	: Boolean;
 		
-		private var _unscaledWidth	: Number;
-		private var _unscaledHeight	: Number;
+//		private var _unscaledWidth	: Number;
+//		private var _unscaledHeight	: Number;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -284,6 +284,7 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		public function get focalLength():Number
 		{
+			trace( "perspectiveProjection", perspectiveProjection );
 			return ( perspectiveProjection ) ? perspectiveProjection.focalLength : _focalLength;
 		}
 		/**
@@ -363,12 +364,12 @@ package ws.tink.spark.layouts.supportClasses
 				}
 				case HorizontalAlign.CENTER :
 				{
-					p.x = ( _unscaledWidth / 2 ) + _projectionCenterHorizontalOffset;
+					p.x = ( unscaledWidth / 2 ) + _projectionCenterHorizontalOffset;
 					break;
 				}
 				case HorizontalAlign.RIGHT :
 				{
-					p.x = _unscaledWidth + _projectionCenterHorizontalOffset;
+					p.x = unscaledWidth + _projectionCenterHorizontalOffset;
 					break;
 				}
 			}
@@ -382,12 +383,12 @@ package ws.tink.spark.layouts.supportClasses
 				}
 				case VerticalAlign.MIDDLE :
 				{
-					p.y = ( _unscaledHeight / 2 ) + _projectionCenterVerticalOffset;
+					p.y = ( unscaledHeight / 2 ) + _projectionCenterVerticalOffset;
 					break;
 				}
 				case VerticalAlign.BOTTOM :
 				{
-					p.y = _unscaledHeight + _projectionCenterVerticalOffset;
+					p.y = unscaledHeight + _projectionCenterVerticalOffset;
 					break;
 				}
 			}
@@ -403,6 +404,30 @@ package ws.tink.spark.layouts.supportClasses
 		//
 		//--------------------------------------------------------------------------
 		
+//		/**
+//		 *  @inheritDoc
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
+//		{
+//			
+//			sizeChangedInLayoutPass
+//			if( this.unscaledWidth != unscaledWidth ||  this.unscaledHeight != unscaledHeight )
+//			{
+////				_unscaledWidth = unscaledWidth;
+////				_unscaledHeight = unscaledHeight;
+//				_projectionChanged = true;
+//			}
+//			
+//			
+//			
+//			super.updateDisplayList( unscaledWidth, unscaledHeight );
+//		}
+	
 		/**
 		 *  @inheritDoc
 		 *  
@@ -411,28 +436,21 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
+		override protected function updateDisplayListBetween():void
 		{
-			super.updateDisplayList( unscaledWidth, unscaledHeight );
+			super.updateDisplayListBetween();
 			
-			if( _unscaledWidth != unscaledWidth || _unscaledHeight != unscaledHeight )
-			{
-				_unscaledWidth = unscaledWidth;
-				_unscaledHeight = unscaledHeight;
-				_projectionChanged = true;
-			}
-			
-			if( target && _projectionChanged )
+			if( target && ( _projectionChanged || sizeChangedInLayoutPass ) )
 			{
 				_projectionChanged = false;
 				
 				if( !perspectiveProjection ) target.transform.perspectiveProjection = new PerspectiveProjection();
 				
+//				trace( "created", focalLength, fieldOfView );
 				perspectiveProjection.projectionCenter = getProjectionCenter();
 				if( !isNaN( _fieldOfView ) ) perspectiveProjection.fieldOfView = _fieldOfView;
 				if( !isNaN( _focalLength ) ) perspectiveProjection.focalLength = _focalLength;
 			}
-			
 		}
 	}
 }

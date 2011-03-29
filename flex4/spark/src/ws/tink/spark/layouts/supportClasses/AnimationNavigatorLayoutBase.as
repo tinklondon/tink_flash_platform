@@ -81,17 +81,19 @@ package ws.tink.spark.layouts.supportClasses
 		/**
 		 *  @private
 		 */
-		private var _proposedSelectedIndex			: int = -1;
+		private var _proposedSelectedIndex2			: int = -1;
 		
 		/**
 		 *  @private
 		 */
-		private var _proposedSelectedIndexOffset	: Number = 0;
+		private var _proposedSelectedIndex2Offset	: Number = 0;
 		
 		/**
 		 *  @private
 		 */
 		private var _animationType:String = DIRECT;
+		
+		
 		
 		
 		
@@ -170,6 +172,31 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
+		//  animationValue
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 *  Storage property for animationValue.
+		 */
+		private var _animationValue:Number = 0;
+		
+		/**
+		 *  animationValue
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get animationValue():Number
+		{
+			return _animationValue;
+			return animation.isPlaying ? _animationValue : 0;
+		}
+		
+		
+		//----------------------------------
 		//  animation
 		//----------------------------------   
 		
@@ -187,20 +214,22 @@ package ws.tink.spark.layouts.supportClasses
 			if( _animation ) return _animation;
 			_animation = new Animation();
 			var animTarget:AnimationTarget = new AnimationTarget();
-			switch( _animationType )
-			{
-				case DIRECT :
-				{
-					animTarget.updateFunction = animationTargetUpdateFunctionDirect;
-					animTarget.endFunction = animationTargetEndFunctionDirect;
-					break;
-				}
-				case INDIRECT :
-				{
-					animTarget.updateFunction = animationTargetUpdateFunctionIndirect;
-					animTarget.endFunction = animationTargetEndFunctionIndirect;
-				}
-			}
+			animTarget.updateFunction = animationTargetUpdateFunction;
+			animTarget.endFunction = animationTargetEndFunction;
+//			switch( _animationType )
+//			{
+//				case DIRECT :
+//				{
+//					animTarget.updateFunction = animationTargetUpdateFunction;
+//					animTarget.endFunction = animationTargetEndFunction;
+//					break;
+//				}
+//				case INDIRECT :
+//				{
+//					animTarget.updateFunction = animationTargetUpdateFunctionIndirect;
+//					animTarget.endFunction = animationTargetEndFunctionIndirect;
+//				}
+//			}
 			
 			_animation.animationTarget = animTarget;
 			return _animation;
@@ -241,42 +270,49 @@ package ws.tink.spark.layouts.supportClasses
 		/**
 		 *  @private
 		 */
-		private function animationTargetUpdateFunctionDirect( animation:Animation ):void
+		private function animationTargetUpdateFunction( animation:Animation ):void
 		{
-			super.updateSelectedIndex( selectedIndex, animation.currentValue[ "animationIndex" ] );
-			updateIndicesInView();
+//			super.invalidateSelectedIndex( selectedIndex, animation.currentValue[ "animationIndex" ] );
+			_animationValue = animation.currentValue[ "animationIndex" ];
+			
+//			updateIndicesInView();
+			invalidateTargetDisplayList();
 		}
 		
 		/**
 		 *  @private
 		 */
-		private function animationTargetEndFunctionDirect( animation:Animation ):void
+		private function animationTargetEndFunction( animation:Animation ):void
 		{
-			super.updateSelectedIndex( selectedIndex, animation.currentValue[ "animationIndex" ] );
-			updateIndicesInView();
+//			super.invalidateSelectedIndex( selectedIndex, animation.currentValue[ "animationIndex" ] );
+			_animationValue = animation.currentValue[ "animationIndex" ];
+//			updateIndicesInView();
+			invalidateTargetDisplayList();
 		}
 		
-		/**
-		 *  @private
-		 */
-		private function animationTargetUpdateFunctionIndirect( animation:Animation ):void
-		{
-			var newValue:Number = animation.currentValue[ "animationIndex" ];
-			var index:int = Math.round( newValue );
-			super.updateSelectedIndex( index, newValue - index );
-			updateIndicesInView();
-		}
 		
-		/**
-		 *  @private
-		 */
-		private function animationTargetEndFunctionIndirect( animation:Animation ):void
-		{
-			var newValue:Number = animation.currentValue[ "animationIndex" ];
-			var index:int = Math.round( newValue );
-			super.updateSelectedIndex( index, newValue - index );
-			updateIndicesInView();
-		}
+		
+//		/**
+//		 *  @private
+//		 */
+//		private function animationTargetUpdateFunctionIndirect( animation:Animation ):void
+//		{
+//			var newValue:Number = animation.currentValue[ "animationIndex" ];
+//			var index:int = Math.round( newValue );
+//			super.invalidateSelectedIndex( index, newValue - index );
+////			updateIndicesInView();
+//		}
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private function animationTargetEndFunctionIndirect( animation:Animation ):void
+//		{
+//			var newValue:Number = animation.currentValue[ "animationIndex" ];
+//			var index:int = Math.round( newValue );
+//			super.invalidateSelectedIndex( index, newValue - index );
+////			updateIndicesInView();
+//		}
 		
 		
 		
@@ -287,6 +323,36 @@ package ws.tink.spark.layouts.supportClasses
 		//
 		//--------------------------------------------------------------------------
 		
+//		override protected function updateSelectedIndex(index:int, offset:Number):void
+//		{
+//			var animate:Boolean = selectedIndex != index;
+//			
+//			super.updateSelectedIndex( index, offset );
+//			
+//			if( animate )
+//			{
+//				switch( _animationType )
+//				{
+//					case DIRECT :
+//					{
+//						//						super.invalidateSelectedIndex( index, 1 );
+//						startAnimation( 1, 0 );
+//						break;
+//					}
+//					case INDIRECT :
+//					{
+//						//						startAnimation( selectedIndex + selectedIndexOffset, _proposedSelectedIndex2 + _proposedSelectedIndex2Offset );
+//						startAnimation( index - selectedIndex, 0 );
+//						break;
+//					}
+//				}
+//			}
+//			else
+//			{
+//				updateIndicesInView();
+//			}
+//		}
+		
 		/**
 		 *  @inheritDoc
 		 *  
@@ -295,36 +361,53 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */  
-		override protected function updateSelectedIndex( index:int, offset:Number ):void
+		override protected function invalidateSelectedIndex(index:int, offset:Number):void
 		{
-			if( index == _proposedSelectedIndex && _proposedSelectedIndexOffset == offset ) return;
+			var prevIndex:int = selectedIndex;
 			
-			_proposedSelectedIndex = index;
-			_proposedSelectedIndexOffset = offset;
+			super.invalidateSelectedIndex( index, 0 );
 			
-			if( selectedIndex == -1 || !duration || isNaN( duration ) )
+//			if( index == selectedIndex ) return;
+			
+//			if( index == _proposedSelectedIndex2 && _proposedSelectedIndex2Offset == offset ) return;
+//			
+//			_proposedSelectedIndex2 = index;
+//			_proposedSelectedIndex2Offset = offset;
+			
+			if( prevIndex == -1 || !duration || isNaN( duration ) || index == -1 || prevIndex == index )
 			{
-				super.updateSelectedIndex( _proposedSelectedIndex, 0 );
+//				super.invalidateSelectedIndex( index, 0 );
 			}
 			else
 			{
+//				super.invalidateSelectedIndex( index, 0 );
+				
 				switch( _animationType )
 				{
 					case DIRECT :
 					{
-						super.updateSelectedIndex( index, 1 );
+//						super.invalidateSelectedIndex( index, 1 );
 						startAnimation( 1, 0 );
 						break;
 					}
 					case INDIRECT :
 					{
-						startAnimation( selectedIndex + selectedIndexOffset, _proposedSelectedIndex + _proposedSelectedIndexOffset );
+//						trace( "doing", selectedIndex, animationValue, index );
+//						startAnimation( selectedIndex + selectedIndexOffset, _proposedSelectedIndex2 + _proposedSelectedIndex2Offset );
+						startAnimation( animation.isPlaying ? animationValue : prevIndex, index );
 						break;
 					}
 				}
 				
 			}
 
+//			updateIndicesInView();
+		}
+		
+		override protected function updateDisplayListBetween():void
+		{
+			super.updateDisplayListBetween();
+			
 			updateIndicesInView();
 		}
 	}
