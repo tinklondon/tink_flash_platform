@@ -151,75 +151,75 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
-		override protected function updateSelectedIndex( index:int, offset:Number ):void
-		{
-			if( index == _proposedSelectedIndex && _proposedSelectedIndexOffset == offset ) return;
-			
-			if( selectedIndex == -1 )
-			{
-				super.updateSelectedIndex( index, offset );
-				selectedIndexChange();
-			}
-			else
-			{
-				_proposedSelectedIndex = index;
-				_proposedSelectedIndexOffset = offset;
-				
-				easeSelectedIndex();
-			}
-		}
+//		override protected function updateSelectedIndex( index:int, offset:Number ):void
+//		{
+//			if( index == _proposedSelectedIndex && _proposedSelectedIndexOffset == offset ) return;
+//			
+//			if( selectedIndex == -1 )
+//			{
+//				super.updateSelectedIndex( index, offset );
+//				selectedIndexChange();
+//			}
+//			else
+//			{
+//				_proposedSelectedIndex = index;
+//				_proposedSelectedIndexOffset = offset;
+//				
+//				easeSelectedIndex();
+//			}
+//		}
 		
 		
-		protected function easeSelectedIndex():void
-		{
-			var currentValue:Number = selectedIndex + selectedIndexOffset;
-			var targetValue:Number = _proposedSelectedIndex + _proposedSelectedIndexOffset;
-			var diff:Number = targetValue - currentValue;
-			
-			var newValue:Number;
-			
-			var ease:Number = ( _stage ) ? _stepEasing : 1;
-			if( Math.abs( diff ) > _easingSnap )
-			{
-				newValue = currentValue + ( diff * ease );
-				
-				// startEasing
-				if( !_isEasing )
-				{
-					_isEasing = true;
-					_stage.addEventListener( Event.ENTER_FRAME, onStageEnterFrame, false, 0, true );
-					dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGING ) );
-				}
-			}
-			else
-			{
-				newValue = targetValue;
-				
-				// stop the easing we have reached the target
-				if( _isEasing )
-				{
-					_isEasing = false;
-					_stage.removeEventListener( Event.ENTER_FRAME, onStageEnterFrame, false );
-					dispatchEvent( new Event( Event.COMPLETE ) );
-				}
-			}
-			
-			var index:int = Math.round( newValue );
-			var offset:Number;
-			//now set the current value
-			if( index > newValue )
-			{
-				// round up
-				super.updateSelectedIndex( index, newValue - index );
-			}
-			else
-			{
-				// round down
-				super.updateSelectedIndex( index, newValue - index );
-			}
-			
-			selectedIndexChange();
-		}
+//		protected function easeSelectedIndex():void
+//		{
+//			var currentValue:Number = 0;//TODO old hat selectedIndex + selectedIndexOffset;
+//			var targetValue:Number = _proposedSelectedIndex + _proposedSelectedIndexOffset;
+//			var diff:Number = targetValue - currentValue;
+//			
+//			var newValue:Number;
+//			
+//			var ease:Number = ( _stage ) ? _stepEasing : 1;
+//			if( Math.abs( diff ) > _easingSnap )
+//			{
+//				newValue = currentValue + ( diff * ease );
+//				
+//				// startEasing
+//				if( !_isEasing )
+//				{
+//					_isEasing = true;
+//					_stage.addEventListener( Event.ENTER_FRAME, onStageEnterFrame, false, 0, true );
+//					dispatchEvent( new IndexChangeEvent( IndexChangeEvent.CHANGING ) );
+//				}
+//			}
+//			else
+//			{
+//				newValue = targetValue;
+//				
+//				// stop the easing we have reached the target
+//				if( _isEasing )
+//				{
+//					_isEasing = false;
+//					_stage.removeEventListener( Event.ENTER_FRAME, onStageEnterFrame, false );
+//					dispatchEvent( new Event( Event.COMPLETE ) );
+//				}
+//			}
+//			
+//			var index:int = Math.round( newValue );
+//			var offset:Number;
+//			//now set the current value
+//			if( index > newValue )
+//			{
+//				// round up
+//				super.updateSelectedIndex( index, newValue - index );
+//			}
+//			else
+//			{
+//				// round down
+//				super.updateSelectedIndex( index, newValue - index );
+//			}
+//			
+//			selectedIndexChange();
+//		}
 		
 		protected function selectedIndexChange():void
 		{
@@ -250,7 +250,7 @@ package ws.tink.spark.layouts.supportClasses
 		
 		private function onStageEnterFrame( event:Event ):void
 		{
-			easeSelectedIndex();
+//			easeSelectedIndex();
 		}
 		
 		public function addTargetListeners():void
