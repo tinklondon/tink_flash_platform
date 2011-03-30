@@ -2,6 +2,7 @@ package ws.tink.spark.layouts.supportClasses
 {
 	import flash.display.DisplayObject;
 	import flash.geom.ColorTransform;
+	import flash.geom.Rectangle;
 	
 	import mx.controls.scrollClasses.ScrollBarDirection;
 	import mx.core.IVisualElement;
@@ -943,12 +944,12 @@ package ws.tink.spark.layouts.supportClasses
 			invalidateTargetDisplayList();
 		}
 		
-		override public function updateScrollRect( w:Number, h:Number ) : void
-		{
-			if( !target ) return;
-			
-			target.scrollRect = null;//( clipAndEnableScrolling ) ? new Rectangle( 0, 0, w, h ) : null
-		}
+//		override public function updateScrollRect( w:Number, h:Number ) : void
+//		{
+//			if( !target ) return;
+//			
+//			target.scrollRect = ( clipAndEnableScrolling ) ? new Rectangle( 0, 0, w, h ) : null;
+//		}
 		
 		protected function invalidateTargetDisplayList() : void
 		{
