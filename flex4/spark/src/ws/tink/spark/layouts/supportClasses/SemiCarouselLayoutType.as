@@ -19,11 +19,69 @@ SOFTWARE.
 package ws.tink.spark.layouts.supportClasses
 {
 
+	/**
+	 *  The SemiCarouselLayoutType class defines the constant values
+	 *  for the <code>layoutType</code> property of the SemiCarouselLayout class.
+	 *
+	 *  @see ws.tink.spark.layouts.SemiCarouselLayout#layoutType
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class SemiCarouselLayoutType
 	{
 
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Class constants
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Use a circular function to layout the elements on their
+		 *  x, y and z axes.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static const CIRCULAR	: String = "circular";
+		
+		/**
+		 *  Use a linear function to layout the elements on their
+		 *  x, y and z axes.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static const LINEAR		: String = "linear";
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
+		public function SemiCarouselLayoutType()
+		{
+			
+		}
 	}
 }
