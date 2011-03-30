@@ -12,6 +12,7 @@ package ws.tink.spark.layouts
 	
 	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.PerspectiveNavigatorLayoutBase;
+	import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutDirection;
 
 	/**
 	 *  Flex 4 SemiCarouselLayout
@@ -84,6 +85,9 @@ package ws.tink.spark.layouts
 		 */
 		private var _elementVerticalCenterMultiplier	: Number;
 		
+		/**
+		 *  @private
+		 */
 		private var _displayedElements					: Vector.<IVisualElement>	
 		
 		
@@ -770,6 +774,45 @@ package ws.tink.spark.layouts
 		}
 		
 		
+//		//----------------------------------
+//		//  direction
+//		//----------------------------------  
+//		
+//		/**
+//		 *  @private
+//		 *  Storage property for layoutType.
+//		 */
+//		private var _direction	: String = "convex";
+//		
+//		[Inspectable(category="General", enumeration="convex,concave", defaultValue="convex")]
+//		/**
+//		 *	The layout type to be used for the SemiCarouselLayout.
+//		 * 
+//		 *  @default "convex"
+//		 * 
+//		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselDirection
+//		 *
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get direction():String
+//		{
+//			return _direction;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set direction( value:String ):void
+//		{
+//			if( value == _direction ) return;
+//			
+//			_direction = value;
+//			invalidateTargetDisplayList();
+//		}
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -783,12 +826,12 @@ package ws.tink.spark.layouts
 		 *	Positions, transforms and sets the size of an element
 		 *  that will be visible in the layout.
 		 */
-		protected function updateVisibleElementAt( element:IVisualElement, index:int ):void
+		protected function updateVisibleElementAt( element:IVisualElement, index:int, afterSelected:Boolean ):void
 		{
 			_displayedElements.push( element );
 			_transformCalculator.updateForIndex( index );
 			setElementLayoutBoundsSize( element, false );
-			elementTransformAround( element );
+			elementTransformAround( element, afterSelected );
 			applyColorTransformToElement( element, _transformCalculator.colorTransform );
 			element.visible = true;
 		}
@@ -830,15 +873,15 @@ package ws.tink.spark.layouts
 				if( !element ) continue;
 				if( index <  indicesInLayout[ animationIndex ] )
 				{
-					element.depth = depths.shift();
+					element.depth = _transformCalculator.radiusZ > -1 ? depths.shift() : depths.pop();
 				}
-				else if ( index > indicesInLayout[ animationIndex ] )
-				{
-					element.depth = depths.pop();
-				}
+//				else if ( index > indicesInLayout[ animationIndex ] )
+//				{
+//					element.depth = _direction == SemiCarouselLayoutDirection.CONVEX ? depths.pop() : depths.shift();
+//				}
 				else
 				{
-					element.depth = depths.pop();
+					element.depth = _transformCalculator.radiusZ > -1 ? depths.pop() : depths.shift();
 				}
 			}
 			
@@ -888,20 +931,32 @@ package ws.tink.spark.layouts
 		 *	A convenience method used to transform an element by applying
 		 *  the current values if the TransforCalulator instance.
 		 */
-		private function elementTransformAround( element:IVisualElement ):void
+		private function elementTransformAround( element:IVisualElement, afterSelected:Boolean ):void
 		{
 			var halfWidth:Number = element.width / 2;
 			var halfHeight:Number = element.height / 2;
 			var offsetX:Number = halfWidth * ( _elementHorizontalCenterMultiplier - 0.5 ) * 2;
 			var offsetY:Number = halfHeight * ( _elementVerticalCenterMultiplier - 0.5 ) * 2;
 			
+//			_horizontalCenterMultiplier
+//			
+//			var x:Number = ( _transformCalculator.x - unscaledWidth * _ / _transformCalculator.radiusZ ) * 90;
+//			if( _transformCalculator.radiusZ < 0 ) x = -x;
+//			
+//			var y:Number = ( _transformCalculator.z / _transformCalculator.radiusZ ) * 90;
+//			if( _transformCalculator.radiusZ < 0 ) y = -y;
+//			
+//			trace( y, radiusY, _transformCalculator.y );
 			element.transformAround( new Vector3D( element.width / 2, element.height / 2, 0 ),
 				null,
 				null,
 				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
-				null, null,
+				null,
+				null,
+//				new Vector3D( y, afterSelected ? -x : x, 0 ),
 				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
 				false );
+			
 		}
 		
 		
@@ -1076,11 +1131,13 @@ package ws.tink.spark.layouts
 			
 			_displayedElements = new Vector.<IVisualElement>();
 			
+			var animationIndex:int = Math.round( animationValue );
+			
 			for( var i:int = firstIndexInView; i <= lastIndexInView; i++ )
 			{
 				element = target.getVirtualElementAt( indicesInLayout[ i ] );
 				depths.push( indicesInLayout[ i ] );
-				updateVisibleElementAt( element, i );
+				updateVisibleElementAt( element, i, i > animationIndex );
 			}
 			
 			updateDepths( depths );
@@ -1103,13 +1160,15 @@ package ws.tink.spark.layouts
 			
 			_displayedElements = new Vector.<IVisualElement>();
 			
+			var animationIndex:int = Math.round( animationValue );
+			
 			for( var i:int = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
 				if( i >= firstIndexInView && i <= lastIndexInView )
 				{
 					depths.push( indicesInLayout[ i ] );
-					updateVisibleElementAt( element, i );
+					updateVisibleElementAt( element, i, i > animationIndex );
 				}
 				else
 				{
@@ -1153,9 +1212,20 @@ package ws.tink.spark.layouts
 			
 			const animationIndex:int = Math.round( animationValue );
 			const firstIndexInView:int = Math.max( animationIndex - _numUnselectedElements, 0 );
-			const numIndicesInView:int = Math.min( numElementsInLayout, animationIndex + _numUnselectedElements ) - firstIndexInView;
 			
-//			var firstIndexInView:int = Math.max( 0, selectedIndex  - _numUnselectedElements );
+			
+			var numIndicesInView:int = ( _numUnselectedElements * 2 ) + 1; 
+			if( animationIndex < _numUnselectedElements )
+			{
+				numIndicesInView -= _numUnselectedElements - animationIndex;
+			}
+			if( animationIndex + _numUnselectedElements >= numElementsInLayout )
+			{
+				numIndicesInView -= _numUnselectedElements - ( ( numElementsInLayout - 1 ) - animationIndex );
+			}
+			
+//			const numIndicesInView:int = Math.min( numElementsInLayout, animationIndex + _numUnselectedElements );// - firstIndexInView;
+			
 			indicesInView( firstIndexInView, numIndicesInView );
 		}
 		
@@ -1171,6 +1241,7 @@ import flash.text.engine.GraphicElement;
 import mx.core.IVisualElement;
 
 import ws.tink.spark.layouts.SemiCarouselLayout;
+import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutDirection;
 import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutType;
 
 
@@ -1314,6 +1385,12 @@ internal class TransformValues
 	}
 	
 	
+	public function get radiusZ():Number
+	{
+		return _rz;
+	}
+	
+	
 	//----------------------------------
 	//  colorTransform
 	//----------------------------------  
@@ -1409,17 +1486,15 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function circular( i:int ):void
+	private function circular( i:int ):void
 	{
-		var index:Number = ( i - _index ) - _indexOffset;
-		
-		var degree:Number = _an * index;
-		var radian:Number = ( degree / 180 ) * Math.PI;
+		const index:Number = ( i - _index ) - _indexOffset;
+		const degree:Number = _an * index;
+		const radian:Number = ( degree / 180 ) * Math.PI;
 
-		trace( "circular" );
 		_x = _cx + Math.sin( radian ) * _rx;
 		_y = _cy + Math.sin( radian ) * _ry;
-		_z = ( Math.cos( radian ) * _rz );
+		_z = _rz - ( Math.cos( radian ) * _rz );
 		
 		_x += _ho;
 		_y += _vo;
@@ -1433,11 +1508,10 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function linear( i:int ):void
+	private function linear( i:int ):void
 	{
-		var index:Number = ( i - _index ) - _indexOffset;
-		
-		var indexx:Number = ( Math.abs( index ) > _ni ) ? ( i - _index ) + _indexOffset : index;
+		const index:Number = ( i - _index ) - _indexOffset;
+		const indexx:Number = ( Math.abs( index ) > _ni ) ? ( i - _index ) + _indexOffset : index;
 		
 		_x = _cx + ( ( _rx / _ni ) * indexx );
 		_y = _cy + ( ( _ry / _ni ) * indexx );
@@ -1461,18 +1535,15 @@ internal class TransformValues
 		
 		if( _c > -1 )
 		{
-			var v:Number = ( _z / _rz ) * _ca;
+			// TODO There has got to be a more efficient and understandable
+			// way to write this.
+			const v:Number = _rz < 0 ? Math.abs( 1 - ( 1 - ( ( _z / Math.abs( _rz ) ) * _ca ) ) ) : ( _z / _rz ) * _ca;//( _z / _rz ) * _ca;
 			
-//			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - ( _a * ( v ) );//1 - v;//( ( 100 - ( h.value ) ) / 100 );
-//			_colorTransform.redOffset = ( v * _r );
-//			_colorTransform.blueOffset = ( v * _b );
-//			_colorTransform.greenOffset = ( v * _g );
-			
-//			_colorTransform.color = _c;
-//			_colorTransform.redOffset *= v;
-//			_colorTransform.greenOffset *= v;
-//			_colorTransform.blueOffset *= v;
-//			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - v;
+			_colorTransform.color = _c;
+			_colorTransform.redOffset *= v;
+			_colorTransform.greenOffset *= v;
+			_colorTransform.blueOffset *= v;
+			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - v;
 		}
 	}
 }
