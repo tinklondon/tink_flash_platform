@@ -14,7 +14,12 @@ package ws.tink.spark.layouts
 	import ws.tink.spark.layouts.supportClasses.PerspectiveNavigatorLayoutBase;
 
 	/**
-	 * Flex 4 SemiCarouselLayout
+	 *  Flex 4 SemiCarouselLayout
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
 	 */
 	public class SemiCarouselLayout extends PerspectiveAnimationNavigatorLayoutBase
 	{
@@ -49,21 +54,34 @@ package ws.tink.spark.layouts
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  @private
+		 */
 		private var _transformCalculator				: TransformValues;
 		
-		private var _indicesInViewChanged				: Boolean;
-		private var _sizeChanged						: Boolean;
+		/**
+		 *  @private
+		 */
+//		private var _indicesInViewChanged				: Boolean;
 		
-		private var _horizontalAlignChange				: Boolean = true;
-		private var _verticalAlignChange				: Boolean = true;
-		
+		/**
+		 *  @private
+		 */
 		private var _horizontalCenterMultiplier			: Number;
+		
+		/**
+		 *  @private
+		 */
 		private var _verticalCenterMultiplier			: Number;
 		
-		private var _elementHorizontalAlignChange		: Boolean = true;
-		private var _elementVerticalAlignChange			: Boolean = true;
-		
+		/**
+		 *  @private
+		 */
 		private var _elementHorizontalCenterMultiplier	: Number;
+		
+		/**
+		 *  @private
+		 */
 		private var _elementVerticalCenterMultiplier	: Number;
 		
 		private var _displayedElements					: Vector.<IVisualElement>	
@@ -212,6 +230,12 @@ package ws.tink.spark.layouts
 		 */
 		private var _horizontalAlign:String = HorizontalAlign.CENTER;
 		
+		/**
+		 *  @private
+		 *  Flag to indicate the horizontalAlign property has changed.
+		 */
+		private var _horizontalAlignChange:Boolean = true;
+		
 		[Inspectable(category="General", enumeration="left,right,center", defaultValue="center")]
 		/**
 		 *	The horizontal position of the selected element in the viewport. All other elements
@@ -257,6 +281,12 @@ package ws.tink.spark.layouts
 		 *  Storage property for verticalAlign.
 		 */
 		private var _verticalAlign:String = VerticalAlign.MIDDLE;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the verticalAlign property has changed.
+		 */
+		private var _verticalAlignChange:Boolean = true;
 		
 		[Inspectable(category="General", enumeration="top,bottom,middle", defaultValue="middle")]
 		/**
@@ -337,7 +367,7 @@ package ws.tink.spark.layouts
 			
 			_horizontalAlignOffset = value;
 			_horizontalAlignOffsetPercent = NaN;
-			_indicesInViewChanged = true;
+//			_indicesInViewChanged = true;
 			invalidateTargetDisplayList();
 		}    
 		
@@ -385,7 +415,7 @@ package ws.tink.spark.layouts
 			
 			_verticalAlignOffset = value;
 			_verticalAlignOffsetPercent = NaN;
-			_indicesInViewChanged = true;
+//			_indicesInViewChanged = true;
 			invalidateTargetDisplayList();
 		}
 		
@@ -433,7 +463,7 @@ package ws.tink.spark.layouts
 			
 			_horizontalAlignOffsetPercent = value;
 			if( !isNaN( _horizontalAlignOffsetPercent ) ) _horizontalAlignOffset = unscaledHeight * ( _horizontalAlignOffsetPercent / 100 );
-			_indicesInViewChanged = true;
+//			_indicesInViewChanged = true;
 			invalidateTargetDisplayList();
 		}    
 		
@@ -481,7 +511,7 @@ package ws.tink.spark.layouts
 			
 			_verticalAlignOffsetPercent = value;
 			if( !isNaN( _verticalAlignOffsetPercent ) ) _verticalAlignOffset = unscaledHeight * ( _verticalAlignOffsetPercent / 100 );
-			_indicesInViewChanged = true;
+//			_indicesInViewChanged = true;
 			invalidateTargetDisplayList();
 		}
 		
@@ -495,6 +525,12 @@ package ws.tink.spark.layouts
 		 *  Storage property for elementHorizontalAlign.
 		 */
 		private var _elementHorizontalAlign:String = HorizontalAlign.CENTER;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the elementHorizontalAlign property has changed.
+		 */
+		private var _elementHorizontalAlignChange		: Boolean = true;
 		
 		[Inspectable(category="General", enumeration="left,right,center", defaultValue="center")]
 		/**
@@ -538,6 +574,12 @@ package ws.tink.spark.layouts
 		 *  Storage property for elementVerticalAlign.
 		 */
 		private var _elementVerticalAlign:String = VerticalAlign.MIDDLE;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the elementVerticalAlign property has changed.
+		 */
+		private var _elementVerticalAlignChange			: Boolean = true;
 		
 		[Inspectable(category="General", enumeration="top,bottom,middle", defaultValue="middle")]
 		/**
@@ -880,12 +922,12 @@ package ws.tink.spark.layouts
 		 */
 		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number):void
 		{
-			if( this.unscaledWidth != unscaledWidth || this.unscaledHeight != unscaledHeight ) _sizeChanged = true;
+//			if( this.unscaledWidth != unscaledWidth || this.unscaledHeight != unscaledHeight ) _sizeChanged = true;
 			
 			if( _horizontalAlignChange )
 			{
 				_horizontalAlignChange = false;
-				_indicesInViewChanged = true;
+//				_indicesInViewChanged = true;
 				
 				switch( _horizontalAlign )
 				{
@@ -909,7 +951,7 @@ package ws.tink.spark.layouts
 			if( _verticalAlignChange )
 			{
 				_verticalAlignChange = false;
-				_indicesInViewChanged = true;
+//				_indicesInViewChanged = true;
 				
 				switch( _verticalAlign )
 				{
@@ -933,7 +975,7 @@ package ws.tink.spark.layouts
 			if( _elementHorizontalAlignChange )
 			{
 				_elementHorizontalAlignChange = false;
-				_indicesInViewChanged = true;
+//				_indicesInViewChanged = true;
 				
 				switch( _elementHorizontalAlign )
 				{
@@ -957,7 +999,7 @@ package ws.tink.spark.layouts
 			if( _elementVerticalAlignChange )
 			{
 				_elementVerticalAlignChange = false;
-				_indicesInViewChanged = true;
+//				_indicesInViewChanged = true;
 				
 				switch( _elementVerticalAlign )
 				{
@@ -995,7 +1037,7 @@ package ws.tink.spark.layouts
 			
 			if( sizeChangedInLayoutPass )
 			{
-				_indicesInViewChanged = true;
+//				_indicesInViewChanged = true;
 				if( !isNaN( _horizontalAlignOffsetPercent ) ) _horizontalAlignOffset = unscaledHeight * ( _horizontalAlignOffsetPercent / 100 );
 				if( !isNaN( _verticalAlignOffsetPercent ) ) _verticalAlignOffset = unscaledHeight * ( _verticalAlignOffsetPercent / 100 );
 			}
@@ -1374,9 +1416,10 @@ internal class TransformValues
 		var degree:Number = _an * index;
 		var radian:Number = ( degree / 180 ) * Math.PI;
 
+		trace( "circular" );
 		_x = _cx + Math.sin( radian ) * _rx;
 		_y = _cy + Math.sin( radian ) * _ry;
-		_z = _rz - ( Math.cos( radian ) * _rz );
+		_z = ( Math.cos( radian ) * _rz );
 		
 		_x += _ho;
 		_y += _vo;
@@ -1425,11 +1468,11 @@ internal class TransformValues
 //			_colorTransform.blueOffset = ( v * _b );
 //			_colorTransform.greenOffset = ( v * _g );
 			
-			_colorTransform.color = _c;
-			_colorTransform.redOffset *= v;
-			_colorTransform.greenOffset *= v;
-			_colorTransform.blueOffset *= v;
-			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - v;
+//			_colorTransform.color = _c;
+//			_colorTransform.redOffset *= v;
+//			_colorTransform.greenOffset *= v;
+//			_colorTransform.blueOffset *= v;
+//			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - v;
 		}
 	}
 }
