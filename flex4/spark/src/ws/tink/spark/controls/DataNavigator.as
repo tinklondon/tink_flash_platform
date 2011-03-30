@@ -23,28 +23,23 @@ package ws.tink.spark.controls
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
-	import mx.core.IDeferredContentOwner;
 	import mx.core.IFactory;
 	import mx.core.ISelectableList;
 	import mx.core.IVisualElement;
-	import mx.core.IVisualElementContainer;
 	import mx.core.mx_internal;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
-	import mx.events.PropertyChangeEvent;
 	import mx.utils.BitFlagUtil;
 	
 	import spark.components.IItemRenderer;
 	import spark.components.IItemRendererOwner;
 	import spark.components.supportClasses.SkinnableContainerBase;
-	import spark.core.IViewport;
 	import spark.events.IndexChangeEvent;
 	import spark.events.RendererExistenceEvent;
 	import spark.layouts.supportClasses.LayoutBase;
 	
-	import ws.tink.spark.controls.DataNavigator;
-	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
+	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
 	
 	use namespace mx_internal;
@@ -917,16 +912,16 @@ package ws.tink.spark.controls
 		protected function adjustSelection( newIndex:int ):void
 		{
 			var nl:INavigatorLayout = INavigatorLayout( layout );
-			if( nl is EasedNavigatorLayoutBase )
+			if( nl is AnimationNavigatorLayoutBase )
 			{
-				var enl:EasedNavigatorLayoutBase = EasedNavigatorLayoutBase( nl );
-				var stepEasing:Number = enl.stepEasing;
-				enl.stepEasing = 1;
+				var anl:AnimationNavigatorLayoutBase = AnimationNavigatorLayoutBase( nl );
+				var duration:Number = anl.duration;
+				anl.duration = 0;
 			}
 			
 			nl.selectedIndex = newIndex;
 			
-			if( enl ) enl.stepEasing = stepEasing;
+			if( anl ) anl.duration = duration;
 		}
 		
 		/**

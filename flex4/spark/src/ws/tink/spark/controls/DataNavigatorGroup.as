@@ -18,28 +18,23 @@ SOFTWARE.
 
 package ws.tink.spark.controls
 {
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.ISelectableList;
-	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
-	import mx.effects.IEffect;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	
 	import spark.components.DataGroup;
 	import spark.events.IndexChangeEvent;
-	import spark.layouts.HorizontalAlign;
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.layouts.StackLayout;
-	import ws.tink.spark.layouts.supportClasses.EasedNavigatorLayoutBase;
+	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
-	import ws.tink.spark.layouts.supportClasses.NavigatorLayoutBase;
 	
 	use namespace mx_internal;
 
@@ -553,16 +548,16 @@ package ws.tink.spark.controls
 		protected function adjustSelection( newIndex:int ):void
 		{
 			var nl:INavigatorLayout = INavigatorLayout( layout );
-			if( nl is EasedNavigatorLayoutBase )
+			if( nl is AnimationNavigatorLayoutBase )
 			{
-				var enl:EasedNavigatorLayoutBase = EasedNavigatorLayoutBase( nl );
-				var stepEasing:Number = enl.stepEasing;
-				enl.stepEasing = 1;
+				var anl:AnimationNavigatorLayoutBase = AnimationNavigatorLayoutBase( nl );
+				var duration:Number = anl.duration;
+				anl.duration = 0;
 			}
 			
 			nl.selectedIndex = newIndex;
 			
-			if( enl ) enl.stepEasing = stepEasing;
+			if( anl ) anl.duration = duration;
 		}
 		
 		
