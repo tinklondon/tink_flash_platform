@@ -8,11 +8,8 @@ package ws.tink.spark.layouts
 	
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.VerticalAlign;
-	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
-	import ws.tink.spark.layouts.supportClasses.PerspectiveNavigatorLayoutBase;
-	import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutDirection;
 
 	/**
 	 *  Flex 4 SemiCarouselLayout
@@ -1236,12 +1233,10 @@ package ws.tink.spark.layouts
 
 
 import flash.geom.ColorTransform;
-import flash.text.engine.GraphicElement;
 
 import mx.core.IVisualElement;
 
 import ws.tink.spark.layouts.SemiCarouselLayout;
-import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutDirection;
 import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutType;
 
 
