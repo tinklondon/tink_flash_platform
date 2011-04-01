@@ -216,7 +216,7 @@ package ws.tink.spark.layouts
 			super.updateDisplayListVirtual();
 			
 			if( _selectedElement ) _selectedElement.visible = false;
-			
+
 			if( target.numElements == 0 ) return;
 			
 			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
@@ -458,7 +458,7 @@ package ws.tink.spark.layouts
 //			
 //		}
 		
-		override protected function updateSelectedIndex( index:int, offset:Number ):void
+		override protected function invalidateSelectedIndex(index:int, offset:Number):void
 		{
 			if( selectedIndex == index ) return;
 			
@@ -475,29 +475,25 @@ package ws.tink.spark.layouts
 				}
 			}
 			
-			super.updateSelectedIndex( index, offset );
+			super.invalidateSelectedIndex( index, offset );
+			
+			
+		}
+
+		override protected function updateDisplayListBetween():void
+		{
+			super.updateDisplayListBetween();
 			
 			if( !target.numElements )
 			{
-				indicesInView( 0, 0 );
+				indicesInView( -1, 0 );
 			}
 			else
 			{
-				var firstIndexInView:int;
-				
-				if( selectedIndexOffset < 0 )
-				{
-					firstIndexInView = selectedIndex - 1;
-				}
-				else
-				{
-					firstIndexInView = selectedIndex;
-				}
-				
-				indicesInView( firstIndexInView, 1 );
+				indicesInView( selectedIndex, 1 );
 			}
 		}
-
+		
         public function StackLayout()
         {
         }
