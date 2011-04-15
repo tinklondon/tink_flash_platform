@@ -1075,6 +1075,13 @@ package ws.tink.spark.layouts.supportClasses
 //			}
 		}
 		
+		override public function updateScrollRect( w:Number, h:Number ):void
+		{
+			if( !target ) return;
+			
+			target.scrollRect = clipAndEnableScrolling ? new Rectangle( 0, 0, w, h ) : null;
+		}
+		
 		/**
 		 *  Restores the element to reset any changes to is visible properties. 
 		 *  This method should be overridden in a subclass to return any elements
