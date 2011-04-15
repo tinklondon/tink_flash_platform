@@ -41,6 +41,58 @@ package ws.tink.spark.containers
 	
 	use namespace mx_internal;
 	
+	
+	
+	//--------------------------------------
+	//  Styles
+	//--------------------------------------
+	
+	/**
+	 *  Alpha level of the color defined by the <code>borderColor</code> style.
+	 *  
+	 *  Valid values range from 0.0 to 1.0. 
+	 *  
+	 *  @default 1.0
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderAlpha", type="Number", inherit="no")]
+	
+	/**
+	 *  Color of the border.
+	 *  
+	 *  @default 0xB7BABC
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderColor", type="uint", format="Color", inherit="no")]
+	
+	/**
+	 *  Determines if the border is visible or not. 
+	 *  If <code>false</code>, then no border is visible
+	 *  except a border set by using the <code>borderStroke</code> property. 
+	 *   
+	 *  @default true
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderVisible", type="Boolean", inherit="no")]
+	
+	
+	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
 	/**
 	 *  Dispatched after the content for this component has been created. With deferred 
 	 *  instantiation, the content for a component may be created long after the 
@@ -528,11 +580,11 @@ package ws.tink.spark.containers
 				{
 					_placeHolderGroup = new NavigatorGroup();
 					
-//					if (_mxmlContent)
-//					{
-//						_placeHolderGroup.mxmlContent = _mxmlContent;
-//						_mxmlContent = null;
-//					}
+					if (_mxmlContent)
+					{
+						_placeHolderGroup.mxmlContent = _mxmlContent;
+						_mxmlContent = null;
+					}
 					
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
@@ -725,7 +777,7 @@ package ws.tink.spark.containers
 		 *  Variable used to store the mxmlContent when the contentGroup is 
 		 *  not around, and there hasnt' been a need yet for the placeHolderGroup.
 		 */
-//		private var _mxmlContent:Array;
+		private var _mxmlContent:Array;
 		
 		/**
 		 *  @private
@@ -748,18 +800,20 @@ package ws.tink.spark.containers
 		 */
 		public function set mxmlContent(value:Array):void
 		{
-//			if (contentGroup)
-//				contentGroup.mxmlContent = value;
-//			else if (_placeHolderGroup)
-//				_placeHolderGroup.mxmlContent = value;
-//			else
-//				_mxmlContent = value;
+			if (contentGroup)
+				contentGroup.mxmlContent = value;
+			else if (_placeHolderGroup)
+				_placeHolderGroup.mxmlContent = value;
+			else
+				_mxmlContent = value;
 			
-			currentContentGroup.mxmlContent = value;
-			
+//			trace( "111", _contentModified );
+//			var c:NavigatorGroup = currentContentGroup;
+//			trace( "huh", c );
+//			c.mxmlContent = value;
+//			trace( "222", _contentModified )
 			if (value != null)
 				_contentModified = true;
-			
 //			_mxmlContent = value;
 		}
 		
@@ -1240,13 +1294,12 @@ package ws.tink.spark.containers
 						}
 						
 						contentGroup.mxmlContent = sourceContent ? sourceContent.slice() : null;
-						
 					}
-//					else if (_mxmlContent != null)
-//					{
-//						contentGroup.mxmlContent = _mxmlContent;
-//						_mxmlContent = null;
-//					}
+					else if (_mxmlContent != null)
+					{
+						contentGroup.mxmlContent = _mxmlContent;
+						_mxmlContent = null;
+					}
 				}
 				
 				// Not your typical delegation, see 'set useVirtualLayout'
