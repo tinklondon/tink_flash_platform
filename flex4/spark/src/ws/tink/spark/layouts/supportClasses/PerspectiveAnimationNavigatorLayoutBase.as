@@ -28,10 +28,7 @@ package ws.tink.spark.layouts.supportClasses
 	public class PerspectiveAnimationNavigatorLayoutBase extends AnimationNavigatorLayoutBase
 	{
 		
-		private var _projectionChanged	: Boolean;
 		
-//		private var _unscaledWidth	: Number;
-//		private var _unscaledHeight	: Number;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -58,113 +55,43 @@ package ws.tink.spark.layouts.supportClasses
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Properties
+		//  Variables
 		//
 		//--------------------------------------------------------------------------
 		
 		/**
-		 *  projectionCenter
-		 * 
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
 		 */
-		public function get projectionCenter():Point
-		{
-			return ( perspectiveProjection ) ? perspectiveProjection.projectionCenter : getProjectionCenter();
-		}
+		private var _projectionChanged	: Boolean;
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
 		
 		//----------------------------------
-		//  projectionCenterHorizontalAlign
+		//  projectionCenterX
 		//----------------------------------  
 		
 		/**
 		 *  @private
-		 *	Storage property for projectionCenterHorizontalAlign.
+		 *	Storage property for projectionCenterX.
 		 */
-		private var _projectionCenterHorizontalAlign:String = HorizontalAlign.CENTER;
-		
-		[Inspectable(category="General", enumeration="left,right,center", defaultValue="center")]
-		/**
-		 *  projectionCenterHorizontalAlign
-		 * 
-		 *  @default "center"
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get projectionCenterHorizontalAlign():String
-		{
-			return _projectionCenterHorizontalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set projectionCenterHorizontalAlign(value:String):void
-		{
-			if( value == _projectionCenterHorizontalAlign ) return;
-			
-			_projectionCenterHorizontalAlign = value;
-			
-			invalidateTargetDisplayList();
-		}
-		
-		
-		//----------------------------------
-		//  projectionCenterVerticalAlign
-		//----------------------------------  
+		private var _projectionCenterX:Number = NaN;
 		
 		/**
 		 *  @private
-		 *	Storage property for projectionCenterVerticalAlign.
+		 *	Flag to indicate that the projectCenterX property as been set to number
+		 *  value other than NaN.
 		 */
-		private var _projectionCenterVerticalAlign:String = VerticalAlign.MIDDLE;
+		private var _projectionCenterXSet:Boolean;
 		
-		[Inspectable(category="General", enumeration="top,bottom,middle", defaultValue="middle")]
+		[Inspectable(category="General", defaultValue="NaN")]
 		/**
-		 *  projectionCenterVerticalAlign
-		 * 
-		 *  @default "middle"
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get projectionCenterVerticalAlign():String
-		{
-			return _projectionCenterVerticalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set projectionCenterVerticalAlign(value:String):void
-		{
-			if( value == _projectionCenterVerticalAlign ) return;
-			
-			_projectionCenterVerticalAlign = value;
-			
-			invalidateTargetDisplayList();
-		}
-		
-		
-		//----------------------------------
-		//  projectionCenterHorizontalOffset
-		//----------------------------------  
-		
-		/**
-		 *  @private
-		 *	Storage property for projectionCenterHorizontalOffset.
-		 */
-		private var _projectionCenterHorizontalOffset:Number = 0;
-		
-		[Inspectable(category="General", defaultValue="0")]
-		/**
-		 *  projectionCenterHorizontalOffset
+		 *  projectionCenterX
 		 * 
 		 *  @default 0
 		 *
@@ -173,55 +100,66 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get projectionCenterHorizontalOffset():Number
+		public function get projectionCenterX():Number
 		{
-			return _projectionCenterHorizontalOffset;
+			return _projectionCenterX;
 		}
 		/**
 		 *  @private
 		 */
-		public function set projectionCenterHorizontalOffset(value:Number):void
+		public function set projectionCenterX(value:Number):void
 		{
-			if( _projectionCenterHorizontalOffset == value ) return;
+			if( _projectionCenterX == value ) return;
 			
-			_projectionCenterHorizontalOffset = value;
+			_projectionCenterX = value;
+			_projectionChanged = true;
+			_projectionCenterXSet = true;
 			invalidateTargetDisplayList();
 		}    
 		
 		
 		//----------------------------------
-		//  projectionCenterVerticalOffset
+		//  projectionCenterY
 		//----------------------------------  
 		
 		/**
 		 *  @private
-		 *	Storage property for projectionCenterVerticalOffset.
+		 *	Storage property for projectionCenterY.
 		 */
-		private var _projectionCenterVerticalOffset:Number = 0;
+		private var _projectionCenterY:Number = NaN;
 		
-		[Inspectable(category="General", defaultValue="0")]
 		/**
-		 *  projectionCenterVerticalOffset
+		 *  @private
+		 *	Flag to indicate that the projectCenterY property as been set to number
+		 *  value other than NaN.
+		 */
+		private var _projectionCenterYSet:Boolean;
+		
+		[Inspectable(category="General", defaultValue="NaN")]
+		/**
+		 *  projectionCenterY
 		 * 
-		 *  @default 0
+		 *  @default NaN
 		 *
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function get projectionCenterVerticalOffset():Number
+		public function get projectionCenterY():Number
 		{
-			return _projectionCenterVerticalOffset;
+			return _projectionCenterY;
 		}
 		/**
 		 *  @private
 		 */
-		public function set projectionCenterVerticalOffset(value:Number):void
+		public function set projectionCenterY(value:Number):void
 		{
-			if( _projectionCenterVerticalOffset == value ) return;
+			if( _projectionCenterY == value ) return;
 			
-			_projectionCenterVerticalOffset = value;
+			_projectionCenterY = value;
+			_projectionChanged = true;
+			_projectionCenterYSet = true;
 			invalidateTargetDisplayList();
 		}
 		
@@ -284,7 +222,6 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		public function get focalLength():Number
 		{
-			trace( "perspectiveProjection", perspectiveProjection );
 			return ( perspectiveProjection ) ? perspectiveProjection.focalLength : _focalLength;
 		}
 		/**
@@ -345,89 +282,10 @@ package ws.tink.spark.layouts.supportClasses
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Methods
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 *  @private
-		 */
-		private function getProjectionCenter():Point
-		{
-			var p:Point = new Point();
-			switch( _projectionCenterHorizontalAlign )
-			{
-				case HorizontalAlign.LEFT :
-				{
-					p.x = _projectionCenterHorizontalOffset;
-					break;
-				}
-				case HorizontalAlign.CENTER :
-				{
-					p.x = ( unscaledWidth / 2 ) + _projectionCenterHorizontalOffset;
-					break;
-				}
-				case HorizontalAlign.RIGHT :
-				{
-					p.x = unscaledWidth + _projectionCenterHorizontalOffset;
-					break;
-				}
-			}
-			
-			switch( _projectionCenterVerticalAlign )
-			{
-				case VerticalAlign.TOP :
-				{
-					p.y = _projectionCenterVerticalOffset;
-					break;
-				}
-				case VerticalAlign.MIDDLE :
-				{
-					p.y = ( unscaledHeight / 2 ) + _projectionCenterVerticalOffset;
-					break;
-				}
-				case VerticalAlign.BOTTOM :
-				{
-					p.y = unscaledHeight + _projectionCenterVerticalOffset;
-					break;
-				}
-			}
-			
-			return p;
-		}
-		
-		
-		
-		//--------------------------------------------------------------------------
-		//
 		//  Overridden Methods
 		//
 		//--------------------------------------------------------------------------
 		
-//		/**
-//		 *  @inheritDoc
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		override public function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
-//		{
-//			
-//			sizeChangedInLayoutPass
-//			if( this.unscaledWidth != unscaledWidth ||  this.unscaledHeight != unscaledHeight )
-//			{
-////				_unscaledWidth = unscaledWidth;
-////				_unscaledHeight = unscaledHeight;
-//				_projectionChanged = true;
-//			}
-//			
-//			
-//			
-//			super.updateDisplayList( unscaledWidth, unscaledHeight );
-//		}
-	
 		/**
 		 *  @inheritDoc
 		 *  
@@ -440,14 +298,16 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			super.updateDisplayListBetween();
 			
-			if( target && ( _projectionChanged || sizeChangedInLayoutPass ) )
+			if( target && _projectionChanged || ( sizeChangedInLayoutPass && !_projectionCenterXSet || !_projectionCenterYSet ) )
 			{
 				_projectionChanged = false;
 				
 				if( !perspectiveProjection ) target.transform.perspectiveProjection = new PerspectiveProjection();
 				
-//				trace( "created", focalLength, fieldOfView );
-				perspectiveProjection.projectionCenter = getProjectionCenter();
+				if( !_projectionCenterXSet || isNaN( _projectionCenterX ) ) _projectionCenterX = unscaledWidth / 2;
+				if( !_projectionCenterYSet || isNaN( _projectionCenterY ) ) _projectionCenterY = unscaledHeight / 2;
+				perspectiveProjection.projectionCenter = new Point( _projectionCenterX, _projectionCenterY );
+				
 				if( !isNaN( _fieldOfView ) ) perspectiveProjection.fieldOfView = _fieldOfView;
 				if( !isNaN( _focalLength ) ) perspectiveProjection.focalLength = _focalLength;
 			}
