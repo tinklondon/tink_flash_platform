@@ -392,16 +392,12 @@ package ws.tink.spark.layouts.supportClasses
 					}
 					case INDIRECT :
 					{
-//						trace( "doing", selectedIndex, animationValue, index );
-//						startAnimation( selectedIndex + selectedIndexOffset, _proposedSelectedIndex2 + _proposedSelectedIndex2Offset );
 						startAnimation( animation.isPlaying ? animationValue : prevIndex, index );
 						break;
 					}
 				}
 				
 			}
-
-//			updateIndicesInView();
 		}
 		
 		override protected function updateDisplayListBetween():void
