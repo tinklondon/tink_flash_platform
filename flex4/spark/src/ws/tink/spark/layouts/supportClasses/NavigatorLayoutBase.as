@@ -63,12 +63,6 @@ package ws.tink.spark.layouts.supportClasses
 		
 		/**
 		 *  @private
-		 *	Flag to indicate the selectedIndex has changed.
-		 */
-		private var _selectedIndexChanged	: Boolean;
-		
-		/**
-		 *  @private
 		 *	Flag to indicate the selectedIndex changed after the target was changed.
 		 */
 		private var _selectedIndexChangedAfterTargetChanged	: Boolean;
@@ -675,6 +669,8 @@ package ws.tink.spark.layouts.supportClasses
 				updateScrollerForContent();
 			}
 			
+			const selectedIndexChanged:Boolean = _selectedIndexInvalid;
+			
 			if( _selectedIndexInvalid )
 			{
 				_selectedIndexInvalid = false;
@@ -697,9 +693,8 @@ package ws.tink.spark.layouts.supportClasses
 			
 			_sizeChangedInLayoutPass = false;
 			
-			if( _selectedIndexChanged )
+			if( selectedIndexChanged )
 			{
-				_selectedIndexChanged = false;
 				if( _programmaticSelectedIndex == selectedIndex )
 				{
 					dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
