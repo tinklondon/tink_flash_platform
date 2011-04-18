@@ -559,6 +559,8 @@ package ws.tink.spark.containers
 		protected function adjustSelection( newIndex:int ):void
 		{
 			var nl:INavigatorLayout = INavigatorLayout( layout );
+			if( !nl ) return;
+			
 			if( nl is AnimationNavigatorLayoutBase )
 			{
 				var anl:AnimationNavigatorLayoutBase = AnimationNavigatorLayoutBase( nl );

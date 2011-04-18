@@ -20,6 +20,8 @@ SOFTWARE.
 
 package ws.tink.spark.containers
 {
+	import flash.events.Event;
+	
 	import mx.core.ContainerCreationPolicy;
 	import mx.core.IDeferredContentOwner;
 	import mx.core.IDeferredInstance;
@@ -34,6 +36,7 @@ package ws.tink.spark.containers
 	
 	import spark.components.supportClasses.SkinnableContainerBase;
 	import spark.events.ElementExistenceEvent;
+	import spark.events.IndexChangeEvent;
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
@@ -449,6 +452,14 @@ package ws.tink.spark.containers
 		 */
 		public var contentGroup:NavigatorGroup;
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables 
+		//
+		//--------------------------------------------------------------------------
+		
 		/**
 		 *  @private
 		 *  Several properties are proxied to contentGroup.  However, when contentGroup
@@ -467,6 +478,11 @@ package ws.tink.spark.containers
 		 *  have been explicitely set or not.
 		 */
 		private var contentGroupProperties:Object = {};
+		
+		/**
+		 *  @private
+		 */
+		private var _hasCollectionChangeListener:Boolean;
 		
 		
 		
@@ -589,6 +605,7 @@ package ws.tink.spark.containers
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
 				}
+
 				return _placeHolderGroup;
 			}
 			else
@@ -1211,13 +1228,27 @@ package ws.tink.spark.containers
 		 */
 		override public function addEventListener( type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
-			var hl:Boolean = hasEventListener( CollectionEvent.COLLECTION_CHANGE );
-			
 			super.addEventListener( type, listener, useCapture, priority, useWeakReference );
 			
-			if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) && !hl )
+			if( type == CollectionEvent.COLLECTION_CHANGE &&
+				hasEventListener( CollectionEvent.COLLECTION_CHANGE ) &&
+				currentContentGroup.hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
 			{
-				currentContentGroup.addEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupCollectionChange, false, 0, true );
+				currentContentGroup.addEventListener( CollectionEvent.COLLECTION_CHANGE, onBubbleContentGroupEvent, false, 0, true );
+			}
+			
+			if( type == IndexChangeEvent.CHANGE &&
+				hasEventListener( IndexChangeEvent.CHANGE ) &&
+				currentContentGroup.hasEventListener( IndexChangeEvent.CHANGE ) )
+			{
+				currentContentGroup.addEventListener( IndexChangeEvent.CHANGE, onBubbleContentGroupEvent, false, 0, true );
+			}
+			
+			if( type == FlexEvent.VALUE_COMMIT &&
+				hasEventListener( FlexEvent.VALUE_COMMIT ) &&
+				currentContentGroup.hasEventListener( FlexEvent.VALUE_COMMIT ) )
+			{
+				currentContentGroup.addEventListener( FlexEvent.VALUE_COMMIT, onBubbleContentGroupEvent, false, 0, true );
 			}
 		}
 		
@@ -1231,13 +1262,27 @@ package ws.tink.spark.containers
 		 */
 		override public function removeEventListener( type:String, listener:Function, useCapture:Boolean = false ):void
 		{
-			var hl:Boolean = hasEventListener( CollectionEvent.COLLECTION_CHANGE );
-			
 			super.removeEventListener( type, listener, useCapture );
 			
-			if( !hasEventListener( CollectionEvent.COLLECTION_CHANGE ) && hl )
+			if( type == CollectionEvent.COLLECTION_CHANGE &&
+				!hasEventListener( CollectionEvent.COLLECTION_CHANGE ) &&
+				currentContentGroup.hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
 			{
-				currentContentGroup.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupCollectionChange, false );
+				currentContentGroup.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onBubbleContentGroupEvent, false );
+			}
+			
+			if( type == IndexChangeEvent.CHANGE &&
+				!hasEventListener( IndexChangeEvent.CHANGE ) &&
+				currentContentGroup.hasEventListener( IndexChangeEvent.CHANGE ) )
+			{
+				currentContentGroup.removeEventListener( IndexChangeEvent.CHANGE, onBubbleContentGroupEvent, false );
+			}
+			
+			if( type == FlexEvent.VALUE_COMMIT &&
+				!hasEventListener( FlexEvent.VALUE_COMMIT ) &&
+				currentContentGroup.hasEventListener( FlexEvent.VALUE_COMMIT ) )
+			{
+				currentContentGroup.removeEventListener( FlexEvent.VALUE_COMMIT, onBubbleContentGroupEvent, false );
 			}
 		}
 		
@@ -1330,13 +1375,34 @@ package ws.tink.spark.containers
 				
 				contentGroup.addEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 				contentGroup.addEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
-				if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) ) contentGroup.addEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupElementAdded );
 				
-				if (_placeHolderGroup)
+				const bubbleEvents:Vector.<String> = new Vector.<String>();
+				if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
+				{
+					bubbleEvents.push( CollectionEvent.COLLECTION_CHANGE );
+					contentGroup.addEventListener( CollectionEvent.COLLECTION_CHANGE, onBubbleContentGroupEvent, false, 0, true );
+				}
+				
+				if( hasEventListener( IndexChangeEvent.CHANGE ) )
+				{
+					bubbleEvents.push(  IndexChangeEvent.CHANGE );
+					contentGroup.addEventListener( IndexChangeEvent.CHANGE, onBubbleContentGroupEvent, false, 0, true );
+				}
+				
+				if( hasEventListener( FlexEvent.VALUE_COMMIT ) )
+				{
+					bubbleEvents.push(  FlexEvent.VALUE_COMMIT );
+					contentGroup.addEventListener( FlexEvent.VALUE_COMMIT, onBubbleContentGroupEvent, false, 0, true );
+				}
+				
+				if( _placeHolderGroup )
 				{
 					_placeHolderGroup.removeEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 					_placeHolderGroup.removeEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
-					if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) ) _placeHolderGroup.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupElementAdded );
+					for each( var event:String in bubbleEvents )
+					{
+						_placeHolderGroup.removeEventListener( event, onBubbleContentGroupEvent, false );
+					}
 					_placeHolderGroup = null;
 				}
 			}
@@ -1358,7 +1424,25 @@ package ws.tink.spark.containers
 			{
 				contentGroup.removeEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 				contentGroup.removeEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
-				if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) ) contentGroup.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupCollectionChange );
+				
+				const bubbleEvents:Vector.<String> = new Vector.<String>();
+				if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) )
+				{
+					bubbleEvents.push( CollectionEvent.COLLECTION_CHANGE );
+					contentGroup.removeEventListener( CollectionEvent.COLLECTION_CHANGE, onBubbleContentGroupEvent, false );
+				}
+				
+				if( hasEventListener( IndexChangeEvent.CHANGE ) )
+				{
+					bubbleEvents.push(  IndexChangeEvent.CHANGE );
+					contentGroup.removeEventListener( IndexChangeEvent.CHANGE, onBubbleContentGroupEvent, false );
+				}
+				
+				if( hasEventListener( FlexEvent.VALUE_COMMIT ) )
+				{
+					bubbleEvents.push(  FlexEvent.VALUE_COMMIT );
+					contentGroup.removeEventListener( FlexEvent.VALUE_COMMIT, onBubbleContentGroupEvent, false );
+				}
 				
 				// copy proxied values from contentGroup (if explicitely set) to contentGroupProperties
 				
@@ -1382,7 +1466,10 @@ package ws.tink.spark.containers
 					
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_ADD, onContentGroupElementAdded );
 					_placeHolderGroup.addEventListener( ElementExistenceEvent.ELEMENT_REMOVE, onContentGroupElementRemoved );
-					if( hasEventListener( CollectionEvent.COLLECTION_CHANGE ) ) _placeHolderGroup.addEventListener( CollectionEvent.COLLECTION_CHANGE, onContentGroupCollectionChange );
+					for each( var event:String in bubbleEvents )
+					{
+						_placeHolderGroup.addEventListener( event, onBubbleContentGroupEvent, false, 0, true );
+					}
 				}
 				
 				contentGroup.mxmlContent = null;
@@ -1419,7 +1506,7 @@ package ws.tink.spark.containers
 		/**
 		 *  @private
 		 */
-		private function onContentGroupCollectionChange( event:CollectionEvent ):void
+		private function onBubbleContentGroupEvent( event:Event ):void
 		{
 			dispatchEvent( event );
 		}
