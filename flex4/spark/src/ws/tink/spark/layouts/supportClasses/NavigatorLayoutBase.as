@@ -269,7 +269,7 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		public function set selectedIndex( value:int ):void
 		{
-			if( _selectedIndex == value ) return;
+			if( selectedIndex == value ) return;
 			
 			_programmaticSelectedIndex = value;
 			if( _targetChanged ) _selectedIndexChangedAfterTargetChanged = true;
@@ -625,17 +625,19 @@ package ws.tink.spark.layouts.supportClasses
 			// b) includeLayout has changed on an element
 			updateElementsInLayout();
 			
-			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
+//			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
 			
 			// If the selected index has changed exit the method as its handle in selectedIndex
 			if( _numElementsInLayout == 0 )
 			{
 //				_selectedIndex = -1;
+				_selectedIndexInvalid = true;
 				_proposedSelectedIndex = -1;
 //				_proposedSelectedIndexOffset = 0;
 			}
 			else if( selectedIndex == -1 )
 			{
+				_selectedIndexInvalid = true;
 				_proposedSelectedIndex = 0;
 //				_proposedSelectedIndexOffset = 0;
 //				scrollPositionChanged();
@@ -676,6 +678,7 @@ package ws.tink.spark.layouts.supportClasses
 				_selectedIndexInvalid = false;
 				_selectedIndex = _proposedSelectedIndex;
 				_proposedSelectedIndex = -1;
+				
 //				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
 //				updateSelectedIndex( _proposedSelectedIndex, 0 );
 			}
