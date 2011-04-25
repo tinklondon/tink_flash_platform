@@ -1425,7 +1425,6 @@ import flash.geom.Vector3D;
 import mx.core.IVisualElement;
 
 import ws.tink.spark.layouts.CarouselLayout;
-import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutType;
 
 
 internal class TransformValues
