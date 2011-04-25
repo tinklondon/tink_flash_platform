@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<project name="Tink Flex 4 MX Library" basedir="../" default="main">
+<project name="Tink Flex 4.5 MX Library" basedir="../" default="main">
 
 	
     <property file="${basedir}/build/build.properties" description="properities for builds" />
@@ -9,8 +9,9 @@
 
 	<target name="main" depends="clean,include,compile,docs"/>
 	
-	<target name="clean" description="Cleans tink_flex4_spark.swc and asdocs">
+	<target name="clean" description="Cleans ${SWC_NAME} and asdocs">
 		<delete dir="${DOC_DIR}"/>
+		<delete file="${basedir}/bin/${SWC_NAME}"/>
 	</target>
 	
 	
@@ -50,8 +51,8 @@
 				
 			<external-library-path dir="${FLEX_HOME}/frameworks/libs" includes="*.swc"/>
 			<external-library-path dir="${FLEX_HOME}/frameworks/libs/player/${VERSION}/" includes="*.swc"/>
-			<external-library-path dir="${basedir}/../../as3_fp10/bin/" includes="*.swc"/>
-				
+			<external-library-path dir="${AS_LIB_SWC}" includes="*.swc"/>
+			
 			<namespace uri="library://ns.tink.ws/flex/mx" manifest="${SRC_DIR}/manifest.xml"/>
 			<include-namespaces uri="library://ns.tink.ws/flex/mx"/>
 			
@@ -79,7 +80,8 @@
 			
 			<namespace uri="http://ns.adobe.com/mxml/2009" manifest="${FLEX_HOME}/frameworks/mxml-2009-manifest.xml"/>
 			
-			<external-library-path dir="${basedir}/../../as3_fp10/bin/" includes="*.swc"/>
+			<external-library-path dir="${AS_LIB_SWC}" includes="*.swc"/>
+			<external-library-path dir="${FLEX_HOME}/frameworks/libs/player/${VERSION}/" includes="*.swc"/>
 			
 			<namespace uri="library://ns.tink.ws/flex/mx" manifest="${SRC_DIR}/manifest.xml" /> 
 			<doc-namespaces uri="library://ns.tink.ws/flex/mx" />
