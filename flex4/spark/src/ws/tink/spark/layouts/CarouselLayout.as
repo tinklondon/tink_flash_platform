@@ -2,24 +2,27 @@ package ws.tink.spark.layouts
 {
 	
 	import flash.geom.ColorTransform;
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	
 	import spark.layouts.HorizontalAlign;
 	import spark.layouts.VerticalAlign;
+	import spark.primitives.supportClasses.GraphicElement;
 	
 	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
 
 	/**
-	 *  Flex 4 SemiCarouselLayout
+	 *  Flex 4 CarouselLayout
 	 * 
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public class SemiCarouselLayout extends PerspectiveAnimationNavigatorLayoutBase
+	public class CarouselLayout extends PerspectiveAnimationNavigatorLayoutBase
 	{
 			
 		
@@ -38,7 +41,7 @@ package ws.tink.spark.layouts
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function SemiCarouselLayout()
+		public function CarouselLayout()
 		{
 			super( INDIRECT );
 			_transformCalculator = new TransformValues( this );
@@ -94,6 +97,156 @@ package ws.tink.spark.layouts
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
+		
+		//----------------------------------
+		//  angle
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for angle.
+		 */
+		private var _angle:Number = 360;
+		
+		/**
+		 *	The segment of a circle to rotate the elements around.
+		 * 
+		 *  @default 360
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get angle():Number
+		{
+			return _angle;
+		}
+		/**
+		 *  @private
+		 */
+		public function set angle( value:Number ) : void
+		{
+			if( _angle == value ) return;
+			
+			_angle = value;
+			invalidateTargetDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  rotateX
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for rotateX.
+		 */
+		private var _rotateX:int = 0;
+		
+		/**
+		 *	Whether rotation should be applied to the x axis of elements.
+		 * 
+		 *  @default true
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get rotateX():String
+		{
+			return _rotateX ? _rotateX < 0 ? "reversed" : "standard" : "none";;
+		}
+		/**
+		 *  @private
+		 */
+		public function set rotateX( value:String ) : void
+		{
+			var r:int;
+			
+			switch( value )
+			{
+				case "reversed" :
+				{
+					r = -1;
+					break;
+				}
+				case "standard" :
+				{
+					r = 1;
+					break;
+				}
+				default :
+				{
+					r = 0;
+				}
+					
+			}
+			
+			if( _rotateX == r ) return;
+
+			_rotateX = r;
+			invalidateTargetDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  rotateY
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for rotateY.
+		 */
+		private var _rotateY:int = 1;
+		
+		/**
+		 *	Whether rotation should be applied to the y axis of elements.
+		 * 
+		 *  @default true
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get rotateY():String
+		{
+			return _rotateY ? _rotateY < 0 ? "reversed" : "standard" : "none";
+		}
+		/**
+		 *  @private
+		 */
+		public function set rotateY( value:String ) : void
+		{
+			var r:int;
+			
+			switch( value )
+			{
+				case "reversed" :
+				{
+					r = -1;
+					break;
+				}
+				case "standard" :
+				{
+					r = 1;
+					break;
+				}
+				default :
+				{
+					r = 0;
+				}
+					
+			}
+			
+			if( r == _rotateY ) return;
+			
+			_rotateY = r;
+			invalidateTargetDisplayList();
+		}
+		
 		
 		//----------------------------------
 		//  depthColor
@@ -187,9 +340,9 @@ package ws.tink.spark.layouts
 		 *  @private
 		 *  Storage property for numUnselectedElements.
 		 */
-		private var _numUnselectedElements	: int = 2;
+		private var _numUnselectedElements	: int = -1;
 		
-		[Inspectable(category="General", defaultValue="2")]
+		[Inspectable(category="General", defaultValue="-1")]
 		/**
 		 *	The number of items to show either side of the selected item
 		 *	are positioned around this element.
@@ -742,33 +895,33 @@ package ws.tink.spark.layouts
 		 */
 		private var _layoutType	: String = "circular";
 		
-		[Inspectable(category="General", enumeration="circular,linear", defaultValue="circular")]
-		/**
-		 *	The layout type to be used for the SemiCarouselLayout.
-		 * 
-		 *  @default "circular"
-		 * 
-		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselLayoutType
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get layoutType():String
-		{
-			return _layoutType;
-		}
-		/**
-		 *  @private
-		 */
-		public function set layoutType( value:String ):void
-		{
-			if( value == _layoutType ) return;
-			
-			_layoutType = value;
-			invalidateTargetDisplayList();
-		}
+//		[Inspectable(category="General", enumeration="circular,linear", defaultValue="circular")]
+//		/**
+//		 *	The layout type to be used for the SemiCarouselLayout.
+//		 * 
+//		 *  @default "circular"
+//		 * 
+//		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselLayoutType
+//		 *
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get layoutType():String
+//		{
+//			return _layoutType;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set layoutType( value:String ):void
+//		{
+//			if( value == _layoutType ) return;
+//			
+//			_layoutType = value;
+//			invalidateTargetDisplayList();
+//		}
 		
 		
 //		//----------------------------------
@@ -823,12 +976,15 @@ package ws.tink.spark.layouts
 		 *	Positions, transforms and sets the size of an element
 		 *  that will be visible in the layout.
 		 */
-		protected function updateVisibleElementAt( element:IVisualElement, index:int, afterSelected:Boolean ):void
+		protected function updateVisibleElementAt( element:IVisualElement, index:int ):void
 		{
 			_displayedElements.push( element );
-			_transformCalculator.updateForIndex( index );
+			
 			setElementLayoutBoundsSize( element, false );
-			elementTransformAround( element, afterSelected );
+			
+			_transformCalculator.updateForIndex( index, element, element.width, element.height, _elementHorizontalCenterMultiplier, _elementVerticalCenterMultiplier );
+			
+//			elementTransformAround( element );
 			applyColorTransformToElement( element, _transformCalculator.colorTransform );
 			element.visible = true;
 		}
@@ -850,6 +1006,34 @@ package ws.tink.spark.layouts
 		 *	- If their element index is after the selected elements index
 		 *   they appear above all items included in the layout
 		 */
+		
+		private function comparething( a:IVisualElement, b:IVisualElement ):int
+		{
+//			trace( getZ( a ), getZ( b ), a, b )
+			if( getZ( a ) > getZ( b ) )
+			{
+				return -1;
+			}
+			else if( getZ( a ) < getZ( b ) )
+			{
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		private function getZ( e:IVisualElement ):Number
+		{
+			if( e is GraphicElement )
+			{
+				return GraphicElement( e ).z;
+			}
+			else
+			{
+				return UIComponent( e ).z;
+			}
+		}
+		
 		private function updateDepths( depths:Vector.<int> ):void
 		{
 			if( !depths || !depths.length ) return;
@@ -863,63 +1047,74 @@ package ws.tink.spark.layouts
 			var minDepth:int = depths[ 0 ] - 1;
 			var maxDepth:int = depths[ depths.length - 1 ] + 1;
 			
+			const elements:Vector.<IVisualElement> = new Vector.<IVisualElement>();
 			for( i = firstIndexInView; i <= lastIndexInView; i++ )
 			{
 				index = indicesInLayout[ i ];
 				element = target.getElementAt( index );
 				if( !element ) continue;
-				if( index <  indicesInLayout[ animationIndex ] )
-				{
-					element.depth = _transformCalculator.radiusZ > -1 ? depths.shift() : depths.pop();
-				}
-//				else if ( index > indicesInLayout[ animationIndex ] )
-//				{
-//					element.depth = _direction == SemiCarouselLayoutDirection.CONVEX ? depths.pop() : depths.shift();
-//				}
-				else
-				{
-					element.depth = _transformCalculator.radiusZ > -1 ? depths.pop() : depths.shift();
-				}
+				elements.push( element );
 			}
 			
-			//TODO Old method
-			//			for( i = 0; i < numElementsNotInLayout; i++ )
-			//			{
-			//				element = target.getElementAt( indicesNotInLayout[ i ] );
-			//				element.depth = indicesNotInLayout[ i ];
-			//			}
-			
-			var numElementsNotInLayout:int = indicesNotInLayout.length;
-			for( i = 0; i < numElementsNotInLayout; i++ )
+			elements.sort( comparething );
+			var num:int = elements.length;
+			for( i = 0; i < num; i++ )
 			{
-				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
-				{
-					break;
-				}
-				else
-				{
-					numBeforeMinDepth++;
-				}
-			}
-			
-			minDepth -= numBeforeMinDepth - 1;
-			for( i = 0; i < numElementsNotInLayout; i++ )
-			{
-				element = target.getElementAt( indicesNotInLayout[ i ] );
-				if( !element ) continue;
-				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
-				{
-					element.depth = maxDepth;
-					maxDepth++;
-				}
-				else
-				{
-					element.depth = minDepth;
-					minDepth++;
-				}
+				elements[ i ].depth = depths[ i ];
 			}
 			
 			target.validateNow();
+//			for( i = firstIndexInView; i <= lastIndexInView; i++ )
+//			{
+//				index = indicesInLayout[ i ];
+//				element = target.getElementAt( index );
+//				if( !element ) continue;
+//				if( index <  indicesInLayout[ animationIndex ] )
+//				{
+//					element.depth = _transformCalculator.radiusZ > -1 ? depths.shift() : depths.pop();
+//				}
+////				else if ( index > indicesInLayout[ animationIndex ] )
+////				{
+////					element.depth = _direction == SemiCarouselLayoutDirection.CONVEX ? depths.pop() : depths.shift();
+////				}
+//				else
+//				{
+//					element.depth = _transformCalculator.radiusZ > -1 ? depths.pop() : depths.shift();
+//				}
+//			}
+//			
+//			
+//			var numElementsNotInLayout:int = indicesNotInLayout.length;
+//			for( i = 0; i < numElementsNotInLayout; i++ )
+//			{
+//				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
+//				{
+//					break;
+//				}
+//				else
+//				{
+//					numBeforeMinDepth++;
+//				}
+//			}
+//			
+//			minDepth -= numBeforeMinDepth - 1;
+//			for( i = 0; i < numElementsNotInLayout; i++ )
+//			{
+//				element = target.getElementAt( indicesNotInLayout[ i ] );
+//				if( !element ) continue;
+//				if( indicesNotInLayout[ i ] > indicesInLayout[ animationIndex ] )
+//				{
+//					element.depth = maxDepth;
+//					maxDepth++;
+//				}
+//				else
+//				{
+//					element.depth = minDepth;
+//					minDepth++;
+//				}
+//			}
+//			
+//			target.validateNow();
 		}
 		
 		/**
@@ -928,33 +1123,23 @@ package ws.tink.spark.layouts
 		 *	A convenience method used to transform an element by applying
 		 *  the current values if the TransforCalulator instance.
 		 */
-		private function elementTransformAround( element:IVisualElement, afterSelected:Boolean ):void
-		{
-			var halfWidth:Number = element.width / 2;
-			var halfHeight:Number = element.height / 2;
-			var offsetX:Number = halfWidth * ( _elementHorizontalCenterMultiplier - 0.5 ) * 2;
-			var offsetY:Number = halfHeight * ( _elementVerticalCenterMultiplier - 0.5 ) * 2;
-			
-//			_horizontalCenterMultiplier
+//		private function elementTransformAround( element:IVisualElement ):void
+//		{
+//			var halfWidth:Number = element.width / 2;
+//			var halfHeight:Number = element.height / 2;
+//			var offsetX:Number = halfWidth * ( _elementHorizontalCenterMultiplier - 0.5 ) * 2;
+//			var offsetY:Number = halfHeight * ( _elementVerticalCenterMultiplier - 0.5 ) * 2;
 //			
-//			var x:Number = ( _transformCalculator.x - unscaledWidth * _ / _transformCalculator.radiusZ ) * 90;
-//			if( _transformCalculator.radiusZ < 0 ) x = -x;
+//			element.transformAround( new Vector3D( element.width / 2, element.height / 2, 0 ),
+//				null,
+//				null,
+//				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
+//				null,
+//				new Vector3D( _transformCalculator.xRotation, _transformCalculator.yRotation, 0 ),
+//				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
+//				false );
 //			
-//			var y:Number = ( _transformCalculator.z / _transformCalculator.radiusZ ) * 90;
-//			if( _transformCalculator.radiusZ < 0 ) y = -y;
-//			
-//			trace( y, radiusY, _transformCalculator.y );
-			element.transformAround( new Vector3D( element.width / 2, element.height / 2, 0 ),
-				null,
-				null,
-				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
-				null,
-				null,
-//				new Vector3D( y, afterSelected ? -x : x, 0 ),
-				new Vector3D( _transformCalculator.x - offsetX, _transformCalculator.y - offsetY, _transformCalculator.z ),
-				false );
-			
-		}
+//		}
 		
 		
 		
@@ -1094,15 +1279,7 @@ package ws.tink.spark.layouts
 				if( !isNaN( _verticalAlignOffsetPercent ) ) _verticalAlignOffset = unscaledHeight * ( _verticalAlignOffsetPercent / 100 );
 			}
 			
-			_transformCalculator.updateForLayoutPass( _horizontalCenterMultiplier, _verticalCenterMultiplier );
-			
-			//TODO Done in animation class
-//			if( _indicesInViewChanged )
-//			{
-//				_indicesInViewChanged = false;
-//				//				selectedIndexChange();
-//				updateIndicesInView();
-//			}
+			_transformCalculator.updateForLayoutPass( _horizontalCenterMultiplier, _verticalCenterMultiplier, _rotateX, _rotateY );
 		}
 		
 		/**
@@ -1128,13 +1305,11 @@ package ws.tink.spark.layouts
 			
 			_displayedElements = new Vector.<IVisualElement>();
 			
-			var animationIndex:int = Math.round( animationValue );
-			
 			for( var i:int = firstIndexInView; i <= lastIndexInView; i++ )
 			{
 				element = target.getVirtualElementAt( indicesInLayout[ i ] );
 				depths.push( indicesInLayout[ i ] );
-				updateVisibleElementAt( element, i, i > animationIndex );
+				updateVisibleElementAt( element, i );
 			}
 			
 			updateDepths( depths );
@@ -1157,15 +1332,13 @@ package ws.tink.spark.layouts
 			
 			_displayedElements = new Vector.<IVisualElement>();
 			
-			var animationIndex:int = Math.round( animationValue );
-			
 			for( var i:int = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
 				if( i >= firstIndexInView && i <= lastIndexInView )
 				{
 					depths.push( indicesInLayout[ i ] );
-					updateVisibleElementAt( element, i, i > animationIndex );
+					updateVisibleElementAt( element, i);
 				}
 				else
 				{
@@ -1207,23 +1380,36 @@ package ws.tink.spark.layouts
 		{
 			super.updateIndicesInView();
 			
-			const animationIndex:int = Math.round( animationValue );
-			const firstIndexInView:int = Math.max( animationIndex - _numUnselectedElements, 0 );
-			
-			
-			var numIndicesInView:int = ( _numUnselectedElements * 2 ) + 1; 
-			if( animationIndex < _numUnselectedElements )
+			if( _numUnselectedElements > 0 )
 			{
-				numIndicesInView -= _numUnselectedElements - animationIndex;
+				const ceilIndex:int = Math.ceil( animationValue );
+				const floorIndex:int = Math.floor( animationValue );
+				const firstIndexInView:int = Math.max( ceilIndex - _numUnselectedElements, 0 );
+				
+				var numIndicesInView:int = ( _numUnselectedElements * 2 ) + 1; 
+				// If the number of elements on the left are less than _numUnselectedElements
+				if( floorIndex < _numUnselectedElements )
+				{
+					numIndicesInView -= _numUnselectedElements - floorIndex;
+				}
+				// If we are mid transition, we don't need the last item
+				else if( floorIndex != animationValue )
+				{
+					numIndicesInView -= 1;
+				}
+				
+				// If we are at the end of the list of elements
+				if( floorIndex + _numUnselectedElements >= numElementsInLayout )
+				{
+					numIndicesInView -= _numUnselectedElements - ( ( numElementsInLayout - 1 ) - floorIndex );
+				}
+				
+				indicesInView( firstIndexInView, numIndicesInView );
 			}
-			if( animationIndex + _numUnselectedElements >= numElementsInLayout )
+			else
 			{
-				numIndicesInView -= _numUnselectedElements - ( ( numElementsInLayout - 1 ) - animationIndex );
+				indicesInView( 0, numElementsInLayout );
 			}
-			
-//			const numIndicesInView:int = Math.min( numElementsInLayout, animationIndex + _numUnselectedElements );// - firstIndexInView;
-			
-			indicesInView( firstIndexInView, numIndicesInView );
 		}
 		
 		
@@ -1233,10 +1419,12 @@ package ws.tink.spark.layouts
 
 
 import flash.geom.ColorTransform;
+import flash.geom.Point;
+import flash.geom.Vector3D;
 
 import mx.core.IVisualElement;
 
-import ws.tink.spark.layouts.SemiCarouselLayout;
+import ws.tink.spark.layouts.CarouselLayout;
 import ws.tink.spark.layouts.supportClasses.SemiCarouselLayoutType;
 
 
@@ -1259,7 +1447,7 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function TransformValues( layout:SemiCarouselLayout )
+	public function TransformValues( layout:CarouselLayout )
 	{
 		_layout = layout;
 		_colorTransform = new ColorTransform();
@@ -1273,7 +1461,7 @@ internal class TransformValues
 	//
 	//--------------------------------------------------------------------------
 	
-	private var _layout			: SemiCarouselLayout;
+	private var _layout			: CarouselLayout;
 	
 	private var _index			: int;
 	private var _indexOffset	: Number;
@@ -1282,8 +1470,7 @@ internal class TransformValues
 	private var _cx				: Number;
 	private var _cy				: Number;
 	
-	
-	// Rotation
+	// AlignOffset
 	private var _ho				: Number;
 	private var _vo				: Number;
 	
@@ -1300,7 +1487,11 @@ internal class TransformValues
 	private var _c				: int;
 	private var _ca				: Number;
 	
+	private var _rotY				: int;
+	private var _rotX				: int;
 	
+	private var _oy:Number;
+	private var _ox:Number;
 	
 	//--------------------------------------------------------------------------
 	//
@@ -1318,18 +1509,18 @@ internal class TransformValues
 	 */
 	private var _x:Number;
 	
-	/**
-	 *	x
-	 * 
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get x():Number
-	{
-		return _x;
-	}
+//	/**
+//	 *	x
+//	 * 
+//	 *  @langversion 3.0
+//	 *  @playerversion Flash 10
+//	 *  @playerversion AIR 1.5
+//	 *  @productversion Flex 4
+//	 */
+//	public function get x():Number
+//	{
+//		return _x;
+//	}
 	
 	
 	//----------------------------------
@@ -1342,18 +1533,18 @@ internal class TransformValues
 	 */
 	private var _y:Number;
 	
-	/**
-	 *	y
-	 * 
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-	public function get y():Number
-	{
-		return _y;
-	}
+//	/**
+//	 *	y
+//	 * 
+//	 *  @langversion 3.0
+//	 *  @playerversion Flash 10
+//	 *  @playerversion AIR 1.5
+//	 *  @productversion Flex 4
+//	 */
+//	public function get y():Number
+//	{
+//		return _y;
+//	}
 	
 	
 	//----------------------------------
@@ -1366,20 +1557,68 @@ internal class TransformValues
 	 */
 	private var _z:Number;
 	
+//	/**
+//	 *	z
+//	 * 
+//	 *  @langversion 3.0
+//	 *  @playerversion Flash 10
+//	 *  @playerversion AIR 1.5
+//	 *  @productversion Flex 4
+//	 */
+//	public function get z():Number
+//	{
+//		return _z;
+//	}
+	
+	
+	//----------------------------------
+	//  xRotation
+	//----------------------------------  
+	
 	/**
-	 *	z
+	 *  @private
+	 *  Storage property for xRotation.
+	 */
+	private var _xRotation:Number;
+	
+//	/**
+//	 *	xRotation
+//	 * 
+//	 *  @langversion 3.0
+//	 *  @playerversion Flash 10
+//	 *  @playerversion AIR 1.5
+//	 *  @productversion Flex 4
+//	 */
+//	public function get xRotation():Number
+//	{
+//		return _xRotation;
+//	}
+	
+	
+	//----------------------------------
+	//  yRotation
+	//----------------------------------  
+	
+	/**
+	 *  @private
+	 *  Storage property for yRotation.
+	 */
+	private var _yRotation:Number;
+	
+	/**
+	 *	yRotation
 	 * 
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function get z():Number
-	{
-		return _z;
-	}
-	
-	
+//	public function get yRotation():Number
+//	{
+//		return _yRotation;
+//	}
+//	
+//	
 	public function get radiusZ():Number
 	{
 		return _rz;
@@ -1425,11 +1664,8 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function updateForLayoutPass( centerMultiplierX:Number, centerMultiplierY:Number ):void
+	public function updateForLayoutPass( centerMultiplierX:Number, centerMultiplierY:Number, rotX:int, rotY:int ):void
 	{
-//		_index = _layout.selectedIndex;
-//		_indexOffset = 0;//TODO _layout.selectedIndexOffset;
-		
 		_index = Math.floor( _layout.animationValue );
 		_indexOffset = _layout.animationValue - _index;
 		
@@ -1441,7 +1677,7 @@ internal class TransformValues
 		_vo = _layout.verticalAlignOffset;
 		
 		_c = _layout.depthColor;
-		_ca = _layout.depthColorAlpha;
+		_ca = _layout.depthColorAlpha / 100;
 		
 		if( _c < 0 )
 		{
@@ -1455,22 +1691,26 @@ internal class TransformValues
 		
 		if( isNaN( _rz ) ) _rz = Math.abs( ( Math.abs( _rx ) > Math.abs( _ry ) ) ? _rx : _ry );
 		
-		_ni = _layout.numUnselectedElements;
+		_rotY = rotY;
+		_rotX = rotX;
 		
-		switch( _layout.layoutType )
-		{
-			case SemiCarouselLayoutType.CIRCULAR :
-			{
-				_an = 90 / _layout.numUnselectedElements;
+		const numElements:int = _layout.numUnselectedElements < 0 ? 0 : _layout.numUnselectedElements;
+//		_ni = _layout.numUnselectedElements;
+		
+//		switch( _layout.layoutType )
+//		{
+//			case SemiCarouselLayoutType.CIRCULAR :
+//			{
+				_an = numElements ? _layout.angle / ( numElements * 2 ) : _layout.angle / _layout.numElementsInLayout;//360/ _layout.numElementsInLayout//_layout.numUnselectedElements ? _layout.angle / ( ( _layout.numUnselectedElements * 2 )  ) : _layout.angle;//3
 				_layoutFunction = circular;
-				break;
-			}
-			case SemiCarouselLayoutType.LINEAR :
-			{
-				_layoutFunction = linear;
-				break;
-			}
-		}
+//				break;
+//			}
+//			case SemiCarouselLayoutType.LINEAR :
+//			{
+//				_layoutFunction = linear;
+//				break;
+//			}
+//		}
 	}
 	
 	/**
@@ -1481,18 +1721,28 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	private function circular( i:int ):void
+	private function circular( index:Number ):void
 	{
-		const index:Number = ( i - _index ) - _indexOffset;
 		const degree:Number = _an * index;
-		const radian:Number = ( degree / 180 ) * Math.PI;
-
-		_x = _cx + Math.sin( radian ) * _rx;
-		_y = _cy + Math.sin( radian ) * _ry;
+		const radian:Number = degree * Math.PI / 180;//( degree / 180 ) * Math.PI;
+		
+		_x = _cx + _ho + ( Math.sin( radian ) * _rx );
+		_y = _cy + _vo + ( Math.sin( radian ) * _ry );
 		_z = _rz - ( Math.cos( radian ) * _rz );
 		
-		_x += _ho;
-		_y += _vo;
+		_yRotation = _rx && _rotY != 0 ? -( angle( _x, _z, _cx + _ho, _rz ) - 90 ) * _rotY : 0;
+		_xRotation = _ry && _rotX != 0 ? ( angle( _y , _z, _cy + _vo, _rz ) - 90 ) * _rotX : 0;
+		
+		if( _rz < 0 )
+		{
+			if( _yRotation ) _yRotation += 180;
+			if( _xRotation ) _xRotation += 180;
+		}
+	}
+	
+	public function angle( x1:Number, y1:Number, x2:Number, y2:Number ):Number
+	{
+		return Math.atan2( y2 - y1, x2 - x1 ) * ( 180 / Math.PI );
 	}
 	
 	/**
@@ -1503,18 +1753,38 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	private function linear( i:int ):void
-	{
-		const index:Number = ( i - _index ) - _indexOffset;
-		const indexx:Number = ( Math.abs( index ) > _ni ) ? ( i - _index ) + _indexOffset : index;
-		
-		_x = _cx + ( ( _rx / _ni ) * indexx );
-		_y = _cy + ( ( _ry / _ni ) * indexx );
-		_z = ( _rz / _ni ) * Math.abs( index );
-		
-		_x += _ho;
-		_y += _vo;
-	}
+//	private function linear( index:Number ):void
+//	{
+//		_x = _cx + _ho + ( ( _rx / _ni ) * index );
+//		_y = _cy + _vo + ( ( _ry / _ni ) * index );
+//		_z = ( _rz / _ni ) * Math.abs( index );
+//		trace( "arrgggg", _z, index );
+//		
+//		if( index <= -1 )
+//		{
+//			_yRotation = 45;
+//		}
+//		else if(  index >= 1 )
+//		{
+//			_yRotation = -45;
+//		}
+//		else if( index < 0 )
+//		{
+//			_yRotation = 45 * _indexOffset;
+//		}
+//		else if( index > 0 )
+//		{
+//			_yRotation = -45 + ( 45 * _indexOffset );
+//		}
+//		else
+//		{
+//			_yRotation = 0;
+//		}
+//		
+//		_xRotation = 0;
+//	}
+	
+
 	
 	/**
 	 *	updateForIndex
@@ -1524,15 +1794,22 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	public function updateForIndex( i:int ):void
+	public function updateForIndex( i:int, element:IVisualElement, width:Number, height:Number, hMultiplier:Number, vMultiplier:Number ):void
 	{
-		_layoutFunction( i );
+//		var halfWidth:Number = element.width / 2;
+//		var halfHeight:Number = element.height / 2;
+		_ox = ( width / 2 ) * ( hMultiplier - 0.5 ) * 2;
+		_oy = ( height / 2 ) * ( vMultiplier - 0.5 ) * 2;
+		
+//		trace( _ox );
+		
+		_layoutFunction( ( i - _index ) - _indexOffset );
 		
 		if( _c > -1 )
 		{
-			// TODO There has got to be a more efficient and understandable
-			// way to write this.
-			const v:Number = _rz < 0 ? Math.abs( 1 - ( 1 - ( ( _z / Math.abs( _rz ) ) * _ca ) ) ) : ( _z / _rz ) * _ca;//( _z / _rz ) * _ca;
+			const radian:Number = ( _layout.angle / 2 ) * Math.PI / 180;
+			const maxDepth:Number = _rz - ( Math.cos( radian ) * _rz )
+			const v:Number = ( _z / maxDepth ) * _ca;
 			
 			_colorTransform.color = _c;
 			_colorTransform.redOffset *= v;
@@ -1540,5 +1817,14 @@ internal class TransformValues
 			_colorTransform.blueOffset *= v;
 			_colorTransform.redMultiplier = _colorTransform.greenMultiplier = _colorTransform.blueMultiplier = 1 - v;
 		}
+		
+		element.transformAround( new Vector3D( width / 2, height / 2, 0 ),
+			null,
+			null,
+			new Vector3D( _x - _ox, _y - _oy, _z ),
+			null,
+			new Vector3D( _xRotation, _yRotation, 0 ),
+			new Vector3D( _x - _ox, _y - _oy, _z ),
+			false );
 	}
 }
