@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<componentPackage>
+
+	<!-- containers -->
+	<component id="Accordion" class="ws.tink.spark.containers.Accordion"/>
+	<component id="DeferredGroup" class="ws.tink.spark.containers.DeferredGroup"/>
+	<component id="Form" class="ws.tink.spark.containers.Form"/>
+	<component id="FormItem" class="ws.tink.spark.containers.FormItem"/>
+	<component id="Navigator" class="ws.tink.spark.containers.Navigator"/>
+	<component id="NavigatorGroup" class="ws.tink.spark.containers.NavigatorGroup"/>
+	<component id="ValidationForm" class="ws.tink.spark.containers.ValidationForm"/>
+	<component id="ValidationFormItem" class="ws.tink.spark.containers.ValidationFormItem"/>
+	
+	<!-- controls -->
+	<component id="Alert" class="ws.tink.spark.controls.Alert"/>
+	<component id="BorderDataNavigator" class="ws.tink.spark.controls.BorderDataNavigator"/>
+	<component id="CheckBoxBar" class="ws.tink.spark.controls.CheckBoxBar"/>
+	<component id="DataAccordion" class="ws.tink.spark.controls.DataAccordion"/>
+	<component id="DataNavigator" class="ws.tink.spark.controls.DataNavigator"/>
+	<component id="DataNavigatorGroup" class="ws.tink.spark.controls.DataNavigatorGroup"/>
+	<component id="ExcludeSelectionList" class="ws.tink.spark.controls.ExcludeSelectionList"/>
+	<component id="HMouseOverStep" class="ws.tink.spark.controls.HMouseOverStep"/>
+	<component id="HPageStep" class="ws.tink.spark.controls.HPageStep"/>
+	<component id="HStep" class="ws.tink.spark.controls.HStep"/>
+	<component id="MouseOverStepper" class="ws.tink.spark.controls.MouseOverStepper"/>
+	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
+	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
+	<component id="PropertiesList" class="ws.tink.spark.controls.PropertiesList"/>
+	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
+	<component id="InlineScroller" class="ws.tink.spark.controls.InlineScroller"/>
+	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
+	<component id="TimeStepper" class="ws.tink.spark.controls.TimeStepper"/>
+	<component id="ValidityVScrollBar" class="ws.tink.spark.controls.ValidityVScrollBar"/>
+	<component id="VMouseOverStep" class="ws.tink.spark.controls.VMouseOverStep"/>
+	<component id="VPageStep" class="ws.tink.spark.controls.VPageStep"/>
+	<component id="VStep" class="ws.tink.spark.controls.VStep"/>
+    
+    <!-- graphics -->
+	<component id="SolidColorDash" class="ws.tink.spark.graphics.SolidColorDash"/>
+	<component id="SolidColorHatch" class="ws.tink.spark.graphics.SolidColorHatch"/>
+	
+	<!-- itemRenderers -->
+	<component id="CheckBoxItemRenderer" class="ws.tink.spark.itemRenderers.CheckBoxItemRenderer"/>
+	<component id="DefaultPropertyItemRenderer" class="ws.tink.spark.itemRenderers.DefaultPropertyItemRenderer"/>
+	<component id="PropertyItemRenderer" class="ws.tink.spark.itemRenderers.PropertyItemRenderer"/>
+	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
+	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
+	
+	<!-- layouts -->
+	<component id="AccordionLayout" class="ws.tink.spark.layouts.AccordionLayout"/>
+	<component id="CarouselLayout" class="ws.tink.spark.layouts.CarouselLayout"/>
+	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
+	<component id="TimeMachineLayout" class="ws.tink.spark.layouts.TimeMachineLayout"/>
+	
+	<!-- modules -->
+	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>
+	<component id="Module" class="ws.tink.spark.modules.Module"/>
+	
+	<component id="Annulus" class="ws.tink.spark.primatives.Annulus"/>
+	<component id="Cross" class="ws.tink.spark.primatives.Cross"/>
+	<component id="Ellipse" class="ws.tink.spark.primatives.Ellipse"/>
+	<component id="Line" class="ws.tink.spark.primatives.Line"/>
+	<component id="Path" class="ws.tink.spark.primatives.Path"/>
+	<component id="Rect" class="ws.tink.spark.primatives.Rect"/>
+	
+</componentPackage>
