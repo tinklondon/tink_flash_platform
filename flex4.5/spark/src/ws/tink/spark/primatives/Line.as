@@ -44,7 +44,7 @@ package ws.tink.spark.primatives
 	 *  <p>If a standard stroke is used this class calls the <code>Graphics.moveTo()</code>
 	 *  and <code>Graphics.lineTo()</code> methods.
 	 *  If the stroke implements IGraphicsDefiner, this class uses <code>IGraphicsCreator.moveTo()</code>
-	 *  and <code>IGraphicsCreator.lineTo() methods.</p>
+	 *  and <code>IGraphicsCreator.lineTo()</code> methods.</p>
 	 *  
 	 *  @see flash.display.Graphics
 	 *  @see ws.tink.graphics.IGraphicsCreator
