@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+<!--- The default skin class for Spark TextInput component.  
+
+@see spark.components.TextInput
+
+@langversion 3.0
+@playerversion Flash 10
+@playerversion AIR 1.5
+@productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5" blendMode="normal" xmlns:mx="library://ns.adobe.com/flex/mx"
+			 minHeight="23">
+	
+	<fx:Metadata>
+		<![CDATA[ 
+		/** 
+		* @copy spark.skins.spark.ApplicationSkin#hostComponent
+		*/
+		[HostComponent("spark.components.TextInput")]
+		]]>
+	</fx:Metadata> 
+	
+	<fx:Script fb:purpose="styling">
+		private var paddingChanged:Boolean;
+		
+		/* Define the skin elements that should not be colorized. */
+		static private const exclusions:Array = ["background", "hoursDisplay", "minutesDisplay", "secondsDisplay" ];
+		
+		/**
+		 * @private
+		 */   
+		override public function get colorizeExclusions():Array {return exclusions;}
+		
+		/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+		static private const contentFill:Array = ["bgFill"];
+		
+		/**
+		 *  @private
+		 */
+		override public function get contentItems():Array {return contentFill};
+		
+		/**
+		 *  @private
+		 */
+		override protected function commitProperties():void
+		{
+			super.commitProperties();
+			
+			if (paddingChanged)
+			{
+				updatePadding();
+				paddingChanged = false;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		override protected function initializationComplete():void
+		{
+			useChromeColor = true;
+			super.initializationComplete();
+		}
+		
+		/**
+		 *  @private
+		 */
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			if (getStyle("borderVisible") == true)
+			{
+				border.visible = true;
+				shadow.visible = true;
+				background.left = background.top = background.right = background.bottom = 1;
+				//textDisplay.left = textDisplay.top = textDisplay.right = textDisplay.bottom = 1;
+			}
+			else
+			{
+				border.visible = false;
+				shadow.visible = false;
+				background.left = background.top = background.right = background.bottom = 0;
+				//textDisplay.left = textDisplay.top = textDisplay.right = textDisplay.bottom = 0;
+			}
+			
+			borderStroke.color = getStyle("borderColor");
+			borderStroke.alpha = getStyle("borderAlpha");
+			
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+		}
+		
+		/**
+		 *  @private
+		 */
+		private function updatePadding():void
+		{
+			if (!hoursDisplay)
+				return;
+			
+			// Push padding styles into the textDisplay
+			var padding:Number;
+			
+			//padding = getStyle("paddingLeft");
+			//if (textDisplay.getStyle("paddingLeft") != padding)
+			//	textDisplay.setStyle("paddingLeft", padding);
+			
+			padding = 6;//getStyle("paddingTop");
+			if (hoursDisplay.getStyle("paddingTop") != padding)
+			{
+				//textDisplay.setStyle("paddingTop", padding);
+				hoursDisplay.setStyle("paddingTop", padding);
+				minutesDisplay.setStyle("paddingTop", padding);
+				secondsDisplay.setStyle("paddingTop", padding);
+				colon0.setStyle("paddingTop", padding);
+				colon1.setStyle("paddingTop", padding);
+			}
+			
+			
+			
+			
+			padding = getStyle("paddingRight");
+			//if (textDisplay.getStyle("paddingRight") != padding)
+			//	textDisplay.setStyle("paddingRight", padding);
+			
+			padding = getStyle("paddingBottom");
+			if (hoursDisplay.getStyle("paddingBottom") != padding)
+			{
+				//textDisplay.setStyle("paddingBottom", padding);
+				hoursDisplay.setStyle("paddingBottom", padding);
+				minutesDisplay.setStyle("paddingBottom", padding);
+				secondsDisplay.setStyle("paddingBottom", padding);
+				colon0.setStyle("paddingBottom", padding);
+				colon1.setStyle("paddingBottom", padding);
+			}
+		}
+		
+		/**
+		 *  @private
+		 */
+		override public function styleChanged(styleProp:String):void
+		{
+			var allStyles:Boolean = !styleProp || styleProp == "styleName";
+			
+			super.styleChanged(styleProp);
+			
+			if (allStyles || styleProp.indexOf("padding") == 0)
+			{
+				paddingChanged = true;
+				invalidateProperties();
+			}
+		}
+	</fx:Script>
+	
+	<fx:Script>
+		<![CDATA[
+			/** 
+			 * @private 
+			 */     
+			private static const focusExclusions:Array = ["textDisplay"];
+			
+			/**
+			 *  @private
+			 */
+			override public function get focusSkinExclusions():Array { return focusExclusions;};
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<!-- border --> 
+	<!--- @private -->
+	<s:Rect left="0" right="0" top="0" bottom="0" id="border">
+		<s:stroke>     
+			<!--- @private -->
+			<s:SolidColorStroke id="borderStroke" weight="1" />
+		</s:stroke>
+	</s:Rect>
+	
+	<!-- fill -->
+	<!--- Defines the appearance of the TextInput component's background. -->
+	<s:Rect id="background" left="1" right="1" top="1" bottom="1">
+		<s:fill>
+			<!--- @private Defines the background fill color. -->
+			<s:SolidColor id="bgFill" color="0xFFFFFF" />
+		</s:fill>
+	</s:Rect>
+	
+	<!-- shadow -->
+	<!--- @private -->
+	<s:Rect left="1" top="1" right="1" height="1" id="shadow">
+		<s:fill>
+			<s:SolidColor color="0x000000" alpha="0.12" />
+		</s:fill>
+	</s:Rect>
+	
+	<!--- The default class is NumericStepperIncrementButtonSkin.
+	@copy spark.components.Spinner#incrementButton
+	@see spark.skins.spark.NumericStepperIncrementButtonSkin -->
+	<s:Button id="incrementButton" right="0" top="0" height="50%" 
+			  skinClass="spark.skins.spark.NumericStepperIncrementButtonSkin" />
+	
+	<!--- The default class is NumericStepperDecrementButtonSkin.
+	@copy spark.components.Spinner#decrementButton
+	@see spark.skins.spark.NumericStepperDecrementButtonSkin -->
+	<s:Button id="decrementButton" right="0" bottom="0" height="50%" 
+			  skinClass="spark.skins.spark.NumericStepperDecrementButtonSkin" />
+	
+	<s:HGroup gap="0" left="0" top="0" bottom="0" right="18">
+		<!-- text -->
+		<!--- @copy spark.components.supportClasses.SkinnableTextBase#textDisplay -->
+		<!--<s:RichEditableText id="textDisplay"
+							textAlign="center"
+							widthInChars="2"
+							verticalAlign="middle"/>-->
+		<s:RichEditableText id="hoursDisplay"
+							textAlign="center"
+							widthInChars="2"
+							verticalAlign="middle"/>
+		<s:Label text=":" id="colon0"/>
+		<s:RichEditableText id="minutesDisplay"
+							textAlign="center"
+							widthInChars="2"
+							verticalAlign="middle"/>
+		<s:Label text=":" id="colon1"/>
+		<s:RichEditableText id="secondsDisplay"
+							textAlign="center"
+							widthInChars="2"
+							verticalAlign="middle"/>
+		<s:RichEditableText id="gmtDisplay"
+				 textAlign="center"
+				 widthInChars="8"
+				 verticalAlign="middle"/>
+	</s:HGroup>
+	
+	
+</s:SparkSkin>
