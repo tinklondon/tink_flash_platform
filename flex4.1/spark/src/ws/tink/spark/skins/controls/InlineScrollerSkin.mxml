@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
+Copyright (c) 2010 Tink Ltd - http://www.tink.ws
 
-ADOBE SYSTEMS INCORPORATED
-Copyright 2008 Adobe Systems Incorporated
-All Rights Reserved.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-NOTICE: Adobe permits you to use, modify, and distribute this file
-in accordance with the terms of the license agreement accompanying it.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 -->
 
-<!--
+<!--- The default skin class for the Spark InlineScroller component. 
 
-Scroller unconditionally sets its skin's layout to private layout
-implementation that handles the scroll policies.  Scroller skins can
-only provide replacement scrollbars.  The skin's layout and
-constraints or dimensions set on skin parts will not be honored.  To
-gain more control over the layout of a viewport and its scrollbars,
-instead of using Scroller, add them to a Group and use the ScrollBar component's
-viewport property to link them together.
-
--->
-
-<!--- The default skin class for the Spark Scroller component. 
-
-@see spark.components.Scroller
+@see ws.tink.spark.controls.InlineScroller
 
 @langversion 3.0
 @playerversion Flash 10
@@ -39,7 +34,7 @@ viewport property to link them together.
 		/** 
 		* @copy spark.skins.spark.ApplicationSkin#hostComponent
 		*/
-		[HostComponent("spark.components.Scroller")]
+		[HostComponent("ws.tink.spark.controls.InlineScroller")]
 		]]>
 	</fx:Metadata> 
 	
@@ -80,13 +75,13 @@ viewport property to link them together.
 	
 	<!---  A vertical scrollbar that lets you control the portion of data that is displayed 
 	when there is too much data to fit vertically in a display area.
-	The Scroller determines whether the vertical ScrollBar is visible. -->
+	The InlineScroller determines whether the vertical ScrollBar is visible. -->
 	<s:VScrollBar id="verticalScrollBar" width="100%" visible="false"
 				  skinClass="ws.tink.spark.skins.controls.VNoTrackNoThumbScrollBarSkin"/>
 	
 	<!---  A horizontal scrollbar that lets you control the portion of data that is displayed 
 	when there is too much data to fit horizontally in a display area.
-	The Scroller determines whether the horizontal ScrollBar is visible. -->
+	The InlineScroller determines whether the horizontal ScrollBar is visible. -->
 	<s:HScrollBar id="horizontalScrollBar" height="100%" visible="false"
 				  skinClass="ws.tink.spark.skins.controls.HNoTrackNoThumbScrollBarSkin"/>
 	
