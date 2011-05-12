@@ -23,11 +23,12 @@ package ws.tink.mx.controls
 	
 	import mx.controls.TabBar;
 	import mx.core.ClassFactory;
+	import mx.core.IFlexDisplayObject;
 	import mx.core.IUIComponent;
 	import mx.core.mx_internal;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
-
+	
 	import ws.tink.mx.controls.positionedTabBarClasses.PositionedTab;
 	
 	use namespace mx_internal;
@@ -74,6 +75,13 @@ package ws.tink.mx.controls
 					b.setStyle( "position", position );
 				}
 			}
+		}
+		
+		override protected function createNavItem( label:String, icon:Class = null ):IFlexDisplayObject
+		{
+			var b:PositionedTab = PositionedTab( super.createNavItem( label, icon ) );
+			b.setStyle( "position", getStyle( "position" ) );
+			return b;
 		}
 		
 	}
