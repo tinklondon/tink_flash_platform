@@ -26,6 +26,7 @@ package ws.tink.mx.skins.halo
 	import flash.geom.Rectangle;
 	
 	import mx.core.EdgeMetrics;
+	import mx.core.IFlexModuleFactory;
 	import mx.core.UIComponent;
 	import mx.skins.Border;
 	import mx.skins.halo.HaloColors;
@@ -179,7 +180,11 @@ package ws.tink.mx.skins.halo
 			var cornerRadius:Number = getStyle("cornerRadius");
 			var fillAlphas:Array = getStyle("fillAlphas");
 			var fillColors:Array = getStyle("fillColors");
-			StyleManager.getStyleManager( UIComponent( parent ).moduleFactory ).getColorNames(fillColors);
+			if( parent )
+			{
+				const m:IFlexModuleFactory = UIComponent( parent ).moduleFactory;
+				if( m ) StyleManager.getStyleManager( m ).getColorNames(fillColors);
+			}
 			var highlightAlphas:Array = getStyle("highlightAlphas");		
 			var themeColor:uint = getStyle("themeColor");
 			
