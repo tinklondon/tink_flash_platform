@@ -960,8 +960,6 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
 
-			trace( "updateDisplayListReal" );
-			
 			var i:int;
 			var elementSize:ElementSize;
 			const numElementSizes:int = _elementSizes.length;
