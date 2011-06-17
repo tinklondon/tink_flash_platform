@@ -4,8 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:st="library://ns.tink.ws/flex/spark">
 	
-	<s:Panel title="DataAccordion Example" backgroundColor="0x000000"
-			 bottom="10" left="10" right="10" top="10">
+	<s:Panel title="DataAccordion Example" bottom="10" left="10" right="10" top="10">
 		
 		<s:layout>
 			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
