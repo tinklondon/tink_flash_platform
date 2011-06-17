@@ -42,6 +42,48 @@ package ws.tink.spark.layouts
 	/**
 	 * Flex 4 Accordion Layout
 	 */
+	/**
+	 *  An AccordionLayout class arranges the layout elements in a vertical
+	 *  or horizontal sequence, with one of them at a time fully visible.
+	 * 
+	 *  <p>The position of the elements is determined by arranging them
+	 *  in a sequence, top to bottom or left to right depending on the
+	 *  value or <code>duration</code>.</p>
+	 * 
+	 *  <p>If the <code>target</code> of the layout implements ISelectable list,
+	 *  a ButtonBarBase can be set using the <code>buttonBar</code> property and the layout
+	 *  will connect the <code>target</code> and ButtonBarBase together so that the 
+	 *  ButtonBarBase can be used to navigate through the elements.
+	 *
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:Accordion&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:AccordionLayout
+	 *    <strong>Properties</strong>
+	 *    buttonRotation="none|left|right"
+	 *    direction="vertical|horizontal"
+	 *    duration="700"
+	 *    easer=""<i>IEaser</i>""
+	 *    labelField="label"
+	 *    labelFunction="null"
+	 *    layoutAllButtonBarBounds="true"
+	 *    minElementSize="0"
+	 *    useScrollRect"true"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @includeExample examples/AccordionExample.mxml
+	 *
+	 *  @see ws.tink.spark.layouts.AccordionLayout
+	 *
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class AccordionLayout extends AnimationNavigatorLayoutBase
 	{
 		
@@ -281,111 +323,111 @@ package ws.tink.spark.layouts
 		}
 		
 		
-		//----------------------------------
-		//  verticalAlign
-		//----------------------------------    
-		
-		/**
-		 *  @private
-		 *  Storage property for verticalAlign.
-		 */
-		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
-		
-		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
-		
-		/** 
-		 *  The vertical alignment of layout elements.
-		 * 
-		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
-		 *  or <code>"top"</code> then the layout elements are aligned relative 
-		 *  to the container's <code>contentHeight</code> property.</p>
-		 * 
-		 *  <p>If the value is <code>"contentJustify"</code> then the actual
-		 *  height of the layout element is set to 
-		 *  the container's <code>contentHeight</code> property. 
-		 *  The content height of the container is the height of the largest layout element. 
-		 *  If all layout elements are smaller than the height of the container, 
-		 *  then set the height of all the layout elements to the height of the container.</p>
-		 * 
-		 *  <p>If the value is <code>"justify"</code> then the actual height
-		 *  of the layout elements is set to the container's height.</p>
-		 *
-		 *  <p>This property does not affect the layout's measured size.</p>
-		 *  
-		 *  @default "justify"
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get verticalAlign():String
-		{
-			return _verticalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set verticalAlign( value:String ):void
-		{
-//			if( value == _verticalAlign ) return;
-//			
-//			_verticalAlign = value;
-//			
-//			invalidateTargetDisplayList();
-		}
-		
-		
-		//----------------------------------
-		//  horizontalAlign
-		//----------------------------------  
-		
-		/**
-		 *  @private
-		 *  Storage property for horizontalAlign.
-		 */
-		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
-		
-		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
-		
-		/** 
-		 *  The horizontal alignment of layout elements.
-		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
-		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
-		 * 
-		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
-		 *  width is set to the <code>contentWidth</code> of the container.
-		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
-		 *  If all layout elements are smaller than the width of the container, 
-		 *  then set the width of all layout elements to the width of the container.</p>
-		 * 
-		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
-		 *  is set to the container's width.</p>
-		 *
-		 *  <p>This property does not affect the layout's measured size.</p>
-		 *  
-		 *  @default "justify"
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		public function get horizontalAlign():String
-		{
-			return _horizontalAlign;
-		}
-		/**
-		 *  @private
-		 */
-		public function set horizontalAlign( value:String ):void
-		{
-//			if( value == _horizontalAlign ) return;
-//			
-//			_horizontalAlign = value;
-//			
-//			invalidateTargetDisplayList();
-		}
+//		//----------------------------------
+//		//  verticalAlign
+//		//----------------------------------    
+//		
+//		/**
+//		 *  @private
+//		 *  Storage property for verticalAlign.
+//		 */
+//		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
+//		
+//		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
+//		
+//		/** 
+//		 *  The vertical alignment of layout elements.
+//		 * 
+//		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
+//		 *  or <code>"top"</code> then the layout elements are aligned relative 
+//		 *  to the container's <code>contentHeight</code> property.</p>
+//		 * 
+//		 *  <p>If the value is <code>"contentJustify"</code> then the actual
+//		 *  height of the layout element is set to 
+//		 *  the container's <code>contentHeight</code> property. 
+//		 *  The content height of the container is the height of the largest layout element. 
+//		 *  If all layout elements are smaller than the height of the container, 
+//		 *  then set the height of all the layout elements to the height of the container.</p>
+//		 * 
+//		 *  <p>If the value is <code>"justify"</code> then the actual height
+//		 *  of the layout elements is set to the container's height.</p>
+//		 *
+//		 *  <p>This property does not affect the layout's measured size.</p>
+//		 *  
+//		 *  @default "justify"
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get verticalAlign():String
+//		{
+//			return _verticalAlign;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set verticalAlign( value:String ):void
+//		{
+////			if( value == _verticalAlign ) return;
+////			
+////			_verticalAlign = value;
+////			
+////			invalidateTargetDisplayList();
+//		}
+//		
+//		
+//		//----------------------------------
+//		//  horizontalAlign
+//		//----------------------------------  
+//		
+//		/**
+//		 *  @private
+//		 *  Storage property for horizontalAlign.
+//		 */
+//		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
+//		
+//		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
+//		
+//		/** 
+//		 *  The horizontal alignment of layout elements.
+//		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
+//		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
+//		 * 
+//		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
+//		 *  width is set to the <code>contentWidth</code> of the container.
+//		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
+//		 *  If all layout elements are smaller than the width of the container, 
+//		 *  then set the width of all layout elements to the width of the container.</p>
+//		 * 
+//		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
+//		 *  is set to the container's width.</p>
+//		 *
+//		 *  <p>This property does not affect the layout's measured size.</p>
+//		 *  
+//		 *  @default "justify"
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		public function get horizontalAlign():String
+//		{
+//			return _horizontalAlign;
+//		}
+//		/**
+//		 *  @private
+//		 */
+//		public function set horizontalAlign( value:String ):void
+//		{
+////			if( value == _horizontalAlign ) return;
+////			
+////			_horizontalAlign = value;
+////			
+////			invalidateTargetDisplayList();
+//		}
 		
 		
 		//----------------------------------
@@ -757,8 +799,7 @@ package ws.tink.spark.layouts
 				prevSize = elementSize.size;
 				elementSize.size = elementSize.start + ( elementSize.diff * offsetMultiplier );
 				
-				// Only apply to items with a height bigger than 0 to support virtualization.
-				if( ( elementSize.size > 0 || prevSize > 0 ) && elementSize.element )
+				if( elementSize.elementChanged )
 				{
 					if( direction == TileDirection.VERTICAL )
 					{
@@ -919,6 +960,8 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
 
+			trace( "updateDisplayListReal" );
+			
 			var i:int;
 			var elementSize:ElementSize;
 			const numElementSizes:int = _elementSizes.length;
@@ -1037,10 +1080,11 @@ internal class ElementSize
 {
 	public var start:Number;
 	public var diff:Number;
-	public var size:Number;
-	public var element:IVisualElement;
+	
 	public var displayListIndex:uint;
 	public var layoutIndex:uint;
+	
+	
 	
 	public function ElementSize()
 	{
@@ -1049,6 +1093,39 @@ internal class ElementSize
 	public function toString():String
 	{
 		return "start: " + start.toString() + " size: " + size.toString() + " displayListIndex: " + displayListIndex.toString() + " element: " + ( element == null ).toString() + "!!!!";
+	}
+	
+	private var _element:IVisualElement;
+	public function get element():IVisualElement
+	{
+		return _element;
+	}
+	public function set element( value:IVisualElement ):void
+	{
+		if( _element == value ) return;
+		
+		_element = value;
+		if( _element ) _elementChanged = true;
+	}
+	
+	private var _size:Number;
+	public function get size():Number
+	{
+		return _size;
+	}
+	public function set size( value:Number ):void
+	{
+		if( _size == value ) return;
+		
+		if( ( _size + value > 0 ) && _element ) _elementChanged = true;
+		_size = value;
+//		if( _size ) _elementChanged = true;
+	}
+	
+	private var _elementChanged:Boolean;
+	public function get elementChanged():Boolean
+	{
+		return _elementChanged;
 	}
 }
 
