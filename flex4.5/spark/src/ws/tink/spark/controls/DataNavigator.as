@@ -288,6 +288,11 @@ package ws.tink.spark.controls
 		 */
 		private static const TYPICAL_ITEM_PROPERTY_FLAG:uint = 1 << 5;
 		
+		/**
+		 *  @private
+		 */
+		private static const SELECTED_INDEX_PROPERTY_FLAG:uint = 1 << 6;
+		
 		
 		
 		//--------------------------------------------------------------------------
@@ -307,6 +312,8 @@ package ws.tink.spark.controls
 		public function DataNavigator()
 		{
 			super();
+			
+			useVirtualLayout = true;
 		}
 		
 		
@@ -362,12 +369,6 @@ package ws.tink.spark.controls
 		//  selectedIndex
 		//---------------------------------- 
 		
-		/**
-		 *  @private
-		 *  Storage property for selectedIndex.
-		 */
-		private var _selectedIndex		: int = -1;
-		
 		[Bindable("change")]
 		[Bindable("valueCommit")]
 		
@@ -379,21 +380,27 @@ package ws.tink.spark.controls
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function set selectedIndex( value:int ):void
+		public function get selectedIndex():int
 		{
-			if( _selectedIndex == value ) return;
-			
-			_selectedIndex = value;
-			
-			if( layout ) INavigatorLayout( layout ).selectedIndex = _selectedIndex;
+			return contentGroup ? contentGroup.selectedIndex : dataGroupProperties.selectedIndex;
 		}
 		/**
 		 *  @private
 		 */
-		public function get selectedIndex():int
+		public function set selectedIndex( value:int ):void
 		{
-			return ( layout ) ? INavigatorLayout( layout ).selectedIndex : _selectedIndex;
+			if( value == selectedIndex ) return;
+			
+			if (contentGroup)
+			{
+				contentGroup.selectedIndex = value;
+				dataGroupProperties = BitFlagUtil.update(dataGroupProperties as uint, 
+					SELECTED_INDEX_PROPERTY_FLAG, true);
+			}
+			else
+				dataGroupProperties.selectedIndex = value;
 		}
+		
 		
 		
 		//----------------------------------
@@ -426,6 +433,52 @@ package ws.tink.spark.controls
 				var index:int = dataProvider.getItemIndex( value );
 				if( index != -1 ) selectedIndex = index;
 			}
+		}
+		
+		
+		
+		//----------------------------------
+		//  useVirtualLayout
+		//----------------------------------
+		
+		/**
+		 *  @private
+		 */
+		private var _useVirtualLayout:Boolean = true;
+		
+		/**
+		 *  Sets the value of the <code>useVirtualLayout</code> property
+		 *  of the layout associated with this control.  
+		 *  If the layout is subsequently replaced and the value of this 
+		 *  property is <code>true</code>, then the new layout's 
+		 *  <code>useVirtualLayout</code> property is set to <code>true</code>.
+		 *
+		 *  @default true
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get useVirtualLayout():Boolean
+		{
+			return layout ? layout.useVirtualLayout : _useVirtualLayout;
+		}
+		/**
+		 *  @private
+		 *  Note: this property deviates a little from the conventional delegation pattern.
+		 *  If the user explicitly sets ListBase.useVirtualLayout=false and then sets
+		 *  the layout property to a layout with useVirtualLayout=true, the layout's value
+		 *  for this property trumps the ListBase.  The convention dictates opposite
+		 *  however in this case, always honoring the layout's useVirtalLayout property seems 
+		 *  less likely to cause confusion.
+		 */
+		public function set useVirtualLayout(value:Boolean):void
+		{
+			if( value == useVirtualLayout ) return;
+			
+			_useVirtualLayout = value;
+			if ( layout ) layout.useVirtualLayout = value;
 		}
 		
 		
@@ -753,6 +806,8 @@ package ws.tink.spark.controls
 			var layout:LayoutBase = layout;
 			
 			if( layout == value ) return;
+			
+			if( value && useVirtualLayout) value.useVirtualLayout = true;
 			
 			removeLayoutListeners();
 			
@@ -1106,10 +1161,20 @@ package ws.tink.spark.controls
 						TYPICAL_ITEM_PROPERTY_FLAG, true);
 				}
 				
+				if (dataGroupProperties.selectedIndex !== undefined)
+				{
+					contentGroup.selectedIndex = dataGroupProperties.selectedIndex;
+					newDataGroupProperties = BitFlagUtil.update(newDataGroupProperties as uint, 
+						SELECTED_INDEX_PROPERTY_FLAG, true);
+				}
+								
 				dataGroupProperties = newDataGroupProperties;
 				
 				// Register our instance as the contentGroup's item renderer update delegate.
 				contentGroup.rendererUpdateDelegate = this;
+				
+				// Not your typical delegation, see 'set useVirtualLayout'
+				if( contentGroup.layout ) contentGroup.layout.useVirtualLayout = _useVirtualLayout;
 				
 				// The only reason we have these listeners is to re-dispatch events.  
 				// We only add as necessary.
@@ -1163,6 +1228,9 @@ package ws.tink.spark.controls
 				
 				if (BitFlagUtil.isSet(dataGroupProperties as uint, TYPICAL_ITEM_PROPERTY_FLAG))
 					newDataGroupProperties.typicalItem = contentGroup.typicalItem;
+				
+				if (BitFlagUtil.isSet(dataGroupProperties as uint, SELECTED_INDEX_PROPERTY_FLAG))
+					newDataGroupProperties.selectedIndex = contentGroup.selectedIndex;
 				
 				dataGroupProperties = newDataGroupProperties;
 				
