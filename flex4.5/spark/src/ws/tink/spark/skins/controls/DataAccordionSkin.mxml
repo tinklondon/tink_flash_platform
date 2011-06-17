@@ -20,20 +20,19 @@ SOFTWARE.
 
 -->
 
-<!--- The default skin class for a Spark SkinnableNavigator container.  
+<!--- The default skin class for a Spark DataAccordion container.  
 
-@see ws.tink.spark.components.SkinnableNavigator
+@see ws.tink.spark.controls.DataAccordion
 
 @langversion 3.0
 @playerversion Flash 10
 @playerversion AIR 1.5
 @productversion Flex 4
 -->
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:st="library://ns.tink.ws/flex/spark"
 		xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-		xmlns:controls="ws.tink.spark.controls.*"
 		alpha.disabled="0.5">
 	
 	<fx:Metadata>
@@ -46,31 +45,6 @@ SOFTWARE.
 	</fx:Metadata> 
 	
 	<fx:Script fb:purpose="styling">
-		/* Define the skin elements that should not be colorized. 
-		For list, the skin itself is colorized but the individual parts are not. */
-		static private const exclusions:Array = ["contentGroup", "buttonBar", "background"];
-		
-		/**
-		 * @private
-		 */
-		override public function get colorizeExclusions():Array {return exclusions;}
-		
-		/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
-		static private const contentFill:Array = ["bgFill"];
-		
-		/**
-		 * @private
-		 */
-		override public function get contentItems():Array {return contentFill};
-		
-		/**
-		 * @private
-		 */
-		override protected function initializationComplete():void
-		{
-			useChromeColor = true;
-			super.initializationComplete();
-		}
 		
 		/**
 		 * @private
@@ -81,11 +55,13 @@ SOFTWARE.
 			{
 				border.visible = true;
 				background.left = background.top = background.right = background.bottom = 1;
+				contentGroup.left = contentGroup.top = contentGroup.right = contentGroup.bottom = 1;
 			}
 			else
 			{
 				border.visible = false;
 				background.left = background.top = background.right = background.bottom = 0;
+				contentGroup.left = contentGroup.top = contentGroup.right = contentGroup.bottom = 0;
 			}
 			
 			borderStroke.color = getStyle("borderColor");
@@ -109,20 +85,6 @@ SOFTWARE.
 		</s:fill>
 	</s:Rect>
 	
-	<!--
-	Note: setting the minimum size to 0 here so that changes to the host component's
-	size will not be thwarted by this skin part's minimum size.   This is a compromise,
-	more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
-	-->
-	
-	<!--- @copy ws.tink.spark.controls.DataNavigator#contentGroup -->
-	
-	<st:DataNavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
-		<st:layout>
-			<st:AccordionLayout id="accordionLayout" useVirtualLayout="true"/>
-		</st:layout>
-	</st:DataNavigatorGroup>
-	
 	<!-- border -->
 	<!--- @private -->
 	<s:Rect left="0" right="0" top="0" bottom="0" id="border">
@@ -132,6 +94,20 @@ SOFTWARE.
 		</s:stroke>
 	</s:Rect>
 	
+	<!--
+	Note: setting the minimum size to 0 here so that changes to the host component's
+	size will not be thwarted by this skin part's minimum size.   This is a compromise,
+	more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
+	-->
+	<!--- @copy ws.tink.spark.controls.DataNavigator#contentGroup -->
+	<st:DataNavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
+		<st:layout>
+			<!--- @copy ws.tink.spark.containers.Accordion#accordionLayout -->
+			<st:AccordionLayout id="accordionLayout" layoutAllButtonBarBounds="true"/>
+		</st:layout>
+	</st:DataNavigatorGroup>
+	
+	<!--- @copy ws.tink.spark.containers.Accordion#buttonBar -->
 	<s:ButtonBar id="buttonBar"/>
 	
-</s:SparkSkin>
+</s:Skin>
