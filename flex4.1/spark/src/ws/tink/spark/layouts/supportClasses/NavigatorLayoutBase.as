@@ -594,6 +594,13 @@ package ws.tink.spark.layouts.supportClasses
 		//
 		//--------------------------------------------------------------------------
 		
+		
+		override public function measure():void
+		{
+			updateElements();
+			updateElementsInLayout();
+		}
+		
 		/**
 		 *  @inheritDoc
 		 *  
@@ -610,20 +617,19 @@ package ws.tink.spark.layouts.supportClasses
 			_unscaledWidth = unscaledWidth;
 			_unscaledHeight = unscaledHeight;
 			
-			if( _elementsChanged || _targetChanged )
-			{
-				_elementsChanged = false;
-				updateElements();
-			}
+//			if( _elementsChanged || _targetChanged )
+//			{
+//				_elementsChanged = false;
+//				updateElements();
+//			}
 			
 			var scrollPositionInvalid:Boolean;
-			var numElementsInLayout:int = _numElementsInLayout;
 			
 			//TODO support includeInLayout
 			// Only really want to do this if...
 			// a) the number of elements have changed
 			// b) includeLayout has changed on an element
-			updateElementsInLayout();
+//			updateElementsInLayout();
 			
 //			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
 			
@@ -942,18 +948,18 @@ package ws.tink.spark.layouts.supportClasses
 			invalidateTargetDisplayList();
 		}
 		
-//		override public function updateScrollRect( w:Number, h:Number ) : void
-//		{
-//			if( !target ) return;
-//			
-//			target.scrollRect = ( clipAndEnableScrolling ) ? new Rectangle( 0, 0, w, h ) : null;
-//		}
-		
 		protected function invalidateTargetDisplayList() : void
 		{
 			if( !target ) return;
 
 			target.invalidateDisplayList();
+		}
+		
+		public function invalidateTargetSize() : void
+		{
+			if( !target ) return;
+			
+			target.invalidateSize();
 		}
 		
 		/**
@@ -982,57 +988,57 @@ package ws.tink.spark.layouts.supportClasses
 			return null;
 		}
 		
-		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override public function elementAdded( index:int ):void
-		{
-			super.elementAdded( index );
-			
-			_elementsChanged = true;
-			
-			invalidateTargetDisplayList();
-			//TODO maybe add a listener here for "includeInLayoutChanged"
-			// not implement due to risk of not being able to remove the listener
-			// (https://bugs.adobe.com/jira/browse/SDK-25896)
-			
-			
-			// TODO Tink
-			// We should fire this if the index added is less or equal to the
-			// selectedIndex.
-			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
-			// AS THE INDEX HASN'T CHANGED
-//			if( selectedIndex == -1 ) scrollPositionChanged();
-		}
+//		/**
+//		 *  @inheritDoc
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		override public function elementAdded( index:int ):void
+//		{
+//			super.elementAdded( index );
+//			
+//			_elementsChanged = true;
+//			
+//			invalidateTargetDisplayList();
+//			//TODO maybe add a listener here for "includeInLayoutChanged"
+//			// not implement due to risk of not being able to remove the listener
+//			// (https://bugs.adobe.com/jira/browse/SDK-25896)
+//			
+//			
+//			// TODO Tink
+//			// We should fire this if the index added is less or equal to the
+//			// selectedIndex.
+//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+//			// AS THE INDEX HASN'T CHANGED
+////			if( selectedIndex == -1 ) scrollPositionChanged();
+//		}
 		
-		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
-		 */
-		override public function elementRemoved(index:int):void
-		{
-			super.elementRemoved( index );
-			
-			_elementsChanged = true;
-			
-			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
-			
-			// TODO Tink
-			// We should fire this if the index added is less or equal to the
-			// selectedIndex.
-			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
-			// AS THE INDEX HASN'T CHANGED
-//			if( selectedIndex == -1 ) scrollPositionChanged();
-		}
+//		/**
+//		 *  @inheritDoc
+//		 *  
+//		 *  @langversion 3.0
+//		 *  @playerversion Flash 10
+//		 *  @playerversion AIR 1.5
+//		 *  @productversion Flex 4
+//		 */
+//		override public function elementRemoved(index:int):void
+//		{
+//			super.elementRemoved( index );
+//			
+//			_elementsChanged = true;
+//			
+//			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
+//			
+//			// TODO Tink
+//			// We should fire this if the index added is less or equal to the
+//			// selectedIndex.
+//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+//			// AS THE INDEX HASN'T CHANGED
+////			if( selectedIndex == -1 ) scrollPositionChanged();
+//		}
 		
 		/**
 		 *  @private
