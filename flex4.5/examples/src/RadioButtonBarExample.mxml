@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!-- Simple example to demonstrate the Spark CheckBox control -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark">
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			private function browserChange( event:IndexChangeEvent ):void
+			{
+				browserString.text = "Your Browser is: " + browsers.selectedItem.label;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:CurrencyFormatter id="usdFormatter" precision="2" currencySymbol="$"
+							  decimalSeparatorFrom="." decimalSeparatorTo="." useNegativeSign="true"
+							  useThousandsSeparator="true" alignSymbol="left"/>
+	</fx:Declarations>
+	
+	<s:Panel title="RadioButtonBar Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+		
+		<s:Label text="Select your browser" />
+		
+		<st:RadioButtonBar id="browsers" change="browserChange(event)" requireSelection="false">
+			<st:layout>
+				<s:TileLayout requestedColumnCount="3" orientation="columns"/>
+			</st:layout>
+			<st:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Apple Safari 4"/>
+					<fx:Object label="Apple Safari 5"/>
+					<fx:Object label="Google Chrome 6"/>
+					<fx:Object label="Google Chrome 7"/>
+					<fx:Object label="Google Chrome 8"/>
+					<fx:Object label="Google Chrome 9"/>
+					<fx:Object label="Google Chrome 10"/>
+					<fx:Object label="HP WebOS 2"/>
+					<fx:Object label="Microsoft Internet Explorer 6"/>
+					<fx:Object label="Microsoft Internet Explorer 7"/>
+					<fx:Object label="Microsoft Internet Explorer 8"/>
+					<fx:Object label="Microsoft Internet Explorer 9"/>
+					<fx:Object label="Mozilla Firefox 3"/>
+					<fx:Object label="Mozilla Firefox 4"/>
+					<fx:Object label="Opera 10"/>
+					<fx:Object label="Opera 11"/>
+				</s:ArrayList>
+			</st:dataProvider>
+		</st:RadioButtonBar>
+		
+		<mx:Spacer height="20" />
+		<s:Label id="browserString"/>
+		
+	</s:Panel>
+	
+</s:Application>
