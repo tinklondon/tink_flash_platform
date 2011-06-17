@@ -7,6 +7,10 @@ Accordion
 	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
 }
 
+Accordion s|ButtonBarButton
+{
+	cornerRadius : 0;
+}
 
 Alert
 {
@@ -31,6 +35,11 @@ DataAccordion
 DataNavigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
+}
+
+DataAccordion s|ButtonBarButton
+{
+	cornerRadius : 0;
 }
 
 Form

@@ -1,12 +1,22 @@
 /* CSS file */
 @namespace "library://ns.tink.ws/flex/spark";
 @namespace controls "ws.tink.spark.controls.*";
+@namespace s "library://ns.adobe.com/flex/spark";
 
 Accordion
 {
 	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
 }
 
+Accordion
+{
+	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
+}
+
+Accordion s|ButtonBarButton
+{
+	cornerRadius : 0;
+}
 
 Alert
 {
@@ -26,6 +36,11 @@ CheckBoxBar
 DataAccordion
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataAccordionSkin");
+}
+
+DataAccordion s|ButtonBarButton
+{
+	cornerRadius : 0;
 }
 
 DataNavigator
