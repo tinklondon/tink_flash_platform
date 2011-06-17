@@ -409,6 +409,15 @@ package ws.tink.spark.containers
 		 */
 		private static const LAYOUT_PROPERTY_FLAG:uint = 1 << 1;
 		
+		/**
+		 *  @private
+		 */
+		private static const SELECTED_INDEX_PROPERTY_FLAG:uint = 1 << 2;
+		
+		/**
+		 *  @private
+		 */
+		private static const CREATION_POLICY_PROPERTY_FLAG:uint = 1 << 3;
 		
 		
 		
@@ -499,35 +508,36 @@ package ws.tink.spark.containers
 		//  selectedIndex
 		//---------------------------------- 
 		
-		/**
-		 *  @private
-		 *  Storage property for selectedIndex.
-		 */
-		private var _selectedIndex		: int = -1;
-		
 		[Bindable("change")]
 		[Bindable("valueCommit")]
 		
 		/**
-		 *  @copy ws.tink.spark.containers.NavigatorGroup#selectedIndex
+		 *  @copy ws.tink.spark.controls.DataNavigatorGroup#selectedIndex
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
-		public function set selectedIndex( value:int ):void
+		public function get selectedIndex():int
 		{
-			_selectedIndex = value;
-			
-			if( contentGroup ) contentGroup.selectedIndex = value;
+			return contentGroup ? contentGroup.selectedIndex : contentGroupProperties.selectedIndex;
 		}
 		/**
 		 *  @private
 		 */
-		public function get selectedIndex():int
+		public function set selectedIndex( value:int ):void
 		{
-			return ( contentGroup ) ? contentGroup.selectedIndex : _selectedIndex;
+			if( value == selectedIndex ) return;
+			
+			if (contentGroup)
+			{
+				contentGroup.selectedIndex = value;
+				contentGroupProperties = BitFlagUtil.update(contentGroupProperties as uint, 
+					SELECTED_INDEX_PROPERTY_FLAG, true);
+			}
+			else
+				contentGroupProperties.selectedIndex = value;
 		}
 		
 		
@@ -619,17 +629,10 @@ package ws.tink.spark.containers
 		//  creationPolicy
 		//----------------------------------
 		
-		// Internal flag used when creationPolicy="none".
-		// When set, the value of the backing store _creationPolicy
-		// style is "auto" so descendants inherit the correct value.
-		private var creationPolicyNone:Boolean = false;
-		
 		[Inspectable(enumeration="auto,all,none", defaultValue="auto")]
 		/**
-		 *  @inheritDoc
+		 *  @copy ws.tink.spark.containers.DeferredGroup#creationPolicy
 		 *
-		 *  @default auto
-		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
@@ -637,41 +640,23 @@ package ws.tink.spark.containers
 		 */
 		public function get creationPolicy():String
 		{
-			// Use an inheriting style as the backing storage for this property.
-			// This allows the property to be inherited by either mx or spark
-			// containers, and also to correctly cascade through containers that
-			// don't have this property (ie Group).
-			// This style is an implementation detail and should be considered
-			// private. Do not set it from CSS.
-			var result:String = getStyle("_creationPolicy");
-			
-			if (result == null)
-				result = ContainerCreationPolicy.AUTO;
-			
-			if (creationPolicyNone)
-				result = ContainerCreationPolicy.NONE;
-			
-			return result;
+			return contentGroup ? contentGroup.creationPolicy : contentGroupProperties.creationPolicy;
 		}
 		/**
 		 *  @private
 		 */
-		public function set creationPolicy(value:String):void
+		public function set creationPolicy( value:String ):void
 		{
-			if (value == ContainerCreationPolicy.NONE)
+			if( value == creationPolicy ) return;
+			
+			if (contentGroup)
 			{
-				// creationPolicy of none is not inherited by descendants.
-				// In this case, set the style to "auto" and set a local
-				// flag for subsequent access to the creationPolicy property.
-				creationPolicyNone = true;
-				value = ContainerCreationPolicy.AUTO;
+				contentGroup.creationPolicy = value;
+				contentGroupProperties = BitFlagUtil.update(contentGroupProperties as uint, 
+					CREATION_POLICY_PROPERTY_FLAG, true);
 			}
 			else
-			{
-				creationPolicyNone = false;
-			}
-			
-			setStyle("_creationPolicy", value);
+				contentGroupProperties.creationPolicy = value;
 		}
 		
 		
@@ -1369,7 +1354,19 @@ package ws.tink.spark.containers
 						LAYOUT_PROPERTY_FLAG, true);
 				}
 				
-				contentGroup.selectedIndex = _selectedIndex;
+				if (contentGroupProperties.selectedIndex > 0)
+				{
+					contentGroup.selectedIndex = contentGroupProperties.selectedIndex;
+					newContentGroupProperties = BitFlagUtil.update(newContentGroupProperties as uint, 
+						SELECTED_INDEX_PROPERTY_FLAG, true);
+				}
+				
+				if (contentGroupProperties.creationPolicy  !== undefined)
+				{
+					contentGroup.creationPolicy = contentGroupProperties.creationPolicy;
+					newContentGroupProperties = BitFlagUtil.update(newContentGroupProperties as uint, 
+						CREATION_POLICY_PROPERTY_FLAG, true);
+				}
 				
 				contentGroupProperties = newContentGroupProperties;
 				
@@ -1453,6 +1450,12 @@ package ws.tink.spark.containers
 				
 				if (BitFlagUtil.isSet(contentGroupProperties as uint, LAYOUT_PROPERTY_FLAG))
 					newContentGroupProperties.layout = contentGroup.layout;
+				
+				if (BitFlagUtil.isSet(contentGroupProperties as uint, SELECTED_INDEX_PROPERTY_FLAG))
+					newContentGroupProperties.selectedIndex = contentGroup.selectedIndex;
+				
+				if (BitFlagUtil.isSet(contentGroupProperties as uint, CREATION_POLICY_PROPERTY_FLAG))
+					newContentGroupProperties.creationPolicy = contentGroup.creationPolicy;
 				
 				contentGroupProperties = newContentGroupProperties;
 				
