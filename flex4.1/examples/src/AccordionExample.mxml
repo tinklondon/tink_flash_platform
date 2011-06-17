@@ -11,7 +11,7 @@
 			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
 		</s:layout>
 		
-		<st:Accordion id="accordion" width="100%" height="100%">
+		<st:Accordion id="accordion" width="100%" height="100%" creationPolicy="all">
 			<s:BorderContainer id="Item0" width="100%" height="100%" backgroundColor="0x0000ff">
 				<s:Label text="Accordion item 0" color="0xffffff" horizontalCenter="0" verticalCenter="0"/>
 			</s:BorderContainer>
@@ -30,6 +30,5 @@
 		</s:HGroup>
 		
 	</s:Panel>
-	
 	
 </s:Application>
