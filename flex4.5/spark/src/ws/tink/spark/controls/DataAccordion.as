@@ -411,36 +411,6 @@ package ws.tink.spark.controls
 		}
 		
 		
-		//----------------------------------
-		//  useScrollRect
-		//----------------------------------    
-		
-		/**
-		 *  @copy ws.tink.spark.layouts.AccordionLayout#useScrollRect
-		 */
-		public function get useVirtualLayout():Boolean
-		{
-			return accordionLayout ? accordionLayout.useVirtualLayout : _accordionLayoutProperties.useVirtualLayout;
-		}
-		/**
-		 *  @private
-		 */
-		public function set useVirtualLayout( value:Boolean ):void
-		{
-			if( useVirtualLayout == value ) return;
-			
-			if( accordionLayout )
-			{
-				accordionLayout.useVirtualLayout = value;
-				_accordionLayoutProperties = BitFlagUtil.update( _accordionLayoutProperties as uint, USE_VIRTUAL_LAYOUT_PROPERTY_FLAG, true );
-			}
-			else
-			{
-				_accordionLayoutProperties.useVirtualLayout = value;
-			}
-		}
-		
-		
 		
 		//--------------------------------------------------------------------------
 		//
