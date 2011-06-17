@@ -31,7 +31,7 @@ package ws.tink.spark.containers
 	import mx.utils.BitFlagUtil;
 	
 	/**
-	 *  An Spark Accordion navigator container has a collection IVisualElemente,
+	 *  An Spark Accordion navigator container has a collection IVisualElements,
 	 *  but only one of them at a time is fully visible.
 	 *  It creates and manages navigator buttons, which you use
 	 *  to navigate between the elements.
