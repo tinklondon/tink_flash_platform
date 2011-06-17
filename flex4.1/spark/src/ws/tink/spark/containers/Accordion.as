@@ -41,11 +41,6 @@ package ws.tink.spark.containers
 	 *  is displayed.
 	 *  The transition to the new child uses an animation to make it clear to
 	 *  the user that one child is disappearing and a different one is appearing.
-	 * 
-	 *  <p>The Accordion container does not extend the ViewStack container,
-	 *  but it implements all the properties, methods, styles, and events
-	 *  of the ViewStack container, such as <code>selectedIndex</code>
-	 *  and <code>selectedChild</code>.</p>
 	 *
 	 *  @mxml
 	 *
