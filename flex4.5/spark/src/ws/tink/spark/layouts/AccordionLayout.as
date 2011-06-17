@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010 Tink Ltd - http://www.tink.ws
+Copyright (c) 2011 Tink Ltd - http://www.tink.ws
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -19,16 +19,21 @@ SOFTWARE.
 package ws.tink.spark.layouts
 {
 	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	import mx.containers.TileDirection;
+	import mx.core.ILayoutElement;
 	import mx.core.ISelectableList;
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
+	import mx.events.MoveEvent;
 	
 	import spark.components.supportClasses.ButtonBarBase;
 	import spark.components.supportClasses.GroupBase;
 	import spark.effects.animation.Animation;
+	import spark.layouts.HorizontalAlign;
+	import spark.layouts.VerticalAlign;
 	
 	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 
@@ -57,8 +62,8 @@ package ws.tink.spark.layouts
 		 */  
 		public function AccordionLayout()
 		{
-			trace( "AccordionLayout", DIRECT );
 			super( AnimationNavigatorLayoutBase.DIRECT );
+			_measuredCache = new MeasuredCache();
 			_buttonLayout = new ButtonLayout( this );
 		}
 		
@@ -88,6 +93,17 @@ package ws.tink.spark.layouts
 		 *  @private
 		 */
 		private var _animator:Animation;
+		
+		/**
+		 *  @private
+		 */
+		private var _measuredCache:MeasuredCache;
+		
+		/**
+		 *  @private
+		 *  Flag to indicate the size and positioning of the buttonBar have changed.
+		 */
+		private var _buttonBarChanged:Boolean;
 		
 		
 		//--------------------------------------------------------------------------
@@ -131,9 +147,11 @@ package ws.tink.spark.layouts
 			
 			_buttonRotation = value;
 			
+			_buttonBarChanged = true;
 			_elementSizesInvalid = true;
 			_buttonLayout.invalidateTargetDisplayList();
 			invalidateTargetDisplayList();
+			invalidateTargetSize();
 		}
 		
 		
@@ -172,11 +190,56 @@ package ws.tink.spark.layouts
 			
 			_direction = value;
 			
+			_buttonBarChanged = true;
 			_elementSizesInvalid = true;
 			_buttonLayout.invalidateTargetDisplayList();
+			_buttonLayout.invalidateTargetSize();
 			invalidateTargetDisplayList();
+			invalidateTargetSize();
 		}
 		
+		
+		//----------------------------------
+		//  overlayButtonBar
+		//----------------------------------    
+		
+		/**
+		 *  @private
+		 *  Storage property for overlayButtonBar.
+		 */
+		private var _layoutAllButtonBarBounds:Boolean = false;
+		
+		[Inspectable(category="General", enumeration="true,false", defaultValue="true")]
+		
+		/** 
+		 *  overlayButtonBar.
+		 * 
+		 *  @default "vertical"
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get layoutAllButtonBarBounds():Boolean
+		{
+			return _layoutAllButtonBarBounds;
+		}
+		/**
+		 *  @private
+		 */
+		public function set layoutAllButtonBarBounds( value:Boolean ):void
+		{
+			if( value == _layoutAllButtonBarBounds ) return;
+			
+			_layoutAllButtonBarBounds = value;
+			
+			_buttonBarChanged = true;
+			_buttonLayout.invalidateTargetDisplayList();
+			_buttonLayout.invalidateTargetSize();
+			invalidateTargetDisplayList();
+			invalidateTargetSize();
+		}
 		
 		//----------------------------------
 		//  minElementSize
@@ -214,114 +277,115 @@ package ws.tink.spark.layouts
 			
 			_elementSizesInvalid = true;
 			invalidateTargetDisplayList();
+			if( target ) target.invalidateSize();
 		}
 		
 		
-//		//----------------------------------
-//		//  verticalAlign
-//		//----------------------------------    
-//		
-//		/**
-//		 *  @private
-//		 *  Storage property for verticalAlign.
-//		 */
-//		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
-//		
-//		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="justify")]
-//		
-//		/** 
-//		 *  The vertical alignment of layout elements.
-//		 * 
-//		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
-//		 *  or <code>"top"</code> then the layout elements are aligned relative 
-//		 *  to the container's <code>contentHeight</code> property.</p>
-//		 * 
-//		 *  <p>If the value is <code>"contentJustify"</code> then the actual
-//		 *  height of the layout element is set to 
-//		 *  the container's <code>contentHeight</code> property. 
-//		 *  The content height of the container is the height of the largest layout element. 
-//		 *  If all layout elements are smaller than the height of the container, 
-//		 *  then set the height of all the layout elements to the height of the container.</p>
-//		 * 
-//		 *  <p>If the value is <code>"justify"</code> then the actual height
-//		 *  of the layout elements is set to the container's height.</p>
-//		 *
-//		 *  <p>This property does not affect the layout's measured size.</p>
-//		 *  
-//		 *  @default "justify"
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get verticalAlign():String
-//		{
-//			return _verticalAlign;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set verticalAlign( value:String ):void
-//		{
+		//----------------------------------
+		//  verticalAlign
+		//----------------------------------    
+		
+		/**
+		 *  @private
+		 *  Storage property for verticalAlign.
+		 */
+		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
+		
+		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
+		
+		/** 
+		 *  The vertical alignment of layout elements.
+		 * 
+		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
+		 *  or <code>"top"</code> then the layout elements are aligned relative 
+		 *  to the container's <code>contentHeight</code> property.</p>
+		 * 
+		 *  <p>If the value is <code>"contentJustify"</code> then the actual
+		 *  height of the layout element is set to 
+		 *  the container's <code>contentHeight</code> property. 
+		 *  The content height of the container is the height of the largest layout element. 
+		 *  If all layout elements are smaller than the height of the container, 
+		 *  then set the height of all the layout elements to the height of the container.</p>
+		 * 
+		 *  <p>If the value is <code>"justify"</code> then the actual height
+		 *  of the layout elements is set to the container's height.</p>
+		 *
+		 *  <p>This property does not affect the layout's measured size.</p>
+		 *  
+		 *  @default "justify"
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get verticalAlign():String
+		{
+			return _verticalAlign;
+		}
+		/**
+		 *  @private
+		 */
+		public function set verticalAlign( value:String ):void
+		{
 //			if( value == _verticalAlign ) return;
 //			
 //			_verticalAlign = value;
 //			
 //			invalidateTargetDisplayList();
-//		}
-//		
-//		
-//		//----------------------------------
-//		//  horizontalAlign
-//		//----------------------------------  
-//		
-//		/**
-//		 *  @private
-//		 *  Storage property for horizontalAlign.
-//		 */
-//		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
-//		
-//		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="justify")]
-//		
-//		/** 
-//		 *  The horizontal alignment of layout elements.
-//		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
-//		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
-//		 * 
-//		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
-//		 *  width is set to the <code>contentWidth</code> of the container.
-//		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
-//		 *  If all layout elements are smaller than the width of the container, 
-//		 *  then set the width of all layout elements to the width of the container.</p>
-//		 * 
-//		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
-//		 *  is set to the container's width.</p>
-//		 *
-//		 *  <p>This property does not affect the layout's measured size.</p>
-//		 *  
-//		 *  @default "justify"
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get horizontalAlign():String
-//		{
-//			return _horizontalAlign;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set horizontalAlign( value:String ):void
-//		{
+		}
+		
+		
+		//----------------------------------
+		//  horizontalAlign
+		//----------------------------------  
+		
+		/**
+		 *  @private
+		 *  Storage property for horizontalAlign.
+		 */
+		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
+		
+		[Inspectable(category="General", enumeration="justify", defaultValue="justify")]
+		
+		/** 
+		 *  The horizontal alignment of layout elements.
+		 *  If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
+		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.
+		 * 
+		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
+		 *  width is set to the <code>contentWidth</code> of the container.
+		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
+		 *  If all layout elements are smaller than the width of the container, 
+		 *  then set the width of all layout elements to the width of the container.</p>
+		 * 
+		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
+		 *  is set to the container's width.</p>
+		 *
+		 *  <p>This property does not affect the layout's measured size.</p>
+		 *  
+		 *  @default "justify"
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get horizontalAlign():String
+		{
+			return _horizontalAlign;
+		}
+		/**
+		 *  @private
+		 */
+		public function set horizontalAlign( value:String ):void
+		{
 //			if( value == _horizontalAlign ) return;
 //			
 //			_horizontalAlign = value;
 //			
 //			invalidateTargetDisplayList();
-//		}
+		}
 		
 		
 		//----------------------------------
@@ -357,9 +421,8 @@ package ws.tink.spark.layouts
 			if( _buttonBar )
 			{
 				_buttonBar.layout = _buttonLayout;
-				_buttonBar.setActualSize( unscaledWidth, unscaledHeight );
-				
 				if( _buttonBar && target is ISelectableList ) _buttonBar.dataProvider = ISelectableList( target );
+				if( target ) target.invalidateSize();
 			}
 		}
 		
@@ -372,7 +435,7 @@ package ws.tink.spark.layouts
 		 *  @private
 		 *  Storage property for useScrollRect.
 		 */
-		private var _useScrollRect:Boolean = false;
+		private var _useScrollRect:Boolean = true;
 		
 		/**
 		 *  useScrollRect
@@ -432,6 +495,27 @@ package ws.tink.spark.layouts
 		
 		//--------------------------------------------------------------------------
 		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		
+		
+		/**
+		 *  @private
+		 *  Sort function used to store the list of element sizes in display list order.
+		 */
+		private function sortElementSizes( a:ElementSize, b:ElementSize ):int
+		{
+			if( a.displayListIndex < b.displayListIndex ) return -1;
+			if( a.displayListIndex > b.displayListIndex ) return 1;
+			return 0;
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Overridden Methods
 		//
 		//--------------------------------------------------------------------------
@@ -444,6 +528,167 @@ package ws.tink.spark.layouts
 			invalidateTargetDisplayList();
 		}
 		
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		
+		override protected function updateDisplayListBetween():void
+		{
+			if( sizeChangedInLayoutPass || _buttonBarChanged )
+			{
+				_buttonBarChanged = false;
+				
+				// TODO I think this should solve the issue of animating when resizing.
+				// If we are resizing due to an index change we want to animate,
+				// if its not due to an index change we do not want to animate.
+				if( !animationValue ) clearVirtualLayoutCache();
+					
+				_elementSizesInvalid = true;
+				_buttonLayout.invalidateTargetDisplayList();
+				if( _buttonBar && target )
+				{
+					_buttonBar.includeInLayout = !layoutAllButtonBarBounds;
+					
+					if( _layoutAllButtonBarBounds && !isNaN( unscaledWidth ) && !isNaN( unscaledHeight ) )
+					{
+						_buttonBar.setLayoutBoundsSize( unscaledWidth, unscaledHeight );
+						_buttonBar.setLayoutBoundsPosition( target.x, target.y );
+					}
+				}
+			}
+		}
+		
+		
+		
+		override public function measure():void
+		{
+			super.measure();
+
+			if( !target ) return;
+			
+			if( !indicesInLayout || !indicesInLayout.length )
+			{
+				target.measuredWidth = target.measuredMinWidth;
+				target.measuredHeight = target.measuredMinHeight;
+				return;
+			}  
+			
+			var i:int
+			var element:ILayoutElement;
+			
+			if( _buttonBarChanged ) _measuredCache.reset();
+			
+			if( !useVirtualLayout )
+			{
+				// If we are not using a virtual layout, reset the measured cache
+				// and measure all elements again.
+				_measuredCache.reset();
+				for each( i in indicesInLayout )
+				{
+					_measuredCache.cache( target.getElementAt( indicesInLayout[ i ] ) );
+				}
+			}
+			else if( selectedIndex != -1 )
+			{
+				// If we are using a virtual layout, cache the size of the selected item.
+				_measuredCache.cache( target.getElementAt( indicesInLayout[ selectedIndex ] ) );
+			}
+			
+			const prevButtonSize:Number = _buttonLayout._totalSize;
+			_buttonLayout._totalSize = 0;
+			_buttonLayout._buttonSizes = new Vector.<int>();
+			
+			if( _buttonBar )
+			{
+				
+				var matrix:Matrix = new Matrix();
+				var rotation:Number = buttonRotation == "none" ? 0 : buttonRotation == "left" ? -90 : 90;
+				if( rotation ) matrix.rotate( rotation * ( Math.PI / 180 ) );
+
+				var size:Number;
+				const numElements:int = target.numElements;
+				var s:Number = 0;
+				for( i = 0; i < numElements; i++ )
+				{
+					element = _buttonLayout.target.getElementAt( i );
+					
+					if( !element ) continue;
+					if( matrix ) element.setLayoutMatrix( matrix, true );
+					
+					if( direction == TileDirection.VERTICAL  )
+					{
+						size = element.getPreferredBoundsHeight();
+						if( i < numElements - 1 ) size--;
+						_buttonLayout._totalSize += size;
+					}
+					else
+					{
+						size = element.getPreferredBoundsWidth();
+						if( i < numElements - 1 ) size--;
+						_buttonLayout._totalSize += size;
+					}
+					
+					_buttonLayout._buttonSizes[ i ] = size;
+				}
+			}
+			
+			var w:Number = 0;
+			var h:Number = 0;
+			switch( direction )
+			{
+				case  TileDirection.VERTICAL :
+				{
+					if( minElementSize ) h += minElementSize * ( numElementsInLayout - 1 );
+					if( _buttonBar ) h += _buttonLayout._totalSize;
+					break;
+				}
+				case  TileDirection.HORIZONTAL :
+				{
+					if( minElementSize ) w += minElementSize * ( numElementsInLayout - 1 );
+					if( _buttonBar ) w += _buttonLayout._totalSize;
+					break;
+				}
+			}
+			
+			
+			target.measuredWidth = _measuredCache.measuredWidth + w;
+			target.measuredHeight = _measuredCache.measuredHeight + h;
+			target.measuredMinWidth = target.measuredWidth;
+			target.measuredMinHeight = target.measuredHeight;
+			
+			// Use Math.ceil() to make sure that if the content partially occupies
+			// the last pixel, we'll count it as if the whole pixel is occupied.
+			target.measuredWidth = Math.ceil( target.measuredWidth );    
+			target.measuredHeight = Math.ceil( target.measuredHeight );    
+			target.measuredMinWidth = Math.ceil( target.measuredMinWidth );    
+			target.measuredMinHeight = Math.ceil( target.measuredMinHeight );  
+			
+			if( _buttonBar )
+			{
+				_buttonBar.invalidateSize();
+				_buttonBar.validateNow();
+				
+				if( target.measuredWidth < _buttonBar.measuredWidth ) target.measuredWidth = Math.ceil( _buttonBar.measuredWidth );
+				if( target.measuredMinWidth < _buttonBar.measuredMinWidth ) target.measuredMinWidth = Math.ceil( _buttonBar.measuredMinWidth );
+				
+				if( target.measuredHeight < _buttonBar.measuredHeight ) target.measuredHeight = Math.ceil( _buttonBar.measuredHeight );
+				if( target.measuredMinHeight < _buttonBar.measuredMinHeight ) target.measuredMinHeight = Math.ceil( _buttonBar.measuredMinHeight );
+			}
+			
+			if( prevButtonSize != _buttonLayout._totalSize ) 
+			{
+				invalidateElementSizes();
+				invalidateTargetDisplayList();
+			}
+		}
+		
+		
 		/**
 		 *  @inheritDoc
 		 *  
@@ -454,29 +699,36 @@ package ws.tink.spark.layouts
 		 */
 		override public function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
-			if( this.unscaledWidth != unscaledWidth || this.unscaledHeight != unscaledHeight )
-			{
-				_elementSizesInvalid = true;
-				_buttonLayout.invalidateTargetDisplayList();
-				if( _buttonBar )
-				{
-//					_buttonBar.measuredWidth = _buttonBar.measuredMinWidth = unscaledWidth;
-//					_buttonBar.measuredHeight = _buttonBar.measuredMinHeight = unscaledHeight;
-					_buttonBar.width = unscaledWidth;
-					_buttonBar.height = unscaledHeight;
-				}
-			}
-//			if( _buttonBar )//&& ( this.unscaledWidth != unscaledWidth || this.unscaledHeight != unscaledHeight ) ) _buttonBar.invalidateSize();
-//			{
-////				_buttonBar.setLayoutBoundsSize( unscaledWidth, unscaledHeight );
-////				_buttonBar.setActualSize( unscaledWidth, unscaledHeight );
-//				_buttonBar.width = unscaledWidth;
-//				_buttonBar.height = unscaledHeight;
-//			}
 			super.updateDisplayList( unscaledWidth, unscaledHeight );
+			
+			_elementSizesInvalid = false;
+			updateDisplayListElements();
 		}
 		
 		
+		/**
+		 *  @inheritDoc
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		override public function clearVirtualLayoutCache():void
+		{
+			super.clearVirtualLayoutCache();
+			
+			// At this point we don't want animation so we clear out the element sizes.
+			_elementSizes = new Vector.<ElementSize>();
+			
+			_measuredCache.reset();
+		}
+		
+		
+		
+		/**
+		 *  @private
+		 */
 		private function updateDisplayListElements():void
 		{
 			var prevSize:Number;
@@ -505,16 +757,6 @@ package ws.tink.spark.layouts
 				prevSize = elementSize.size;
 				elementSize.size = elementSize.start + ( elementSize.diff * offsetMultiplier );
 				
-				// Get every element if we are not virtual
-				if( !useVirtualLayout )
-				{
-					elementSize.element = target.getElementAt( elementSize.index );
-				}
-				else if( minElementSize > 0 || elementSize.size > 0 )
-				{
-					elementSize.element = target.getVirtualElementAt( elementSize.index );
-				}
-				
 				// Only apply to items with a height bigger than 0 to support virtualization.
 				if( ( elementSize.size > 0 || prevSize > 0 ) && elementSize.element )
 				{
@@ -523,6 +765,7 @@ package ws.tink.spark.layouts
 						if( _useScrollRect && elementSize.element is DisplayObject )
 						{
 							DisplayObject( elementSize.element ).scrollRect = new Rectangle( 0, 0, unscaledWidth, elementSize.size );
+							
 							elementSize.element.setLayoutBoundsSize( unscaledWidth, unscaledHeight - _buttonLayout._totalSize );
 						}
 						else
@@ -547,11 +790,28 @@ package ws.tink.spark.layouts
 						elementSize.element.setLayoutBoundsPosition( elementPos, 0 );
 					}
 					
-					
 					elementPos += elementSize.size;
 				}
 			}
 		}
+		
+		
+		private function update( e:ElementSize, selectedSize:Number, creatingAll:Boolean ):void
+		{
+			if( creatingAll )
+			{
+				e.size = e.layoutIndex == selectedIndex ? selectedSize : minElementSize;
+				e.start = e.size;
+			}
+			else
+			{
+				e.start = e.size;
+				e.diff = e.layoutIndex == selectedIndex ? selectedSize - e.start : minElementSize - e.start;
+			}
+		}
+		
+		
+		
 		
 		/**
 		 *  @inheritDoc
@@ -565,14 +825,86 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();		
 			
-			if( _elementSizesInvalid ) 
+			var i:int;
+			var elementSize:ElementSize;
+			const numElementSizes:int = _elementSizes.length;
+			const creatingAll:Boolean = numElementSizes == 0;
+			
+			if( _elementSizesInvalid )
 			{
-				_elementSizesInvalid = false;
-				updateElementSizes( target.getVirtualElementAt( indicesInLayout[ selectedIndex ] ) );
+				var indicesRequiredIndex:int;
+				
+				const size:Number = direction == TileDirection.VERTICAL ? unscaledHeight : unscaledWidth;
+				const selectedSize:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
+				// Store a reference to the indices that we need ElementSize items for.
+				const indicesRequired:Vector.<int> = buttonBar || minElementSize ? indicesInLayout.concat() : Vector.<int>( [ indicesInLayout[ selectedIndex ] ] );
+				
+				for( i = numElementSizes - 1; i >= 0; i-- )
+				{
+					elementSize = _elementSizes[ i ];
+					
+					// Remove ElementSize items that are not in the layout.
+					indicesRequiredIndex = indicesRequired.indexOf( elementSize.displayListIndex );
+					if( indicesRequiredIndex == -1 && !elementSize.size )
+					{
+						_elementSizes.splice( i, 1 );
+					}
+					// Update ElementSize items.
+					else
+					{
+						if( indicesRequiredIndex != -1 ) indicesRequired.splice( indicesRequiredIndex, 1 )
+						
+						// Only get the virtual element if it is the selectedIndex,
+						// its start size is bigger than 0, or its diff in size is bigger than 0.
+						if( elementSize.displayListIndex == selectedIndex || elementSize.start || elementSize.diff ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
+//						if( elementSize.element )
+//						{
+//							trace( "yeahh" );
+////							DisplayObject( elementSize.element ).visible = false;
+//							DisplayObject( elementSize.element ).scrollRect = new Rectangle( 0, 0, 20, 20 );
+//						}
+						
+						update( elementSize, selectedSize, creatingAll );
+					}
+				}
+				
+				
+				// If we need to create some ElementSize items.
+				const numElementsRequired:int = indicesRequired.length;
+				for( i = 0; i < numElementsRequired; i++ )
+				{
+					elementSize = new ElementSize();
+					elementSize.diff = 0;
+					elementSize.size = minElementSize;
+					elementSize.displayListIndex = indicesRequired[ i ];
+					elementSize.layoutIndex = indicesInLayout.indexOf( elementSize.displayListIndex );
+					
+					// Only get the virtual element if it is the selectedIndex,
+					// its start size is bigger than 0.
+					if( elementSize.displayListIndex == selectedIndex || elementSize.start ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
+					
+					_elementSizes.push( elementSize );
+					
+					update( elementSize, selectedSize, creatingAll );
+				}
+				
+				// If we've added items we now need to do a sort.
+				if( numElementsRequired ) _elementSizes.sort( sortElementSizes );
+			}
+			else
+			{
+				for( i = 0; i < numElementSizes; i++ )
+				{
+					elementSize = _elementSizes[ i ];
+					
+					// Only get the virtual element if its size is bigger than 0,
+					// or it is the selectedIndex.
+					if( selectedIndex == elementSize.layoutIndex || elementSize.size ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
+				}
 			}
 			
-			updateDisplayListElements();
 		}
+		
 		
 		
 		/**
@@ -587,95 +919,85 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
 
-			if( _elementSizesInvalid ) 
-			{
-				_elementSizesInvalid = false;
-				updateElementSizes( target.getElementAt( indicesInLayout[ selectedIndex ] ) );
-			}
-			
-			updateDisplayListElements();
-		}
-		
-		private function updateElementSizes( selectedElement:IVisualElement ):void
-		{
-			var size:Number = direction == TileDirection.VERTICAL ? unscaledHeight : unscaledWidth;
-			var availableSpace:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
-			var numElementSizes:int = _elementSizes.length;
-			
-			var i:int
-			
-			var index:int;
+			var i:int;
 			var elementSize:ElementSize;
+			const numElementSizes:int = _elementSizes.length;
+			const creatingAll:Boolean = numElementSizes == 0;
 			
-			var indicesFound:Vector.<int> = new Vector.<int>();
-			
-			// Remove ElementSize items that are not in the layout.
-			for( i = numElementSizes - 1; i >= 0; i-- )
+			if( _elementSizesInvalid )
 			{
-				elementSize = _elementSizes[ i ];
-				index = indicesInLayout.indexOf( elementSize.index );
-				if( index == -1 )
+				var indicesRequiredIndex:int;
+				
+				const size:Number = direction == TileDirection.VERTICAL ? unscaledHeight : unscaledWidth;
+				const selectedSize:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
+				
+				// Store a reference to the indices that we need ElementSize items for.
+				const indicesRequired:Vector.<int> = buttonBar || minElementSize ? indicesInLayout.concat() : Vector.<int>( [ indicesInLayout[ selectedIndex ] ] );
+				
+				for( i = numElementSizes - 1; i >= 0; i-- )
 				{
-					_elementSizes.splice( i, 1 );
-				}
-				else
-				{
-					if( elementSize.index == selectedIndex ) elementSize.element = selectedElement;
-					updateElementSize( elementSize, index, availableSpace );
-					indicesFound.push( elementSize.index );
-				}
-			}
-			
-			// If we need to create some ElementSize items.
-			var numRequired:uint = numElementsInLayout - numElementSizes;
-			if( numRequired > 0 )
-			{
-				for( i = 0; i < numElementsInLayout; i++ )
-				{
-					index = indicesInLayout[ i ];
-					if( indicesFound.indexOf( index ) == -1 )
+					elementSize = _elementSizes[ i ];
+					
+					// Remove ElementSize items that are not in the layout.
+					indicesRequiredIndex = indicesRequired.indexOf( elementSize.displayListIndex );
+					if( indicesRequiredIndex == -1 && !elementSize.size )
 					{
-						elementSize = new ElementSize();
-						elementSize.start = minElementSize;
-						elementSize.diff = 0;
-						elementSize.size = 0;
-						elementSize.index = index;
-						if( i == selectedIndex ) elementSize.element = selectedElement;
-						updateElementSize( elementSize, index, availableSpace );
-						_elementSizes.push( elementSize );
+						_elementSizes.splice( i, 1 );
+					}
+						// Update ElementSize items.
+					else
+					{
+						if( indicesRequiredIndex != -1 ) indicesRequired.splice( indicesRequiredIndex, 1 )
+						elementSize.element = target.getElementAt( elementSize.displayListIndex );
+						
+						update( elementSize, selectedSize, creatingAll );
 					}
 				}
 				
-				 // If we've added items we now need to do a sort
-				_elementSizes.sort( sortElementSizes );
+				
+				// If we need to create some ElementSize items.
+				const numElementsRequired:int = indicesRequired.length;
+				for( i = 0; i < numElementsRequired; i++ )
+				{
+					elementSize = new ElementSize();
+					elementSize.diff = 0;
+					elementSize.size = minElementSize;
+					elementSize.displayListIndex = indicesRequired[ i ];
+					elementSize.layoutIndex = indicesInLayout.indexOf( elementSize.displayListIndex );
+					
+					elementSize.element = target.getElementAt( elementSize.displayListIndex );
+					
+					_elementSizes.push( elementSize );
+					
+					update( elementSize, selectedSize, creatingAll );
+				}
+				
+				// If we've added items we now need to do a sort.
+				if( numElementsRequired ) _elementSizes.sort( sortElementSizes );
 			}
-		}
-			
-		private function sortElementSizes( a:ElementSize, b:ElementSize ):int
-		{
-			if( a.index < b.index ) return -1;
-			if( a.index > b.index ) return 1;
-			return 0;
-		}
-		
-		private function updateElementSize( elementSize:ElementSize, i:int, availableSpace:Number ):void
-		{
-			if( !useVirtualLayout ) elementSize.element = target.getElementAt( indicesInLayout[ i ] );
-			
-			if( elementSize.element && ( elementSize.start != 0 || elementSize.diff != 0 || i == selectedIndex ) )
+			else
 			{
-				elementSize.start = elementSize.size;
-				elementSize.diff = ( i == selectedIndex ) ? availableSpace - elementSize.start : minElementSize - elementSize.start;
+				for( i = 0; i < numElementSizes; i++ )
+				{
+					elementSize = _elementSizes[ i ];
+					elementSize.element = target.getElementAt( elementSize.displayListIndex );
+				}
 			}
+			
 		}
 		
-		
-		override protected function invalidateSelectedIndex(index:int, offset:Number):void
+		/**
+		 *  @private
+		 */
+		override protected function invalidateSelectedIndex( index:int, offset:Number ):void
 		{
 			super.invalidateSelectedIndex( index, offset );
 			invalidateElementSizes();
 		}
 		
+		/**
+		 *  @private
+		 */
 		override protected function updateIndicesInView():void
 		{
 			super.updateIndicesInView();
@@ -696,14 +1018,13 @@ package ws.tink.spark.layouts
 			
 			if( element is DisplayObject ) DisplayObject( element ).scrollRect = null;
 		}
-		
-
         
     }
 }
 import flash.geom.Matrix;
 
 import mx.containers.TileDirection;
+import mx.core.ILayoutElement;
 import mx.core.IVisualElement;
 
 import spark.components.supportClasses.GroupBase;
@@ -718,8 +1039,175 @@ internal class ElementSize
 	public var diff:Number;
 	public var size:Number;
 	public var element:IVisualElement;
-	public var index:uint;
+	public var displayListIndex:uint;
+	public var layoutIndex:uint;
+	
+	public function ElementSize()
+	{
+	}
+	
+	public function toString():String
+	{
+		return "start: " + start.toString() + " size: " + size.toString() + " displayListIndex: " + displayListIndex.toString() + " element: " + ( element == null ).toString() + "!!!!";
+	}
 }
+
+internal class MeasuredCache
+{
+	
+	
+	
+	//--------------------------------------------------------------------------
+	//
+	//  Constructor
+	//
+	//--------------------------------------------------------------------------
+	
+	/**
+	 *  Constructor. 
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */ 
+	public function MeasuredCache()
+	{
+		reset();
+	}
+	
+	
+	//--------------------------------------------------------------------------
+	//
+	//  Properties
+	//
+	//--------------------------------------------------------------------------
+	
+	//----------------------------------
+	//  measuredWidth
+	//----------------------------------
+	
+	/**
+	 *  @private
+	 *	Storage property for measuredWidth.
+	 */
+	private var _measuredWidth:Number;
+	
+	/**
+	 *  measuredWidth
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	public function get measuredWidth():Number
+	{
+		return _measuredWidth;
+	}
+	
+	
+	//----------------------------------
+	//  measuredHeight
+	//----------------------------------
+	
+	/**
+	 *  @private
+	 *	Storage property for measuredHeight.
+	 */
+	private var _measuredHeight:Number;
+	
+	/**
+	 *  measuredHeight
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	public function get measuredHeight():Number
+	{
+		return _measuredHeight;
+	}
+	
+	
+	//----------------------------------
+	//  measuredMinWidth
+	//----------------------------------
+	
+	/**
+	 *  @private
+	 *	Storage property for measuredMinWidth.
+	 */
+	private var _measuredMinWidth:Number;
+	
+	/**
+	 *  measuredMinWidth
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	public function get measuredMinWidth():Number
+	{
+		return _measuredMinWidth;
+	}
+	
+	
+	//----------------------------------
+	//  measuredMinHeight
+	//----------------------------------
+	
+	/**
+	 *  @private
+	 *	Storage property for measuredMinHeight.
+	 */
+	private var _measuredMinHeight:Number;
+	
+	/**
+	 *  measuredMinHeight
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	public function get measuredMinHeight():Number
+	{
+		return _measuredMinHeight;
+	}
+
+	public function cache( elt:ILayoutElement ):void
+	{
+		var preferred:Number;
+		var min:Number;
+		
+		// Calculate preferred width first, as it's being used to calculate min width
+		preferred = Math.ceil(elt.getPreferredBoundsWidth());
+		// Calculate min width
+		min = !isNaN(elt.percentWidth) ? Math.ceil(elt.getMinBoundsWidth()) : preferred;
+		_measuredWidth = Math.max( _measuredWidth, preferred );
+		_measuredMinWidth = Math.max( _measuredMinWidth, min );
+		
+		// Calculate preferred width first, as it's being used to calculate min width
+		preferred = Math.ceil(elt.getPreferredBoundsHeight());
+		// Calculate min width
+		min = !isNaN(elt.percentHeight) ? Math.ceil(elt.getMinBoundsHeight()) : preferred;
+		_measuredHeight = Math.max( _measuredHeight, preferred );
+		_measuredMinHeight = Math.max( _measuredMinHeight, min );
+		
+	}
+	
+	public function reset():void
+	{
+		_measuredWidth = 0;
+		_measuredMinWidth = 0;
+		_measuredHeight = 0;
+		_measuredMinHeight = 0;
+	}
+}
+
 
 internal class ButtonLayout extends LayoutBase
 {
@@ -734,16 +1222,63 @@ internal class ButtonLayout extends LayoutBase
 		_parentLayout = parentLayout;
 	}
 	
-//	override public function measure():void
-//	{
-//		target.measuredWidth = target.measuredMinWidth = _parentLayout.unscaledWidth;
-//		target.measuredHeight = target.measuredMinHeight = _parentLayout.unscaledHeight;
-//	}
+	override public function measure():void
+	{
+		var matrix:Matrix;
+		var rotation:Number = _parentLayout.buttonRotation == "none" ? 0 : _parentLayout.buttonRotation == "left" ? -90 : 90;
+		if( rotation != _rotation )
+		{
+			_rotation = rotation;
+			matrix = new Matrix();
+			matrix.rotate( _rotation * ( Math.PI / 180 ) );
+		}
+
+		var element:IVisualElement;
+		var size:Number;
+		const numElements:int = target.numElements;
+		var s:Number = 0;
+		for( var i:int = 0; i < numElements; i++ )
+		{
+			element = target.getElementAt( i );
+			
+			if( matrix ) element.setLayoutMatrix( matrix, true );
+			
+			if( _parentLayout.direction == TileDirection.VERTICAL  )
+			{
+				
+				s = Math.max( s, element.getPreferredBoundsWidth() );
+			}
+			else
+			{
+				s = Math.max( s, element.getPreferredBoundsHeight() );
+			}
+			
+		}
+		
+		if( _parentLayout.direction == TileDirection.VERTICAL  )
+		{
+			target.measuredWidth = target.measuredMinWidth = s;
+			target.measuredHeight = _parentLayout.target.measuredHeight;
+			target.measuredMinHeight = _parentLayout.target.measuredMinHeight;
+		}
+		else
+		{
+			target.measuredWidth = _parentLayout.target.measuredWidth
+			target.measuredMinWidth = _parentLayout.target.measuredWidth;
+			target.measuredHeight = target.measuredMinHeight = s;
+		}
+	}
 	
 	public function invalidateTargetDisplayList() : void
 	{
 		if( !target ) return;
 		target.invalidateDisplayList();
+	}
+	
+	public function invalidateTargetSize() : void
+	{
+		if( !target ) return;
+		target.invalidateSize();
 	}
 	
 	override public function set target( value:GroupBase ):void
@@ -767,9 +1302,7 @@ internal class ButtonLayout extends LayoutBase
 			matrix.rotate( _rotation * ( Math.PI / 180 ) );
 		}
 			
-		_totalSize = 0;
 		var element:IVisualElement;
-		var size:Number;
 		const numElements:int = target.numElements;
 		for( var i:int = 0; i < numElements; i++ )
 		{
@@ -779,20 +1312,12 @@ internal class ButtonLayout extends LayoutBase
 			
 			if( _parentLayout.direction == TileDirection.VERTICAL  )
 			{
-				size = element.getPreferredBoundsHeight();
-				element.setLayoutBoundsSize( unscaledWidth, size );
+				element.setLayoutBoundsSize( unscaledWidth, element.getPreferredBoundsHeight() );
 			}
 			else
 			{
-				
-				size = element.getPreferredBoundsWidth();
-				element.setLayoutBoundsSize( size, unscaledHeight );
+				element.setLayoutBoundsSize( element.getPreferredBoundsWidth(), unscaledHeight );
 			}
-
-			
-			if( i < numElements - 1 ) size--;
-			_totalSize += size;
-			_buttonSizes[ i ] = size;
 		}
 		
 		_parentLayout.invalidateElementSizes();

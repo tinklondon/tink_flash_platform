@@ -196,6 +196,13 @@ package ws.tink.spark.layouts.supportClasses
 		}
 		
 		
+		
+		
+		public function isAnimating():Boolean
+		{
+			return animation.isPlaying;
+		}
+		
 		//----------------------------------
 		//  animation
 		//----------------------------------   
