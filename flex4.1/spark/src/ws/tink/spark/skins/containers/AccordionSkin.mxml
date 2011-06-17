@@ -44,7 +44,7 @@ SOFTWARE.
 		]]>
 	</fx:Metadata> 
 	
-	<fx:Script fb:purpose="styling">
+	<fx:Script fb:purpose="stylin">
 		/**
 		 * @private
 		 */
