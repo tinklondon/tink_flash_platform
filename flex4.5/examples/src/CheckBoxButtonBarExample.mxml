@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<!-- Simple example to demonstrate the Spark CheckBox control -->
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:st="library://ns.tink.ws/flex/spark">
+<!-- Simple example to demonstrate the Spark CheckBoxBar control -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark">
 	
 	<fx:Script>
 		<![CDATA[
@@ -10,16 +12,18 @@
 			public const BASIC_COST:Number = 4.50;
 			
 			// This event handler adds the cost of condiments to the total cost.
-			private function condimentsChange( event:IndexChangeEvent ):void {
-				
+			private function condimentsChange( event:IndexChangeEvent ):void
+			{
 				var totalCost:Number = BASIC_COST;
+				
+				// Add on the cost of the selected condiments.
 				for each( var item:Object in condiments.selectedItems )
 				{
 					totalCost += item.cost
 				}
 				
 				// Format the totalCost and then display it in a label.
-				totalString.text = usdFormatter.format(totalCost);
+				totalString.text = usdFormatter.format( totalCost );
 			}
 		]]>
 	</fx:Script>
