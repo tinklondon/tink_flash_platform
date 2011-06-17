@@ -1,12 +1,6 @@
 /* CSS file */
 @namespace "library://ns.tink.ws/flex/spark";
-@namespace controls "ws.tink.spark.controls.*";
 @namespace s "library://ns.adobe.com/flex/spark";
-
-Accordion
-{
-	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
-}
 
 Accordion
 {
@@ -48,33 +42,6 @@ DataNavigator
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
 }
 
-Form
-{
-	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormSkin" );
-}
-
-FormItem
-{
-	skin-class : ClassReference( "ws.tink.spark.skins.containers.FormItemSkin" );
-}
-
-/*HPageStep*/
-
-HStep
-{
-	skin-class : ClassReference( "ws.tink.spark.skins.controls.HStepSkin" );
-}
-
-InlineScroller
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.InlineScrollerSkin");
-}
-
-MouseOverStepper
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.MouseOverStepperSkin");
-}
-
 MultipleSelectionButtonBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
@@ -83,11 +50,6 @@ MultipleSelectionButtonBar
 Navigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.containers.NavigatorSkin");
-}
-
-PageStepper
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.PageStepperSkin");
 }
 
 PropertiesList
@@ -100,21 +62,7 @@ RadioButtonBar
 	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
 }
 
-TimeStepper
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.TimeStepperSkin");
-}
-
 ValidityVScrollBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
 }
-
-/*VPageStep*/
-
-VStep
-{
-	skin-class : ClassReference( "ws.tink.spark.skins.controls.VStepSkin" );
-}
-
-
