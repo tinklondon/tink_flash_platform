@@ -30,6 +30,54 @@ package ws.tink.spark.containers
 	
 	import mx.utils.BitFlagUtil;
 	
+	/**
+	 *  An Spark Accordion navigator container has a collection IVisualElemente,
+	 *  but only one of them at a time is fully visible.
+	 *  It creates and manages navigator buttons, which you use
+	 *  to navigate between the elements.
+	 *  There is one navigator button associated with each element,
+	 *  and each navigator button belongs to the Accordion container, not to the child.
+	 *  When the user clicks a navigator button, the associated element
+	 *  is displayed.
+	 *  The transition to the new child uses an animation to make it clear to
+	 *  the user that one child is disappearing and a different one is appearing.
+	 * 
+	 *  <p>The Accordion container does not extend the ViewStack container,
+	 *  but it implements all the properties, methods, styles, and events
+	 *  of the ViewStack container, such as <code>selectedIndex</code>
+	 *  and <code>selectedChild</code>.</p>
+	 *
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:Accordion&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:Accordion
+	 *    <strong>Properties</strong>
+	 *    buttonRotation="none|left|right"
+	 *    direction="vertical|horizontal"
+	 *    duration="700"
+	 *    easer=""<i>IEaser</i>""
+	 *    labelField="label"
+	 *    labelFunction="null"
+	 *    minElementSize="0"
+	 *    useScrollRect"true"
+	 *  
+	 *    <strong>Styles</strong>
+	 *    <strong>Events</strong>
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @includeExample examples/AccordionExample.mxml
+	 *
+	 *  @see ws.tink.spark.layouts.AccordionLayout
+	 *
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class Accordion extends Navigator
 	{
 		
@@ -115,11 +163,14 @@ package ws.tink.spark.containers
 		//
 		//--------------------------------------------------------------------------
 		
+		//----------------------------------
+		//  buttonBar
+		//---------------------------------- 
+		
 		[SkinPart(required="true")]
 		
 		/**
-		 *  An optional skin part that defines the Group where the content 
-		 *  children get pushed into and laid out.
+		 *  A required skin part that is used to navigate between elements.
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -128,11 +179,15 @@ package ws.tink.spark.containers
 		 */
 		public var buttonBar:ButtonBarBase;
 		
+		
+		//----------------------------------
+		//  accordionLayout
+		//---------------------------------- 
+		
 		[SkinPart(required="true")]
 		
 		/**
-		 *  An optional skin part that defines the Group where the content 
-		 *  children get pushed into and laid out.
+		 *  A required skin part that defines the layout for the Accordion.
 		 *  
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -471,12 +526,7 @@ package ws.tink.spark.containers
 		//--------------------------------------------------------------------------
 		
 		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
 		 */
 		override protected function partAdded(partName:String, instance:Object):void
 		{
@@ -557,12 +607,7 @@ package ws.tink.spark.containers
 		}
 		
 		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
 		 */
 		override protected function partRemoved( partName:String, instance:Object ):void
 		{
