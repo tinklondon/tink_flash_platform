@@ -40,9 +40,6 @@ package ws.tink.spark.layouts
 	use namespace mx_internal;
 	
 	/**
-	 * Flex 4 Accordion Layout
-	 */
-	/**
 	 *  An AccordionLayout class arranges the layout elements in a vertical
 	 *  or horizontal sequence, with one of them at a time fully visible.
 	 * 
