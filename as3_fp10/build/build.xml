@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<project name="Tink FP10 AS3 Library" basedir="../" default="main">
+
+    <property file="${basedir}/build/build.properties" description="properities for builds" />
+    	
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_TASKS}"/>
+    
+	
+	<target name="main" depends="clean,include,compile,docs"/>
+	
+	
+	<target name="clean" description="Deletes compc and asdoc target dirs">
+		<delete dir="${BIN_DIR}" failonerror="false"/>
+		<delete dir="${DOC_DIR}" failonerror="false"/>
+	</target>
+	
+	
+	<target name="include" description="Creates class list to be compiled into SWC">
+			
+		<path id="path">
+			<fileset dir="${SRC_DIR}">
+				<include name="**/*.as"/>
+				<include name="**/*.mxml"/>
+		  	</fileset>
+		</path>
+
+		<pathconvert property="classes" pathsep=" " dirsep="." refid="path">
+		
+	 		<map from="${SRC_DIR}/" to=""/>
+			
+			<mapper>
+				<chainedmapper>
+					<globmapper from="*.as" to="*"/>
+				</chainedmapper>
+				<chainedmapper>	
+					<globmapper from="*.mxml" to="*"/>
+				</chainedmapper>
+			</mapper>
+	 	</pathconvert>
+
+	</target>	
+	
+	
+	<target name="compile" description="Builds the SWC"> 
+		
+		<mkdir dir="${BIN_DIR}" />
+	    	    	
+    	<compc output="${BIN_DIR}/${SWC_NAME}" static-link-runtime-shared-libraries="true" include-classes="${classes}" debug="false">
+    		<external-library-path dir="${FLEX_HOME}/frameworks/libs/player/${VERSION}/" includes="*.swc"/>
+    		<source-path path-element="${SRC_DIR}"/>
+    	</compc>
+		
+	</target>
+	
+	
+	<target name="docs" description="Creates the documentation">
+		
+		<asdoc output="${DOC_DIR}" append="false" 
+			lenient="false" failonerror="true" 
+			warnings="true" strict="true" locale="${LOCALE}"
+			footer="${DOC_FOOTER}" main-title="${DOC_TITLE}"
+			window-title="${DOC_TITLE}"
+			doc-classes="${classes}"
+			skip-xsl="false"
+			keep-xml="true"
+			>
+
+			<source-path path-element="${SRC_DIR}"/>
+			
+		</asdoc>
+	
+		<!-- Update the SWC with asdocs -->
+		<zip destfile="${BIN_DIR}/${SWC_NAME}" update="true">
+		    <zipfileset dir="${DOC_DIR}/tempdita" prefix="docs">
+			    <include name="*.*"/>
+				<exclude name="ASDoc_Config.xml"/>
+				<exclude name="overviews.xml"/>
+		    </zipfileset>
+		</zip>
+		
+		<!-- Delete the tempdita dir used for adding asdocs to the SWC -->
+		<delete dir="${DOC_DIR}/tempdita"/>
+		
+	</target>
+	
+
+	
+</project>
