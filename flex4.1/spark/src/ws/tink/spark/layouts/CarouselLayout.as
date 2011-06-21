@@ -1,3 +1,21 @@
+/*
+Copyright (c) 2011 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package ws.tink.spark.layouts
 {
 	
@@ -15,8 +33,55 @@ package ws.tink.spark.layouts
 	import ws.tink.spark.layouts.supportClasses.PerspectiveAnimationNavigatorLayoutBase;
 
 	/**
-	 *  Flex 4 CarouselLayout
+	 *  A CarouselLayout class arranges the layout elements in a
+	 *  sequence along an arc, with one of them at a time selected.
 	 * 
+	 *  <p>The position of the elements is determined by the radii
+	 *  <code>radiusX</code>, <code>radiusY</code> and <code>radiusZ</code>.
+	 *  These can be properties can be set the negative values to produce
+	 *  a ring of elements surrounding the view point.</p>
+	 * 
+	 *  <p>The rotation of the elements is determined by the
+	 *  <code>rotationX</code> and <code>rotationY</code> properties.</p>
+	 *  <ul>
+	 *    <li>If a value of <code>"none"</code> is used for a rotation property, 
+	 *    no rotation is applied to the element around the corresponding axis.</li>
+	 *
+	 *    <li>If a value of <code>"standard"</code> is used for a rotation property, 
+	 *    the element will be rotated so that it faces outwards around the arc.</li>
+	 *
+	 *    <li>If a value of <code>"reversed"</code> is used for a rotation property, 
+	 *    the element will be rotated so that it faces inwards around the arc.</li>
+	 *  </ul>
+	 * 
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:CarouselLayout&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:AccordionLayout
+	 *    <strong>Properties</strong>
+	 *    angle="360"
+	 *    depthColor="-1"
+	 *    depthColorAlpha="1"
+	 *    horizontalAlign="center|left|right"
+	 *    horizontalAlignOffset="0"
+	 *    horizontalAlignOffsetPercent="0"
+	 *    numUnselectedElements="-1"
+	 *    radiusX="100"
+	 *    radiusY="0"
+	 *    radiusZ="NaN"
+	 *    rotateX="none|reversed|standard"
+	 *    rotateY="none|reversed|standard"
+	 *    verticalAlign="bottom|middle|top"
+	 *    verticalAlignOffset="0"
+	 *    verticalAlignOffsetPercent="0"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @includeExample examples/CarouselLayoutExample.mxml
+	 *
 	 *  @langversion 3.0
 	 *  @playerversion Flash 10
 	 *  @playerversion AIR 1.5
@@ -59,11 +124,6 @@ package ws.tink.spark.layouts
 		 *  @private
 		 */
 		private var _transformCalculator				: TransformValues;
-		
-		/**
-		 *  @private
-		 */
-//		private var _indicesInViewChanged				: Boolean;
 		
 		/**
 		 *  @private
@@ -144,6 +204,7 @@ package ws.tink.spark.layouts
 		 */
 		private var _rotateX:int = 0;
 		
+		[Inspectable(category="General", enumeration="none,reversed,standard", defaultValue="none")]
 		/**
 		 *	Whether rotation should be applied to the x axis of elements.
 		 * 
@@ -156,7 +217,7 @@ package ws.tink.spark.layouts
 		 */
 		public function get rotateX():String
 		{
-			return _rotateX ? _rotateX < 0 ? "reversed" : "standard" : "none";;
+			return _rotateX ? _rotateX < 0 ? "reversed" : "standard" : "none";
 		}
 		/**
 		 *  @private
@@ -201,6 +262,7 @@ package ws.tink.spark.layouts
 		 */
 		private var _rotateY:int = 1;
 		
+		[Inspectable(category="General", enumeration="none,reversed,standard", defaultValue="standard")]
 		/**
 		 *	Whether rotation should be applied to the y axis of elements.
 		 * 
@@ -521,7 +583,6 @@ package ws.tink.spark.layouts
 			
 			_horizontalAlignOffset = value;
 			_horizontalAlignOffsetPercent = NaN;
-//			_indicesInViewChanged = true;
 			invalidateTargetDisplayList();
 		}    
 		
@@ -885,84 +946,6 @@ package ws.tink.spark.layouts
 		}
 		
 		
-		//----------------------------------
-		//  layoutType
-		//----------------------------------  
-		
-		/**
-		 *  @private
-		 *  Storage property for layoutType.
-		 */
-		private var _layoutType	: String = "circular";
-		
-//		[Inspectable(category="General", enumeration="circular,linear", defaultValue="circular")]
-//		/**
-//		 *	The layout type to be used for the SemiCarouselLayout.
-//		 * 
-//		 *  @default "circular"
-//		 * 
-//		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselLayoutType
-//		 *
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get layoutType():String
-//		{
-//			return _layoutType;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set layoutType( value:String ):void
-//		{
-//			if( value == _layoutType ) return;
-//			
-//			_layoutType = value;
-//			invalidateTargetDisplayList();
-//		}
-		
-		
-//		//----------------------------------
-//		//  direction
-//		//----------------------------------  
-//		
-//		/**
-//		 *  @private
-//		 *  Storage property for layoutType.
-//		 */
-//		private var _direction	: String = "convex";
-//		
-//		[Inspectable(category="General", enumeration="convex,concave", defaultValue="convex")]
-//		/**
-//		 *	The layout type to be used for the SemiCarouselLayout.
-//		 * 
-//		 *  @default "convex"
-//		 * 
-//		 * 	@see ws.tink.layouts.supportClasses.SemiCarouselDirection
-//		 *
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get direction():String
-//		{
-//			return _direction;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set direction( value:String ):void
-//		{
-//			if( value == _direction ) return;
-//			
-//			_direction = value;
-//			invalidateTargetDisplayList();
-//		}
-		
-		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -989,6 +972,40 @@ package ws.tink.spark.layouts
 			element.visible = true;
 		}
 		
+		/**
+		 *	@private
+		 */
+		private function sortElementsByZ( a:IVisualElement, b:IVisualElement ):int
+		{
+			if( getZ( a ) > getZ( b ) )
+			{
+				return -1;
+			}
+			else if( getZ( a ) < getZ( b ) )
+			{
+				return 1;
+			}
+			
+			return 0;
+		}
+		
+		/**
+		 *	@private
+		 * 
+		 *	Util function to return the value of the z property
+		 *  on an element.
+		 */
+		private function getZ( e:IVisualElement ):Number
+		{
+			if( e is GraphicElement )
+			{
+				return GraphicElement( e ).z;
+			}
+			else
+			{
+				return UIComponent( e ).z;
+			}
+		}
 		
 		/**
 		 *	@private
@@ -1006,34 +1023,6 @@ package ws.tink.spark.layouts
 		 *	- If their element index is after the selected elements index
 		 *   they appear above all items included in the layout
 		 */
-		
-		private function comparething( a:IVisualElement, b:IVisualElement ):int
-		{
-//			trace( getZ( a ), getZ( b ), a, b )
-			if( getZ( a ) > getZ( b ) )
-			{
-				return -1;
-			}
-			else if( getZ( a ) < getZ( b ) )
-			{
-				return 1;
-			}
-			
-			return 0;
-		}
-		
-		private function getZ( e:IVisualElement ):Number
-		{
-			if( e is GraphicElement )
-			{
-				return GraphicElement( e ).z;
-			}
-			else
-			{
-				return UIComponent( e ).z;
-			}
-		}
-		
 		private function updateDepths( depths:Vector.<int> ):void
 		{
 			if( !depths || !depths.length ) return;
@@ -1056,14 +1045,14 @@ package ws.tink.spark.layouts
 				elements.push( element );
 			}
 			
-			elements.sort( comparething );
+			elements.sort( sortElementsByZ );
 			var num:int = elements.length;
 			for( i = 0; i < num; i++ )
 			{
 				elements[ i ].depth = depths[ i ];
 			}
 			
-			target.validateNow();
+//			target.validateNow();
 //			for( i = firstIndexInView; i <= lastIndexInView; i++ )
 //			{
 //				index = indicesInLayout[ i ];
@@ -1294,7 +1283,6 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
-			
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
 			
@@ -1326,7 +1314,7 @@ package ws.tink.spark.layouts
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
-			
+
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
 			
@@ -1472,8 +1460,6 @@ internal class TransformValues
 	// AlignOffset
 	private var _ho				: Number;
 	private var _vo				: Number;
-	
-	private var _layoutFunction				: Function;
 	
 	private var _rx				: Number;
 	private var _ry				: Number;
@@ -1694,22 +1680,8 @@ internal class TransformValues
 		_rotX = rotX;
 		
 		const numElements:int = _layout.numUnselectedElements < 0 ? 0 : _layout.numUnselectedElements;
-//		_ni = _layout.numUnselectedElements;
-		
-//		switch( _layout.layoutType )
-//		{
-//			case SemiCarouselLayoutType.CIRCULAR :
-//			{
-				_an = numElements ? _layout.angle / ( numElements * 2 ) : _layout.angle / _layout.numElementsInLayout;//360/ _layout.numElementsInLayout//_layout.numUnselectedElements ? _layout.angle / ( ( _layout.numUnselectedElements * 2 )  ) : _layout.angle;//3
-				_layoutFunction = circular;
-//				break;
-//			}
-//			case SemiCarouselLayoutType.LINEAR :
-//			{
-//				_layoutFunction = linear;
-//				break;
-//			}
-//		}
+
+		_an = numElements ? _layout.angle / ( numElements * 2 ) : _layout.angle / _layout.numElementsInLayout;
 	}
 	
 	/**
@@ -1720,10 +1692,10 @@ internal class TransformValues
 	 *  @playerversion AIR 1.5
 	 *  @productversion Flex 4
 	 */
-	private function circular( index:Number ):void
+	private function layout( index:Number ):void
 	{
 		const degree:Number = _an * index;
-		const radian:Number = degree * Math.PI / 180;//( degree / 180 ) * Math.PI;
+		const radian:Number = degree * Math.PI / 180;
 		
 		_x = _cx + _ho + ( Math.sin( radian ) * _rx );
 		_y = _cy + _vo + ( Math.sin( radian ) * _ry );
@@ -1744,46 +1716,6 @@ internal class TransformValues
 		return Math.atan2( y2 - y1, x2 - x1 ) * ( 180 / Math.PI );
 	}
 	
-	/**
-	 *	linear
-	 * 
-	 *  @langversion 3.0
-	 *  @playerversion Flash 10
-	 *  @playerversion AIR 1.5
-	 *  @productversion Flex 4
-	 */
-//	private function linear( index:Number ):void
-//	{
-//		_x = _cx + _ho + ( ( _rx / _ni ) * index );
-//		_y = _cy + _vo + ( ( _ry / _ni ) * index );
-//		_z = ( _rz / _ni ) * Math.abs( index );
-//		trace( "arrgggg", _z, index );
-//		
-//		if( index <= -1 )
-//		{
-//			_yRotation = 45;
-//		}
-//		else if(  index >= 1 )
-//		{
-//			_yRotation = -45;
-//		}
-//		else if( index < 0 )
-//		{
-//			_yRotation = 45 * _indexOffset;
-//		}
-//		else if( index > 0 )
-//		{
-//			_yRotation = -45 + ( 45 * _indexOffset );
-//		}
-//		else
-//		{
-//			_yRotation = 0;
-//		}
-//		
-//		_xRotation = 0;
-//	}
-	
-
 	
 	/**
 	 *	updateForIndex
@@ -1795,14 +1727,10 @@ internal class TransformValues
 	 */
 	public function updateForIndex( i:int, element:IVisualElement, width:Number, height:Number, hMultiplier:Number, vMultiplier:Number ):void
 	{
-//		var halfWidth:Number = element.width / 2;
-//		var halfHeight:Number = element.height / 2;
 		_ox = ( width / 2 ) * ( hMultiplier - 0.5 ) * 2;
 		_oy = ( height / 2 ) * ( vMultiplier - 0.5 ) * 2;
 		
-//		trace( _ox );
-		
-		_layoutFunction( ( i - _index ) - _indexOffset );
+		layout( ( i - _index ) - _indexOffset );
 		
 		if( _c > -1 )
 		{
