@@ -47,28 +47,142 @@ package ws.tink.spark.layouts
 	use namespace mx_internal;
 	
 	/**
-	 * Flex 4 Time Machine Layout
+	 *  An StackLayout class shows a single element at a time..
+	 * 
+	 *  <p>The horizontal position of the shown element is determined by the layout's
+	 *  <code>horizontalAlign</code> property.</p>
+	 * 
+	 *  <p>The vertical position of the shown element is determined by the layout's
+	 *  <code>verticalAlign</code> property.</p>
+	 * 
+	 *  <p>The width of each element is calculated according to the following rules,
+	 *  listed in their respective order of precedence (element's minimum width and
+	 *  maximum width are always respected):</p>
+	 *  <ul>
+	 *    <li>If <code>horizontalAlign</code> is <code>"justify"</code>, 
+	 *    then set the element's width to the container width.</li>
+	 *
+	 *    <li>If <code>horizontalAlign</code> is <code>"contentJustify"</code>,
+	 *    then set the element's width to the maximum between the container's width 
+	 *    and all elements' preferred width.</li>
+	 *
+	 *    <li>If the element's <code>percentWidth</code> is set, then calculate the element's
+	 *    width as a percentage of the container's width.</li>
+	 *
+	 *    <li>Set the element's width to its preferred width.</li>
+	 *  </ul>
+	 *
+	 *  <p>The height of each element is calculated according to the following rules,
+	 *  listed in their respective order of precedence (element's minimum height and
+	 *  maximum height are always respected):</p>
+	 *  <ul>
+	 *    <li>If the <code>verticalAlign</code> property is <code>"justify"</code>,
+	 *   then set the element's height to the container height.</li>
+	 *
+	 *    <li>If the <code>verticalAlign</code> property is <code>"contentJustify"</code>, 
+	 *    then set the element's height to the maximum between the container's height 
+	 *    and all elements' preferred height.</li>
+	 *
+	 *    <li>If the element's <code>percentHeight</code> property is set, 
+	 *    then calculate the element's height as a percentage of the container's height.</li>
+	 *
+	 *    <li>Set the element's height to its preferred height.</li>
+	 *  </ul>
+	 * 
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:StackLayout&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:StackLayout
+	 *    <strong>Properties</strong>
+	 *    horizontalAlign="center,contentJustify,justify,left,right"
+	 *    verticalAlign="contentJustify,bottom,justify,middle,top"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
 	 */
 	public class StackLayout extends NavigatorLayoutBase
 	{
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function StackLayout()
+		{
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 */
 		private var _bitmapFrom		: BitmapData;
+		
+		/**
+		 *  @private
+		 */
 		private var _bitmapTo		: BitmapData
 		
+		/**
+		 *  @private
+		 */
 		private var _stackIndex		: int = -2;
-		
-//		private var _numVirtualItems	: int = 1;
-		
+
+		/**
+		 *  @private
+		 */		
 		public var effect			: IEffect;
+		
+		/**
+		 *  @private
+		 */
 		private var _effectInstance		: EffectInstance;
+		
+		/**
+		 *  @private
+		 */
 		private var _selectedElement		: IVisualElement;
 		
+		/**
+		 *  @private
+		 */
 		private var _elementMaxDimensions		: ElementMaxDimensions;
 		
-//		private var _targetChanged				: Boolean;
-		
+		/**
+		 *  @private
+		 */
 		private var _numElementsInLayout		: int;
+		
+		/**
+		 *  @private
+		 */
 		private var _numElementsNotInLayout		: int;
+		
 		
 		
 		//--------------------------------------------------------------------------
@@ -81,12 +195,46 @@ package ws.tink.spark.layouts
 		//  verticalAlign
 		//----------------------------------    
 		
-		private var _verticalAlign:String = VerticalAlign.TOP;
-		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="top")]
+		/**
+		 *  @private
+		 *  Storage property for verticalAlign.
+		 */
+		private var _verticalAlign:String = VerticalAlign.JUSTIFY;
+		
+		[Inspectable(category="General", enumeration="top,bottom,middle,justify,contentJustify", defaultValue="justify")]
+		/** 
+		 *  The vertical alignment of layout elements.
+		 * 
+		 *  <p>If the value is <code>"bottom"</code>, <code>"middle"</code>, 
+		 *  or <code>"top"</code> then the layout elements are aligned relative 
+		 *  to the container's <code>contentHeight</code> property.</p>
+		 * 
+		 *  <p>If the value is <code>"contentJustify"</code> then the actual
+		 *  height of the layout element is set to 
+		 *  the container's <code>contentHeight</code> property. 
+		 *  The content height of the container is the height of the largest layout element. 
+		 *  If all layout elements are smaller than the height of the container, 
+		 *  then set the height of all the layout elements to the height of the container.</p>
+		 * 
+		 *  <p>If the value is <code>"justify"</code> then the actual height
+		 *  of the layout elements is set to the container's height.</p>
+		 *
+		 *  <p>This property does not affect the layout's measured size.</p>
+		 *  
+		 *  @default "justify"
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function get verticalAlign():String
 		{
 			return _verticalAlign;
 		}
+		/**
+		 *  @private
+		 */
 		public function set verticalAlign(value:String):void
 		{
 			if( value == _verticalAlign ) return;
@@ -101,12 +249,44 @@ package ws.tink.spark.layouts
 		//  horizontalAlign
 		//----------------------------------  
 		
+		/**
+		 *  @private
+		 *  Storage property for horizontalAlign.
+		 */
 		private var _horizontalAlign:String = HorizontalAlign.JUSTIFY;
-		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="left")]
+		
+		[Inspectable(category="General", enumeration="left,right,center,justify,contentJustify", defaultValue="justify")]
+		/** 
+		 *  The horizontal alignment of layout elements.
+		 * 
+		 *  <p>If the value is <code>"left"</code>, <code>"right"</code>, or <code>"center"</code> then the 
+		 *  layout element is aligned relative to the container's <code>contentWidth</code> property.</p>
+		 * 
+		 *  <p>If the value is <code>"contentJustify"</code>, then the layout element's actual
+		 *  width is set to the <code>contentWidth</code> of the container.
+		 *  The <code>contentWidth</code> of the container is the width of the largest layout element. 
+		 *  If all layout elements are smaller than the width of the container, 
+		 *  then set the width of all layout elements to the width of the container.</p>
+		 * 
+		 *  <p>If the value is <code>"justify"</code> then the layout element's actual width
+		 *  is set to the container's width.</p>
+		 *
+		 *  <p>This property does not affect the layout's measured size.</p>
+		 *  
+		 *  @default "justify"
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function get horizontalAlign():String
 		{
 			return _horizontalAlign;
 		}
+		/**
+		 *  @private
+		 */
 		public function set horizontalAlign(value:String):void
 		{
 			if( value == _horizontalAlign ) return;
@@ -128,6 +308,9 @@ package ws.tink.spark.layouts
 		//  target
 		//----------------------------------    
 		
+		/**
+		 *  @private
+		 */
 		override public function set target(value:GroupBase):void
 		{
 			if( target == value ) return;
@@ -146,12 +329,16 @@ package ws.tink.spark.layouts
 		//--------------------------------------------------------------------------
 		
 		/**
-		 *  @inheritDoc
-		 *  
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
+		 */
+		override public function measure():void
+		{
+			super.measure();
+			//TODO need to implement measure and add ASDocs
+		}
+		
+		/**
+		 *  @private
 		 */
 		override public function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
@@ -204,18 +391,13 @@ package ws.tink.spark.layouts
 		}
 		
 		/**
-		 *  @inheritDoc
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
 		 */
 		override protected function updateDisplayListVirtual():void
 		{
 			super.updateDisplayListVirtual();
 			
-			if( _selectedElement ) _selectedElement.visible = false;
+			const prevSelectedElement:IVisualElement = _selectedElement;
 
 			if( target.numElements == 0 ) return;
 			
@@ -227,6 +409,8 @@ package ws.tink.spark.layouts
 			_selectedElement = target.getVirtualElementAt( indicesInLayout[
 				firstIndexInView ], eltWidth, eltHeight );
 			
+			if( prevSelectedElement && prevSelectedElement != _selectedElement ) prevSelectedElement.visible = false
+				
 			if( !_selectedElement ) return;
 			
 			_elementMaxDimensions.update( _selectedElement );
@@ -239,12 +423,7 @@ package ws.tink.spark.layouts
 		
 		
 		/**
-		 *  @inheritDoc
-		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @private
 		 */
 		override protected function updateDisplayListReal():void
 		{
@@ -264,17 +443,17 @@ package ws.tink.spark.layouts
 			for( i = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
-				element.visible = false;
-				if( i == firstIndexInView ) _selectedElement = element;
+				if( i == firstIndexInView ) 
+				{
+					_selectedElement = element;
+				}
+				else
+				{
+					element.visible = false;
+				}
 				
 				_elementMaxDimensions.update( element );
 			}
-			
-//			for( i = 0; i < numElementsInLayout; i++ )
-//			{
-//				element = target.getElementAt( indicesInLayout[ i ] );
-//				updateSelectedElementSizeAndPosition( element );
-//			}
 			
 			if( _selectedElement )
 			{
@@ -285,7 +464,9 @@ package ws.tink.spark.layouts
 			updateDepths( null );
 		}
 		
-		
+		/**
+		 *  @private
+		 */
 		private function updateSelectedElementSizeAndPosition( element:IVisualElement ):void
 		{
 			var w:Number = calculateElementWidth( element, unscaledWidth, _elementMaxDimensions.width );
@@ -338,19 +519,10 @@ package ws.tink.spark.layouts
 		
 		/**
 		 *  @private
-		 * 
 		 *  Used only for virtual layout.
 		 */
 		private function calculateElementWidth( element:ILayoutElement, targetWidth:Number, containerWidth:Number ):Number
 		{
-			// If percentWidth is specified then the element's width is the percentage
-			// of targetWidth clipped to min/maxWidth and to (upper limit) targetWidth.
-			var percentWidth:Number = element.percentWidth;
-			if( !isNaN( percentWidth ) )
-			{
-				var width:Number = percentWidth * 0.01 * targetWidth;
-				return Math.min( targetWidth, Math.min( element.getMaxBoundsWidth(), Math.max( element.getMinBoundsWidth(), width ) ) );
-			}
 			switch( horizontalAlign )
 			{
 				case HorizontalAlign.JUSTIFY :
@@ -359,27 +531,28 @@ package ws.tink.spark.layouts
 				}
 				case HorizontalAlign.CONTENT_JUSTIFY : 
 				{
-					return Math.max( element.getPreferredBoundsWidth(), containerWidth );
+					return Math.max( element.getPreferredBoundsWidth(), targetWidth );
 				}
 			}
+			
+			// If percentWidth is specified then the element's width is the percentage
+			// of targetWidth clipped to min/maxWidth and to (upper limit) targetWidth.
+			var percentWidth:Number = element.percentWidth;
+			if( !isNaN( percentWidth ) )
+			{
+				var width:Number = targetWidth * ( percentWidth * 0.01 );
+				return Math.min( targetWidth, Math.min( element.getMaxBoundsWidth(), Math.max( element.getMinBoundsWidth(), width ) ) );
+			}
+			
 			return element.getPreferredBoundsWidth();  // not constrained
 		}
 		
 		/**
 		 *  @private
-		 * 
 		 *  Used only for virtual layout.
 		 */
 		private function calculateElementHeight( element:ILayoutElement, targetHeight:Number, containerHeight:Number):Number
 		{
-			// If percentWidth is specified then the element's width is the percentage
-			// of targetWidth clipped to min/maxWidth and to (upper limit) targetWidth.
-			var percentHeight:Number = element.percentHeight;
-			if( !isNaN( percentHeight ) )
-			{
-				var height:Number = percentHeight * 0.01 * targetHeight;
-				return Math.min( targetHeight, Math.min( element.getMaxBoundsHeight(), Math.max( element.getMinBoundsHeight(), height ) ) );
-			}
 			switch( verticalAlign )
 			{
 				case VerticalAlign.JUSTIFY :
@@ -388,9 +561,19 @@ package ws.tink.spark.layouts
 				}
 				case VerticalAlign.CONTENT_JUSTIFY : 
 				{
-					return Math.max( element.getPreferredBoundsHeight(), containerHeight );
+					return Math.max( element.getPreferredBoundsHeight(), targetHeight );
 				}
 			}
+			
+			// If percentWidth is specified then the element's width is the percentage
+			// of targetWidth clipped to min/maxWidth and to (upper limit) targetWidth.
+			var percentHeight:Number = element.percentHeight;
+			if( !isNaN( percentHeight ) )
+			{
+				var height:Number = targetHeight * ( percentHeight * 0.01 );
+				return Math.min( targetHeight, Math.min( element.getMaxBoundsHeight(), Math.max( element.getMinBoundsHeight(), height ) ) );
+			}
+			
 			return element.getPreferredBoundsHeight();  // not constrained
 		}
 		
@@ -439,7 +622,9 @@ package ws.tink.spark.layouts
 			}
 		}
 		
-		
+		/**
+		 *  @private
+		 */
 		protected function onEffectEnd( event:EffectEvent ):void
 		{
 			_effectInstance.removeEventListener( EffectEvent.EFFECT_END, onEffectEnd, false );
@@ -458,6 +643,9 @@ package ws.tink.spark.layouts
 //			
 //		}
 		
+		/**
+		 *  @private
+		 */
 		override protected function invalidateSelectedIndex(index:int, offset:Number):void
 		{
 			if( selectedIndex == index ) return;
@@ -476,10 +664,11 @@ package ws.tink.spark.layouts
 			}
 			
 			super.invalidateSelectedIndex( index, offset );
-			
-			
 		}
 
+		/**
+		 *  @private
+		 */
 		override protected function updateDisplayListBetween():void
 		{
 			super.updateDisplayListBetween();
@@ -494,11 +683,11 @@ package ws.tink.spark.layouts
 			}
 		}
 		
-        public function StackLayout()
-        {
-        }
+        
     }
 }
+
+
 import mx.core.ILayoutElement;
 
 class ElementMaxDimensions
