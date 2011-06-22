@@ -50,7 +50,7 @@ package ws.tink.spark.layouts
 	 *  <p>If the <code>target</code> of the layout implements ISelectable list,
 	 *  a ButtonBarBase can be set using the <code>buttonBar</code> property and the layout
 	 *  will connect the <code>target</code> and ButtonBarBase together so that the 
-	 *  ButtonBarBase can be used to navigate through the elements.
+	 *  ButtonBarBase can be used to navigate through the elements.</p>
 	 *
 	 *  @mxml
 	 *
