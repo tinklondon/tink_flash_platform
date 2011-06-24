@@ -5,9 +5,35 @@ package ws.tink.spark.layouts.supportClasses
 	import spark.effects.animation.SimpleMotionPath;
 	import spark.effects.easing.IEaser;
 	import spark.effects.easing.Linear;
+	import spark.effects.easing.Sine;
 	
 	import ws.tink.spark.controls.supportClasses.AnimationTarget;
 
+	/**
+	 *  A AnimationNavigatorLayoutBase class is a base class for navigator layouts
+	 *  that can animation between indices.
+	 * 
+	 *  <p>Subclasses need to set the <code>animationType</code> in the constructor,
+	 *  and should use the <code>animationValue</code>to layout elements.</p> 
+	 * 
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:AnimationNavigatorLayoutBase&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:AnimationNavigatorLayoutBase
+	 *    <strong>Properties</strong>
+	 *    duration="700"
+	 *    easer="{spark.effects.easing.Linear( 0, 1 )}"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class AnimationNavigatorLayoutBase extends NavigatorLayoutBase
 	{
 		
@@ -54,8 +80,10 @@ package ws.tink.spark.layouts.supportClasses
 		/**
 		 *  Constructor. 
 		 * 
-		 *  @param animationType The type of animation.
+		 *  @param animationType The type of animation. 
 		 *  
+		 *  @see #
+		 * 
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
@@ -81,12 +109,12 @@ package ws.tink.spark.layouts.supportClasses
 		/**
 		 *  @private
 		 */
-		private var _proposedSelectedIndex2			: int = -1;
-		
-		/**
-		 *  @private
-		 */
-		private var _proposedSelectedIndex2Offset	: Number = 0;
+//		private var _proposedSelectedIndex2			: int = -1;
+//		
+//		/**
+//		 *  @private
+//		 */
+//		private var _proposedSelectedIndex2Offset	: Number = 0;
 		
 		/**
 		 *  @private
@@ -113,13 +141,15 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		private var _duration:Number;
 		
-		/**
-		 *  duration
+		/** 
+		 *  The duration of the animation in milliseconds. 
 		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @default 700
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		public function get duration():Number
 		{
@@ -148,12 +178,19 @@ package ws.tink.spark.layouts.supportClasses
 		private var _easer:IEaser;
 		
 		/**
-		 *  easer
+		 *  The easing behavior for this effect. 
+		 *  This IEaser object is used to convert the elapsed fraction of 
+		 *  the animation into an eased fraction, which is then used to
+		 *  calculate the value at that eased elapsed fraction.
+		 * 
+		 *  @default spark.effects.easing.Linear( 0, 1 )
 		 *
-		 *  @langversion 3.0
-		 *  @playerversion Flash 10
-		 *  @playerversion AIR 1.5
-		 *  @productversion Flex 4
+		 *  @see spark.effects.easing.Linear
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		public function get easer():IEaser
 		{
@@ -182,7 +219,10 @@ package ws.tink.spark.layouts.supportClasses
 		private var _animationValue:Number = 0;
 		
 		/**
-		 *  animationValue
+		 *  If the <code>animationType</code> is "direct" the <code>animationValue</code>
+		 *  will ease from 1 to 0. If set to <code>animationType</code> is "indirect" the
+		 *  <code>animationValue</code> will ease from the current value of <code>selectedIndex</code>
+		 *  to the new <code>selectedIndex</code>.
 		 *
 		 *  @langversion 3.0
 		 *  @playerversion Flash 10
@@ -191,17 +231,10 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		public function get animationValue():Number
 		{
-			return _animationValue;
-			return animation.isPlaying ? _animationValue : 0;
+			return _animationValue % numElementsInLayout;
+//			return animation.isPlaying ? _animationValue : 0;
 		}
 		
-		
-		
-		
-		public function isAnimating():Boolean
-		{
-			return animation.isPlaying;
-		}
 		
 		//----------------------------------
 		//  animation
@@ -249,6 +282,19 @@ package ws.tink.spark.layouts.supportClasses
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Returns whether the layout is currently animating.
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function isAnimating():Boolean
+		{
+			return animation.isPlaying;
+		}
 		
 		/**
 		 *  To be overridden in subclasses. <code>indicesInView()</code> should be invoked
