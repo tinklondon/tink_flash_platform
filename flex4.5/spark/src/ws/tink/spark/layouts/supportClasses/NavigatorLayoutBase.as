@@ -19,9 +19,69 @@ package ws.tink.spark.layouts.supportClasses
 	
 	use namespace mx_internal;
 	
+	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/**
+	 *  @eventType spark.events.IndexChangeEvent.CHANGE
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	[Event(name="change", type="spark.events.IndexChangeEvent")]
+	
+	/**
+	 *  @eventType mx.events.FlexEvent.VALUE_COMMIT
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	[Event(name="valueCommit", type="mx.events.FlexEvent")]
 	
+	
+	/**
+	 *  A NavigatorLayoutBase class is a base class for navigator layouts.
+	 * 
+	 *  <p>More info coming.</p>.
+	 * 
+	 *  @mxml
+	 *
+	 *  <p>The <code>&lt;st:NavigatorLayoutBase&gt;</code> tag inherits all of the
+	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
+	 *
+	 *  <pre>
+	 *  &lt;st:NavigatorLayoutBase
+	 *    <strong>Properties</strong>
+	 * 	  firstIndexInView="<i>calculated</i>"
+	 *    indicesInLayout="<i>calculated</i>"
+	 *    lastIndexInView="<i>calculated</i>"
+	 * 	  numElementsInLayout="<i>calculated</i>"
+	 *    numElementsNotInLayout="<i>calculated</i>"
+	 * 	  numIndicesInView="<i>calculated</i>"
+	 *    renderingData="<i>calculated</i>"
+	 * 	  scrollBarDirection="horizontal|vertical"
+	 *    selectedIndex="-1"
+	 *    unscaledWidth="<i>calculated</i>"
+	 *    unscaledHeight="<i>calculated</i>"
+	 *    useScrollBarForNavigation="true"
+	 * 
+	 *    <strong>Events</strong>
+	 *    change="<i>No default</i>"
+	 *    valueCommit="<i>No default</i>"
+	 *  /&gt;
+	 *  </pre>
+	 *
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
 	public class NavigatorLayoutBase extends LayoutBase implements INavigatorLayout
 	{
 		
@@ -931,7 +991,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( _proposedSelectedIndex == index ) return;// && ( _proposedSelectedIndexOffset == offset || ( isNaN( _proposedSelectedIndexOffset ) && isNaN( offset ) ) ) ) return;
 			
 			_selectedIndexInvalid = true;
-			_proposedSelectedIndex = index;
+			_proposedSelectedIndex = index % numElementsInLayout;
 //			_proposedSelectedIndexOffset = offset;
 			invalidateTargetDisplayList();
 		}
