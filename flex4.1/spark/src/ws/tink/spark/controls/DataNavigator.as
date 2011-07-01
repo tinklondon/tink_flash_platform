@@ -145,6 +145,64 @@ package ws.tink.spark.controls
 	 */
 	[Style(name="focusThickness", type="Number", format="Length", inherit="no", minValue="0.0")]
 	
+	/**
+	 *  The alpha of the border for this component.
+	 *
+	 *  @default 1.0
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderAlpha", type="Number", inherit="no", theme="spark", minValue="0.0", maxValue="1.0")]
+	
+	/**
+	 *  The color of the border for this component.
+	 *
+	 *   @default #696969
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderColor", type="uint", format="Color", inherit="no", theme="spark")]
+	
+	/**
+	 *  Controls the visibility of the border for this component.
+	 *
+	 *  @default true
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderVisible", type="Boolean", inherit="no", theme="spark")]
+	
+	/**
+	 *  The alpha of the content background for this component.
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="contentBackgroundAlpha", type="Number", inherit="yes", theme="spark", minValue="0.0", maxValue="1.0")]
+	
+	/**
+	 *  @copy spark.components.supportClasses.GroupBase#style:contentBackgroundColor
+	 *   
+	 *  @default 0xFFFFFF
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="contentBackgroundColor", type="uint", format="Color", inherit="yes", theme="spark")]
+	
 	[DefaultProperty("dataProvider")]
 	
 	//[IconFile("SkinnableDataContainer.png")]
