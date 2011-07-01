@@ -29,11 +29,11 @@ SOFTWARE.
 @playerversion AIR 1.5
 @productversion Flex 4
 -->
-<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-		xmlns:st="library://ns.tink.ws/flex/spark"
-		alpha.disabled="0.5">
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 xmlns:st="library://ns.tink.ws/flex/spark"
+			 alpha.disabled="0.5">
 	
 	<fx:Metadata>
 		<![CDATA[ 
@@ -44,13 +44,40 @@ SOFTWARE.
 		]]>
 	</fx:Metadata> 
 	
-	<fx:Script fb:purpose="stylin">
+	<fx:Script fb:purpose="styling">
+		
+		/* Define the skin elements that should not be colorized. 
+		For list, the skin itself is colorized but the individual parts are not. */
+		static private const exclusions:Array = [ "contentGroup", "buttonBar", "background" ];
+		
 		/**
 		 * @private
 		 */
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		override public function get colorizeExclusions():Array {return exclusions;}
+		
+		/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+		static private const contentFill:Array = [ "bgFill" ];
+		
+		/**
+		 * @private
+		 */
+		override public function get contentItems():Array { return contentFill };
+		
+		/**
+		 * @private
+		 */
+		override protected function initializationComplete():void
 		{
-			if (getStyle("borderVisible") == true)
+			useChromeColor = true;
+			super.initializationComplete();
+		}
+		
+		/**
+		 * @private
+		 */
+		override protected function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
+		{
+			if( getStyle( "borderVisible" ) == true )
 			{
 				border.visible = true;
 				background.left = background.top = background.right = background.bottom = 1;
@@ -63,11 +90,12 @@ SOFTWARE.
 				contentGroup.left = contentGroup.top = contentGroup.right = contentGroup.bottom = 0;
 			}
 			
-			borderStroke.color = getStyle("borderColor");
-			borderStroke.alpha = getStyle("borderAlpha");
+			borderStroke.color = getStyle( "borderColor" );
+			borderStroke.alpha = getStyle( "borderAlpha" );
 			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			super.updateDisplayList( unscaledWidth, unscaledHeight );
 		}
+		
 	</fx:Script>
 	
 	<s:states>
@@ -109,4 +137,4 @@ SOFTWARE.
 	<!--- @copy ws.tink.spark.containers.Accordion#buttonBar -->
 	<s:ButtonBar id="buttonBar"/>
 	
-</s:Skin>
+</s:SparkSkin>
