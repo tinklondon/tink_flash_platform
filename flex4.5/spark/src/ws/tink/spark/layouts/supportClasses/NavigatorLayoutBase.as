@@ -689,7 +689,17 @@ package ws.tink.spark.layouts.supportClasses
 			// Only really want to do this if...
 			// a) the number of elements have changed
 			// b) includeLayout has changed on an element
-//			updateElementsInLayout();
+			// updateElementsInLayout();
+
+			// TODO This was move to measure, but if the target has an explicit size
+			// measure isn't invoked, so checking it here too.
+			// If fired in measure this should no longer get invoked due to
+			// the check in place.
+			if( !indicesInLayout || target.numElements != indicesInLayout.length + indicesNotInLayout.length )
+			{
+				updateElements();
+				updateElementsInLayout();
+			}
 			
 //			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
 			
@@ -742,7 +752,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( _selectedIndexInvalid )
 			{
 				_selectedIndexInvalid = false;
-				_selectedIndex = _proposedSelectedIndex;
+				_selectedIndex = _proposedSelectedIndex % numElementsInLayout;
 				_proposedSelectedIndex = -1;
 				
 //				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
@@ -991,7 +1001,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( _proposedSelectedIndex == index ) return;// && ( _proposedSelectedIndexOffset == offset || ( isNaN( _proposedSelectedIndexOffset ) && isNaN( offset ) ) ) ) return;
 			
 			_selectedIndexInvalid = true;
-			_proposedSelectedIndex = index % numElementsInLayout;
+			_proposedSelectedIndex = index;// % numElementsInLayout;
 //			_proposedSelectedIndexOffset = offset;
 			invalidateTargetDisplayList();
 		}
