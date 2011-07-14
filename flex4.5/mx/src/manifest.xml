@@ -27,7 +27,6 @@
 	<component id="AlertTabNavigator" class="ws.tink.mx.containers.AlertTabNavigator"/>
 	<component id="AlignBottomDataGridItemRenderer" class="ws.tink.mx.controls.dataGridClasses.AlignBottomDataGridItemRenderer"/>
 	<component id="ApplicationStack" class="ws.tink.mx.core.ApplicationStack"/>
-	<component id="ArrayCollectionDataDescriptor" class="ws.tink.mx.controls.treeClasses.ArrayCollectionDataDescriptor"/>
 	<component id="ChartToolTipSync" class="ws.tink.mx.charts.chartClasses.ChartToolTipSync"/>
 	<component id="ConstrainedTile" class="ws.tink.mx.containers.ConstrainedTile"/>
 	<component id="DataStack" class="ws.tink.mx.containers.DataStack"/>
@@ -35,6 +34,7 @@
 	<component id="DockerBox" class="ws.tink.mx.containers.DockerBox"/>
 	<component id="FilterComboBox" class="ws.tink.mx.controls.FilterComboBox"/>
  	<component id="HReverseBox" class="ws.tink.mx.containers.HReverseBox"/>
+ 	<component id="IListDataDescriptor" class="ws.tink.mx.controls.treeClasses.IListDataDescriptor"/>
  	<component id="PanelStack" class="ws.tink.mx.containers.PanelStack"/>
  	<component id="PositionedTab" class="ws.tink.mx.controls.positionedTabBarClasses.PositionedTab"/>
  	<component id="PositionedTabBar" class="ws.tink.mx.controls.PositionedTabBar"/>
