@@ -276,7 +276,6 @@ package ws.tink.spark.controls
 		
 		private function recurseDataProviderSelectedIndices( dp:IList, indices:Vector.<int> = null ):Vector.<int>
 		{
-			trace( "recurseDataProviderSelectedIndices", indices );
 			if( dp is ISelectableList )
 			{
 				const index:int = ISelectableList( dp ).selectedIndex;
@@ -320,7 +319,6 @@ package ws.tink.spark.controls
 				changed = true;
 			}
 			
-			trace( "setSelectedIndex", value, _proposedSelectedIndices );
 			if( changed )
 			{
 				if( !_proposedSelectedIndices ) _proposedSelectedIndices = recurseDataProviderSelectedIndices( dataProvider );
