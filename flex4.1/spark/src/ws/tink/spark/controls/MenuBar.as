@@ -20,8 +20,6 @@ SOFTWARE.
 
 package ws.tink.spark.controls
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import mx.collections.IList;
@@ -29,16 +27,11 @@ package ws.tink.spark.controls
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
-	import mx.events.IndexChangedEvent;
 	
 	import spark.components.ButtonBar;
-	import spark.components.DropDownList;
 	import spark.components.IItemRenderer;
 	import spark.components.List;
-	import spark.components.supportClasses.DropDownController;
 	import spark.components.supportClasses.ListBase;
-	import spark.components.supportClasses.ToggleButtonBase;
-	import spark.events.DropDownEvent;
 	import spark.events.IndexChangeEvent;
 	import spark.events.RendererExistenceEvent;
 	
@@ -48,6 +41,23 @@ package ws.tink.spark.controls
 	
 	public class MenuBar extends ButtonBar
 	{
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Constructor.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
 		public function MenuBar()
 		{
 			super();
@@ -55,8 +65,25 @@ package ws.tink.spark.controls
 		
 		
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *  Flag to indicate that the renderers need updating.
+		 */
 		private var _renderersInvalid:Boolean;
 		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
 		
 		//----------------------------------
 		//  closeOnSelection
@@ -66,12 +93,18 @@ package ws.tink.spark.controls
 		 *  @private
 		 *  Storage for the closeOnSelection property. 
 		 */
-		private var _closeOnSelection:Boolean;
+		private var _closeOnSelection:Boolean = true;
 		
 		/**
-		 *  @copy ws.tink.spark.controls.MenuBar#closeOnSelection
-		 * 
+		 *  Specifies whether the menu bar should close all its
+		 *  dropdowns immediately after the user has selected an item.
+		 *  
 		 *  @default true
+		 * 
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
 		 */
 		public function get closeOnSelection():Boolean
 		{
@@ -101,7 +134,7 @@ package ws.tink.spark.controls
 		private var _allowBranchSelection:Boolean = true;
 		
 		/**
-		 *  Whether or not a branch in the tree can be selected.
+		 *  Whether or not a branch in the hierarchical data can be selected.
 		 *  If set to false, only leaves can be selected.
 		 *  
 		 *  @default true
@@ -126,8 +159,7 @@ package ws.tink.spark.controls
 			_renderersInvalid = true;
 			invalidateProperties();
 		}
-		
-		
+
 		
 		//----------------------------------
 		//  selectedIndices
@@ -168,11 +200,27 @@ package ws.tink.spark.controls
 		/**
 		 *  @private
 		 */		
-		public function set selectedIndices(value:Vector.<int>):void
+		public function set selectedIndices( value:Vector.<int> ):void
 		{
-			if( _selectedIndices == value ) return;
+			const indices:Vector.<int> = selectedIndices;
 			
-			_selectedIndices = value;
+			if( !indices && !value )
+			{
+				return;
+			}
+			else if( !indices && value ||
+					 indices && !value )
+			{
+				_selectedIndices = value ? value.concat() : null;
+			}
+			else if( indices.toString() != indices.toString() )
+			{
+				_selectedIndices = value.concat();
+			}
+			else
+			{
+				return;
+			}
 			
 			selectedIndex = _selectedIndices && _selectedIndices.length ? _selectedIndices[ 0 ] : -1;
 		}
@@ -215,66 +263,119 @@ package ws.tink.spark.controls
 			
 			return null;
 		}
+		/**
+		 *  @private
+		 */
+		public function set selectedLabels( value:Vector.<String> ):void
+		{
+			if( value && dataProvider )
+			{
+				var dp:IList = dataProvider;
+				var indices:Vector.<int> = new Vector.<int>();
+				var index:int;
+				var item:Object;
+				var numLabels:int = value.length;
+				var numDPItems:int;
+				for( var i:int = 0; i < numLabels; i++ )
+				{
+					numDPItems = dp.length;
+					for( var d:int = 0; d < numDPItems; d++ )
+					{
+						item = dp.getItemAt( d );
+						if( itemToLabel( item ) == value[ i ] )
+						{
+							indices.push( d );
+							if( i < numLabels - 1 && item is IList )
+							{
+								dp = IList( item ); 
+							}
+							break;
+						}
+					}
+				}
+				
+				selectedIndices = indices;
+			}
+		}
 		
 		
 		
 		
 		
+//		private var _itemMouseDowns:Boolean;
 		
-		private var _itemMouseDowns:Boolean;
 		
 		
-//		/**
-//		 *  @private
-//		 */
-//		override protected function item_mouseDownHandler(event:MouseEvent):void
-//		{
-//			const renderer:List = List( event.currentTarget );
-//			if( renderer.dataProvider && renderer.dataProvider.length > 1 && !allowBranchSelection ) return;
-//			
-//			var newIndex:int
-//			if (event.currentTarget is IItemRenderer)
-//				newIndex = IItemRenderer(event.currentTarget).itemIndex;
-//			else
-//				newIndex = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
-//			
-//			
-//			
-//			_proposedSelectedIndices = renderer.selectedIndices ? Vector.<int>( [ newIndex ] ).concat( renderer.selectedIndices ) : Vector.<int>( [ newIndex ] );
-//			
-//			_itemMouseDowns = true;
-//			//			_itemMouseDowns = true;
-//			super.item_mouseDownHandler(event);
-//			_itemMouseDowns = false;
-//			//dispatchEvent( event );
-//		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @private
+		 *  Util function to recurse through the hierarchical dataProvider
+		 *  and find the selectedIndices if items implement ISelectableList.
+		 */
+		private function recurseDataProviderSelectedIndices( dp:IList, indices:Vector.<int> = null ):Vector.<int>
+		{
+			if( dp is ISelectableList )
+			{
+				const index:int = ISelectableList( dp ).selectedIndex;
+				const item:Object = dp.getItemAt( index );
+				if( !indices ) indices = new Vector.<int>();
+				indices.push( index );
+				if( item is IList ) return recurseDataProviderSelectedIndices( IList( item ), indices );
+			}
+			else if( selectedIndex != -1 )
+			{
+				if( !indices ) indices = new Vector.<int>();
+				indices.push( selectedIndex );
+			}
+			return indices;
+		}
+		
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 *  @private
 		 */
-		protected function onRendererClick(event:MouseEvent):void
+		override public function updateRenderer( renderer:IVisualElement, itemIndex:int, data:Object ):void
 		{
-			const renderer:List = List( event.currentTarget );
-			if( renderer.dataProvider && renderer.dataProvider.length > 1 && !allowBranchSelection ) return;
+			super.updateRenderer( renderer, itemIndex, data );
 			
-			var newIndex:int
-			if (event.currentTarget is IItemRenderer)
-				newIndex = IItemRenderer(event.currentTarget).itemIndex;
-			else
-				newIndex = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
-			
-			
-			
-//			_proposedSelectedIndices = renderer.selectedIndices ? Vector.<int>( [ newIndex ] ).concat( renderer.selectedIndices ) : Vector.<int>( [ newIndex ] );
-			
-//			_itemMouseDowns = true;
-			//			_itemMouseDowns = true;
-//			super.item_mouseDownHandler(event);
-//			_itemMouseDowns = false;
-			//dispatchEvent( event );
+			var listBase:ListBase = renderer as ListBase; 
+			if( listBase ) 
+			{
+				if( dataProvider && dataProvider.getItemAt( itemIndex ) is IList )
+				{
+					listBase.labelField = labelField;
+					listBase.labelFunction = labelFunction;
+					
+					if( renderer is List && selectedIndex == itemIndex && selectedIndices && selectedIndices.length > 1 )
+					{
+						List( renderer ).selectedIndices = selectedIndices.slice( 1 );
+					}
+					
+					if( renderer is MenuBarItemRenderer )
+					{
+						MenuBarItemRenderer( renderer ).allowBranchSelection = allowBranchSelection;
+						MenuBarItemRenderer( renderer ).closeOnSelection = closeOnSelection;
+					}
+				}
+			}
 		}
 		
-		
+		/**
+		 *  @private
+		 */
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
@@ -294,23 +395,66 @@ package ws.tink.spark.controls
 			}
 		}
 		
-		private function recurseDataProviderSelectedIndices( dp:IList, indices:Vector.<int> = null ):Vector.<int>
+		/**
+		 *  @private
+		 */
+		override protected function partAdded(partName:String, instance:Object):void
 		{
-			if( dp is ISelectableList )
+			super.partAdded( partName, instance );
+			
+			switch( instance )
 			{
-				const index:int = ISelectableList( dp ).selectedIndex;
-				const item:Object = dp.getItemAt( index );
-				if( !indices ) indices = new Vector.<int>();
-				indices.push( index );
-				if( item is IList ) return recurseDataProviderSelectedIndices( IList( item ), indices );
+				case dataGroup :
+				{
+					dataGroup.addEventListener( RendererExistenceEvent.RENDERER_ADD, onDataGroupRendererAdd, false, 0, true );
+					dataGroup.addEventListener( RendererExistenceEvent.RENDERER_REMOVE, onDataGroupRendererRemove, false, 0, true );
+					break;
+				}
 			}
-			else if( selectedIndex != -1 )
-			{
-				if( !indices ) indices = new Vector.<int>();
-				indices.push( selectedIndex );
-			}
-			return indices;
 		}
+		
+		/**
+		 *  @private
+		 */
+		override protected function partRemoved(partName:String, instance:Object):void
+		{
+			if( instance == dataGroup )
+			{
+				dataGroup.removeEventListener( RendererExistenceEvent.RENDERER_ADD, onDataGroupRendererAdd, false );
+				dataGroup.removeEventListener( RendererExistenceEvent.RENDERER_REMOVE, onDataGroupRendererRemove, false );
+			}
+			
+			super.partRemoved( partName, instance );
+		}
+		
+//		/**
+//		 *  @private
+//		 */
+//		protected function onRendererClick(event:MouseEvent):void
+//		{
+//			const renderer:List = List( event.currentTarget );
+//			if( renderer.dataProvider && renderer.dataProvider.length > 1 && !allowBranchSelection ) return;
+//			
+//			var newIndex:int
+//			if (event.currentTarget is IItemRenderer)
+//				newIndex = IItemRenderer(event.currentTarget).itemIndex;
+//			else
+//				newIndex = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
+//			
+//			
+//			
+////			_proposedSelectedIndices = renderer.selectedIndices ? Vector.<int>( [ newIndex ] ).concat( renderer.selectedIndices ) : Vector.<int>( [ newIndex ] );
+//			
+////			_itemMouseDowns = true;
+//			//			_itemMouseDowns = true;
+////			super.item_mouseDownHandler(event);
+////			_itemMouseDowns = false;
+//			//dispatchEvent( event );
+//		}
+		
+		
+		
+		
 		
 		
 		/**
@@ -383,129 +527,22 @@ package ws.tink.spark.controls
 		
 		
 		
-//		/**
-//		 *  @private
-//		 *  Called whenever we need to update the text passed to the labelDisplay skin part
-//		 */
-//		// Stops the openButton displaying the label of the selectedItem 
-//		override mx_internal function updateLabelDisplay( displayItem:* = undefined ):void
-//		{
-//		}
-		
-		
-		
-		
-		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden Methods
+		//  Event Listeners
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 *  @private
-		 */
-		override public function updateRenderer( renderer:IVisualElement, itemIndex:int, data:Object ):void
-		{
-			super.updateRenderer( renderer, itemIndex, data );
-			
-			var listBase:ListBase = renderer as ListBase; 
-			if( listBase ) 
-			{
-//				prompt = itemToLabel( dataProvider );
-				if( dataProvider && dataProvider.getItemAt( itemIndex ) is IList )
-				{
-					listBase.labelField = labelField;
-					listBase.labelFunction = labelFunction;
-					
-					if( renderer is List && selectedIndex == itemIndex && selectedIndices && selectedIndices.length > 1 )
-					{
-						List( renderer ).selectedIndices = selectedIndices.slice( 1 );
-					}
-					
-					if( renderer is MenuBarItemRenderer )
-					{
-						MenuBarItemRenderer( renderer ).allowBranchSelection = allowBranchSelection;
-						MenuBarItemRenderer( renderer ).closeOnSelection = closeOnSelection;
-					}
-				}
-			}
-		}
-		
-		/**
-		 *  @private
-		 */
-		override protected function partAdded(partName:String, instance:Object):void
-		{
-			super.partAdded( partName, instance );
-			
-			switch( instance )
-			{
-				case dataGroup :
-				{
-					dataGroup.addEventListener( RendererExistenceEvent.RENDERER_ADD, onDataGroupRendererAdd, false, 0, true );
-					dataGroup.addEventListener( RendererExistenceEvent.RENDERER_REMOVE, onDataGroupRendererRemove, false, 0, true );
-					break;
-				}
-//				case openButton :
-//				{
-//					openButton.addEventListener( Event.CHANGE, onOpenButtonChange, false, 0, true );
-//					openButton.label = prompt;
-//					break;
-//				}
-			}
-		}
-		
-		/**
-		 *  @private
-		 */
-		override protected function partRemoved(partName:String, instance:Object):void
-		{
-			if( instance == dataGroup )
-			{
-				dataGroup.removeEventListener( RendererExistenceEvent.RENDERER_ADD, onDataGroupRendererAdd, false );
-				dataGroup.removeEventListener( RendererExistenceEvent.RENDERER_REMOVE, onDataGroupRendererRemove, false );
-			}
-			
-			super.partRemoved( partName, instance );
-		}
-		
-//		/**
-//		 *  @private
-//		 *  Hack to make sure the ToggleButtonBase stays selected
-//		 *  after it has been clicked on. Due to <code>selected</code>
-//		 *  getting set to true, when it is clicked on it's <code>selected</code>
-//		 *  is then set to not <code>selected</code>
-//		 * 
-//		 *  <code>selected = !selected</code>
-//		 * 
-//		 *  @see spark.components.supportClasses.ToggleButtonBase#buttonReleased
-//		 */
-//		private function onOpenButtonChange( event:Event ):void
-//		{
-//			if( openButton is ToggleButtonBase ) ToggleButtonBase( openButton ).selected = selected;
-//		}
-		
-		
 		
 		/**
 		 *  @private
 		 */
 		private function onDataGroupRendererAdd( event:RendererExistenceEvent ):void
 		{
-			
 			const renderer:IVisualElement = event.renderer; 
-			
 			if( renderer )
 			{
-//				renderer.addEventListener( DropDownEvent.OPEN, onRendererOpen, false, 0, true );
-//				renderer.addEventListener( DropDownEvent.CLOSE, onRendererClose, false, 0, true );
 				renderer.addEventListener( IndexChangeEvent.CHANGE, onRendererChange, false, 0, true );
 				renderer.addEventListener( MouseEvent.CLICK, onRendererClick, false, 1, true );
-				//				if( renderer is List && selectedIndices && selectedIndices.length > 1 )
-				//				{
-				//					List( renderer ).selectedIndices = selectedIndices.slice( 1 );
-				//				}
 			}
 		}
 		
@@ -517,43 +554,10 @@ package ws.tink.spark.controls
 			const renderer:IVisualElement = event.renderer; 
 			if( renderer )
 			{
-//				renderer.removeEventListener( DropDownEvent.OPEN, onRendererOpen, false );
-//				renderer.removeEventListener( DropDownEvent.CLOSE, onRendererClose, false );
 				renderer.removeEventListener( IndexChangeEvent.CHANGE, onRendererChange, false );
-				renderer.removeEventListener( MouseEvent.CLICK, onRendererClick, false );
+				renderer.addEventListener( MouseEvent.CLICK, onRendererClick, false, 1, true );
 			}
 		}
-		
-//		/**
-//		 *  @private
-//		 */
-//		protected function onRendererOpen( event:DropDownEvent ):void
-//		{
-//			var renderer:MenuBarItemRenderer = MenuBarItemRenderer( event.currentTarget );
-//			
-//			if( !renderer ) return;
-//			var controller:DropDownController = DropDownController( event.currentTarget[ "dropDownController" ]  );
-//			var dropDown:DisplayObject = DisplayObject( event.currentTarget[ "dropDown" ] );
-//			
-//			if( controller.hitAreaAdditions )
-//			{
-//				dropDownController.hitAreaAdditions = Vector.<DisplayObject>( [ dropDown ] ).concat( controller.hitAreaAdditions );
-//			}
-//			else
-//			{
-//				dropDownController.hitAreaAdditions = Vector.<DisplayObject>( [ dropDown ] );
-//			}
-//			
-//			dispatchEvent( event );
-//		}
-		
-//		/**
-//		 *  @private
-//		 */
-//		protected function onRendererClose( event:DropDownEvent ):void
-//		{
-//			dropDownController.hitAreaAdditions = null;
-//		}
 		
 		/**
 		 *  @private
@@ -569,7 +573,7 @@ package ws.tink.spark.controls
 				newIndex = dataGroup.getElementIndex(event.currentTarget as IVisualElement);
 			
 			
-			_itemMouseDowns = true;
+//			_itemMouseDowns = true;
 			_proposedSelectedIndices = renderer.selectedIndices ? Vector.<int>( [ newIndex ] ).concat( renderer.selectedIndices ) : Vector.<int>( [ newIndex ] );
 			
 			// Single selection case, set the selectedIndex 
@@ -581,25 +585,19 @@ package ws.tink.spark.controls
 					currentRenderer.showsCaret = false;
 			}
 			
-			//			// Check to see if we're deselecting the currently selected item 
-			//			if (event.ctrlKey && selectedIndex == newIndex)
-			//			{
-			//				pendingSelectionOnMouseUp = true;
-			//				pendingSelectionCtrlKey = true;
-			//				pendingSelectionShiftKey = event.shiftKey;
-			//			}
-			//			else
 			setSelectedIndex( newIndex, true);
 			
-			
-//			userProposedSelectedIndex = selectedIndex;
-			
-			//			super.item_mouseDownHandler(event);
-			_itemMouseDowns = false;
-			
-			//			dispatchEvent( event );
+//			_itemMouseDowns = false;
 		}
 		
+		/**
+		 *  @private
+		 */
+		private function onRendererClick( event:MouseEvent ):void
+		{
+			const renderer:List = List( event.currentTarget );
+			if( renderer.dataProvider && renderer.dataProvider.length > 1 && !allowBranchSelection ) event.stopImmediatePropagation();
+		}
 		
 	}
 }
