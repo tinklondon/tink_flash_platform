@@ -274,6 +274,26 @@ package ws.tink.spark.controls
 			}
 		}
 		
+		private function recurseDataProviderSelectedIndices( dp:IList, indices:Vector.<int> = null ):Vector.<int>
+		{
+			trace( "recurseDataProviderSelectedIndices", indices );
+			if( dp is ISelectableList )
+			{
+				const index:int = ISelectableList( dp ).selectedIndex;
+				const item:Object = dp.getItemAt( index );
+				if( !indices ) indices = new Vector.<int>();
+				indices.push( index );
+				if( item is IList ) return recurseDataProviderSelectedIndices( IList( item ), indices );
+			}
+			else if( selectedIndex != -1 )
+			{
+				if( !indices ) indices = new Vector.<int>();
+				indices.push( selectedIndex );
+			}
+			return indices;
+		}
+		
+		
 		/**
 		 *  @private
 		 *  Used internally to specify whether the selectedIndex changed programmatically or due to 
@@ -287,7 +307,7 @@ package ws.tink.spark.controls
 			var changed:Boolean;
 			if( !_proposedSelectedIndices && !_selectedIndices && value > -1 )
 			{
-				_proposedSelectedIndices = Vector.<int>( [ value ] );
+				_proposedSelectedIndices = recurseDataProviderSelectedIndices( dataProvider );
 				changed = true;
 			}
 			else if( _selectedIndices && _proposedSelectedIndices )
@@ -300,8 +320,11 @@ package ws.tink.spark.controls
 				changed = true;
 			}
 			
+			trace( "setSelectedIndex", value, _proposedSelectedIndices );
 			if( changed )
 			{
+				if( !_proposedSelectedIndices ) _proposedSelectedIndices = recurseDataProviderSelectedIndices( dataProvider );
+				
 				_selectedIndices = _proposedSelectedIndices;
 				_proposedSelectedIndices = null;
 				
