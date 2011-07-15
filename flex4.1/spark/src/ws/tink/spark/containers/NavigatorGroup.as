@@ -37,7 +37,7 @@ package ws.tink.spark.containers
 	import ws.tink.spark.layouts.StackLayout;
 	import ws.tink.spark.layouts.supportClasses.AnimationNavigatorLayoutBase;
 	import ws.tink.spark.layouts.supportClasses.INavigatorLayout;
-	
+
 
 	//--------------------------------------
 	//  Events
@@ -771,5 +771,6 @@ package ws.tink.spark.containers
 				}
 			}
 		}
+		
 	}
 }
