@@ -1,6 +1,7 @@
 /* CSS file */
 @namespace "library://ns.tink.ws/flex/spark";
 @namespace s "library://ns.adobe.com/flex/spark";
+@namespace controls "ws.tink.spark.controls.*";
 
 Accordion
 {
@@ -40,6 +41,21 @@ DataAccordion s|ButtonBarButton
 DataNavigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
+}
+
+MenuBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MenuBarSkin");
+}
+
+MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropRightMenuBarItemRendererSkin");
+}
+
+MenuBar MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropDownMenuBarItemRendererSkin");
 }
 
 MultipleSelectionButtonBar

@@ -22,6 +22,7 @@
 	<component id="HMouseOverStep" class="ws.tink.spark.controls.HMouseOverStep"/>
 	<component id="HPageStep" class="ws.tink.spark.controls.HPageStep"/>
 	<component id="HStep" class="ws.tink.spark.controls.HStep"/>
+	<component id="MenuBar" class="ws.tink.spark.controls.MenuBar"/>
 	<component id="MouseOverStepper" class="ws.tink.spark.controls.MouseOverStepper"/>
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
 	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
@@ -42,6 +43,7 @@
 	<!-- itemRenderers -->
 	<component id="CheckBoxItemRenderer" class="ws.tink.spark.itemRenderers.CheckBoxItemRenderer"/>
 	<component id="DefaultPropertyItemRenderer" class="ws.tink.spark.itemRenderers.DefaultPropertyItemRenderer"/>
+	<component id="MenuBarItemRenderer" class="ws.tink.spark.itemRenderers.MenuBarItemRenderer"/>
 	<component id="PropertyItemRenderer" class="ws.tink.spark.itemRenderers.PropertyItemRenderer"/>
 	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
 	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
