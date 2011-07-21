@@ -51,6 +51,7 @@
 	<!-- layouts -->
 	<component id="AccordionLayout" class="ws.tink.spark.layouts.AccordionLayout"/>
 	<component id="CarouselLayout" class="ws.tink.spark.layouts.CarouselLayout"/>
+	<component id="CoverflowLayout" class="ws.tink.spark.layouts.CoverflowLayout"/>
 	<component id="StackLayout" class="ws.tink.spark.layouts.StackLayout"/>
 	<component id="TimeMachineLayout" class="ws.tink.spark.layouts.TimeMachineLayout"/>
 	
