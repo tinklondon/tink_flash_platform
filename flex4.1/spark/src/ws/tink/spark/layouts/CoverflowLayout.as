@@ -975,9 +975,8 @@ package ws.tink.spark.layouts
 				elements.push( element );
 			}
 			
-			target.validateNow();
+			target.invalidateLayering();
 		}
-		
 		
 		
 		//--------------------------------------------------------------------------
