@@ -97,8 +97,8 @@ package ws.tink.spark.layouts
 	 *  <pre>
 	 *  &lt;st:StackLayout
 	 *    <strong>Properties</strong>
-	 *    horizontalAlign="center,contentJustify,justify,left,right"
-	 *    verticalAlign="contentJustify,bottom,justify,middle,top"
+	 *    horizontalAlign="center|contentJustify|justify|left|right"
+	 *    verticalAlign="contentJustify|bottom|justify|middle|top"
 	 *  /&gt;
 	 *  </pre>
 	 *
@@ -397,20 +397,12 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
-			const prevSelectedElement:IVisualElement = _selectedElement;
-
 			if( target.numElements == 0 ) return;
 			
-			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
-				Math.max( 0, unscaledWidth ) : NaN;
-			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ?
-				Math.max( 0, unscaledHeight ) : NaN;
-			
-			_selectedElement = target.getVirtualElementAt( indicesInLayout[
-				firstIndexInView ], eltWidth, eltHeight );
-			
-			if( prevSelectedElement && prevSelectedElement != _selectedElement ) prevSelectedElement.visible = false
-				
+			// Hide the last selectedElement.
+			if( _selectedElement && _selectedElement != selectedElement ) _selectedElement.visible = false;
+			// Update the selectedElement.
+			_selectedElement = selectedElement;
 			if( !_selectedElement ) return;
 			
 			_elementMaxDimensions.update( _selectedElement );
@@ -429,31 +421,22 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
 			
-			if( _selectedElement ) _selectedElement.visible = false;
-			
 			if( target.numElements == 0 ) return;
-			
-			var eltWidth:Number = ( horizontalAlign == HorizontalAlign.JUSTIFY ) ?
-				Math.max( 0, unscaledWidth ) : NaN;
-			var eltHeight:Number = ( verticalAlign == VerticalAlign.JUSTIFY ) ?
-				Math.max( 0, unscaledHeight ) : NaN;
 			
 			var i:int;
 			var element:IVisualElement;
 			for( i = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
-				if( i == firstIndexInView ) 
-				{
-					_selectedElement = element;
-				}
-				else
+				if( element != selectedElement ) 
 				{
 					element.visible = false;
 				}
 				
 				_elementMaxDimensions.update( element );
 			}
+			
+			_selectedElement = selectedElement;
 			
 			if( _selectedElement )
 			{
