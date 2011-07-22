@@ -296,6 +296,27 @@ package ws.tink.spark.layouts.supportClasses
 		
 		
 		//----------------------------------
+		//  selectedElement
+		//---------------------------------- 
+		
+		private var _selectedElement:IVisualElement;
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get selectedElement():IVisualElement
+		{
+			return _selectedElement;
+		}
+		
+		
+		
+		//----------------------------------
 		//  selectedIndex
 		//---------------------------------- 
 		
@@ -759,6 +780,15 @@ package ws.tink.spark.layouts.supportClasses
 //				updateSelectedIndex( _proposedSelectedIndex, 0 );
 			}
 			
+			if( useVirtualLayout )
+			{
+				_selectedElement = target ? target.getVirtualElementAt( selectedIndex ) : null;
+			}
+			else
+			{
+				_selectedElement = target ? target.getElementAt( selectedIndex ) : null;
+			}
+			
 			updateDisplayListBetween();
 			
 			if( useVirtualLayout )
@@ -912,9 +942,19 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			if( !element ) return;
 			element.setLayoutBoundsSize(
-				( isNaN( element.percentWidth ) ) ? element.getPreferredBoundsWidth() : unscaledWidth * ( element.percentWidth / 100 ),
-				( isNaN( element.percentHeight ) ) ? element.getPreferredBoundsHeight() : unscaledHeight * ( element.percentHeight / 100 ),
+				getElementLayoutBoundsWidth( element, postLayoutTransform ),
+				getElementLayoutBoundsHeight( element, postLayoutTransform ),
 				postLayoutTransform );
+		}
+		
+		protected function getElementLayoutBoundsWidth( element:IVisualElement, postLayoutTransform:Boolean = true ):Number
+		{
+			return isNaN( element.percentWidth ) ? element.getPreferredBoundsWidth( postLayoutTransform ) : unscaledWidth * ( element.percentWidth / 100 )
+		}
+		
+		protected function getElementLayoutBoundsHeight( element:IVisualElement, postLayoutTransform:Boolean = true ):Number
+		{
+			return isNaN( element.percentHeight ) ? element.getPreferredBoundsHeight( postLayoutTransform ) : unscaledHeight * ( element.percentHeight / 100 );
 		}
 		
 		override protected function scrollPositionChanged() : void
