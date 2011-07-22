@@ -87,7 +87,10 @@ package ws.tink.spark.layouts
 	{
 		
 
-		
+		override public function updateScrollRect(w:Number, h:Number):void
+		{
+			target.scrollRect = null;
+		}
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -141,6 +144,11 @@ package ws.tink.spark.layouts
 		 */
 		private var _elementVerticalCenterMultiplier	: Number;
 		
+		/**
+		 *  @private
+		 *  Stores reference to the elements currently displayed.
+		 */
+		private var _visibleElements:Vector.<IVisualElement>;
 		
 		
 		//--------------------------------------------------------------------------
@@ -932,7 +940,6 @@ package ws.tink.spark.layouts
 			_transformCalculator.updateForIndex( index, element, element.width, element.height, _elementHorizontalCenterMultiplier, _elementVerticalCenterMultiplier );
 			
 			applyColorTransformToElement( element, _transformCalculator.colorTransform );
-			element.visible = true;
 		}
 		
 		
@@ -1108,16 +1115,34 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
+			// Store a references to the visible elements in case numUnselectedElements is used.
+			const newVisibleElements:Vector.<IVisualElement> = new Vector.<IVisualElement>();
+			
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
-			
+			var index:int;
+
 			for( var i:int = firstIndexInView; i <= lastIndexInView; i++ )
 			{
 				element = target.getVirtualElementAt( indicesInLayout[ i ] );
+				if( _visibleElements )
+				{
+					index = _visibleElements.indexOf( element );
+					if( index != -1 ) _visibleElements.splice( index, 1 );
+				}
+				newVisibleElements.push( element );
 				depths.push( indicesInLayout[ i ] );
+				element.visible = true;
 				updateVisibleElementAt( element, i );
 			}
 			
+			// Hide all previously visible elements that should show in the layout.
+			for each( element in _visibleElements )
+			{
+				element.visible = false;
+			}
+			
+			_visibleElements = newVisibleElements.concat();
 			updateDepths( depths );
 		}
 		
@@ -1127,17 +1152,23 @@ package ws.tink.spark.layouts
 		override protected function updateDisplayListReal():void
 		{
 			super.updateDisplayListReal();
-			
+
 			var element:IVisualElement;
 			var depths:Vector.<int> = new Vector.<int>();
+			var index:int;
 			
+			_visibleElements = new Vector.<IVisualElement>();
+
 			for( var i:int = 0; i < numElementsInLayout; i++ )
 			{
 				element = target.getElementAt( indicesInLayout[ i ] );
+				
 				if( i >= firstIndexInView && i <= lastIndexInView )
 				{
 					depths.push( indicesInLayout[ i ] );
-					updateVisibleElementAt( element, i);
+					updateVisibleElementAt( element, i );
+					element.visible = true;
+					_visibleElements.push( element );
 				}
 				else
 				{
@@ -1200,71 +1231,77 @@ package ws.tink.spark.layouts
 				
 				if( numUnselectedElements < 1 )
 				{
-					// The projection rectangle in 3D.
-					// TODO this should take into account the rotation
-					// of each item to be accurrate.
-					const plane:Rectangle = getProjectionRectAtZ( maximumZ );
-					
-					var center:Number;
-					var startPoint:Number;
-					var elementSize:Number;
-					
-					var numItemsRight:int = 0;
-					var numItemsLeft:int = 0;
-					var numItemsBottom:int = 0;
-					var numItemsTop:int = 0;
-					
-					// horizontal
-					if( horizontalDisplacement )
+					if( !useVirtualLayout )
 					{
-						center = ( unscaledWidth * _horizontalCenterMultiplier ) + _horizontalAlignOffset;
-						elementSize = getElementLayoutBoundsWidth( selectedElement );
-						
-						// right
-						// add the offset for the selected item
-						startPoint = center + selectedHorizontalDisplacement;
-						// minus off the width of the nearest non-seleced element
-						startPoint -= elementSize * _elementHorizontalCenterMultiplier;
-						numItemsRight = Math.ceil( ( plane.right - startPoint ) / horizontalDisplacement );
-						
-						// left
-						// add the offset for the selected item
-						startPoint = center - selectedHorizontalDisplacement;
-						// minus off the width of the nearest non-seleced element
-						startPoint += elementSize * Math.abs( _elementHorizontalCenterMultiplier - 1 );
-						numItemsLeft = Math.ceil( ( startPoint - plane.left ) / horizontalDisplacement );
+						start = 0;
+						end = indicesInLayout.length;
 					}
-					
-					// vertical
-					if( verticalDisplacement )
+					else
 					{
-						center = ( unscaledHeight * _verticalCenterMultiplier ) + _verticalAlignOffset;
-						elementSize = getElementLayoutBoundsHeight( selectedElement );
+						// The projection rectangle in 3D.
+						// TODO this should take into account the rotation
+						// of each item to be accurrate.
+						const plane:Rectangle = getProjectionRectAtZ( maximumZ );
 						
-						// bottom
-						// add the offset for the selected item
-						startPoint = center + selectedVerticalDisplacement;
-						// minus off the width of the nearest non-seleced element
-						startPoint -= elementSize * _elementVerticalCenterMultiplier;
-						numItemsBottom = Math.ceil( ( plane.bottom - startPoint ) / verticalDisplacement );
+						var center:Number;
+						var startPoint:Number;
+						var elementSize:Number;
 						
-						// top
-						// add the offset for the selected item
-						startPoint = center - selectedVerticalDisplacement;
-						// minus off the width of the nearest non-seleced element
-						startPoint += elementSize * Math.abs( _elementVerticalCenterMultiplier - 1 );
-						numItemsTop = Math.ceil( ( startPoint - plane.top ) / verticalDisplacement );
+						var numItemsRight:int = 0;
+						var numItemsLeft:int = 0;
+						var numItemsBottom:int = 0;
+						var numItemsTop:int = 0;
+						
+						// horizontal
+						if( horizontalDisplacement )
+						{
+							center = ( unscaledWidth * _horizontalCenterMultiplier ) + _horizontalAlignOffset;
+							elementSize = getElementLayoutBoundsWidth( selectedElement );
+							
+							// right
+							// add the offset for the selected item
+							startPoint = center + selectedHorizontalDisplacement;
+							// minus off the width of the nearest non-seleced element
+							startPoint -= elementSize * _elementHorizontalCenterMultiplier;
+							numItemsRight = Math.ceil( ( plane.right - startPoint ) / horizontalDisplacement );
+							
+							// left
+							// add the offset for the selected item
+							startPoint = center - selectedHorizontalDisplacement;
+							// minus off the width of the nearest non-seleced element
+							startPoint += elementSize * Math.abs( _elementHorizontalCenterMultiplier - 1 );
+							numItemsLeft = Math.ceil( ( startPoint - plane.left ) / horizontalDisplacement );
+						}
+						
+						// vertical
+						if( verticalDisplacement )
+						{
+							center = ( unscaledHeight * _verticalCenterMultiplier ) + _verticalAlignOffset;
+							elementSize = getElementLayoutBoundsHeight( selectedElement );
+							
+							// bottom
+							// add the offset for the selected item
+							startPoint = center + selectedVerticalDisplacement;
+							// minus off the width of the nearest non-seleced element
+							startPoint -= elementSize * _elementVerticalCenterMultiplier;
+							numItemsBottom = Math.ceil( ( plane.bottom - startPoint ) / verticalDisplacement );
+							
+							// top
+							// add the offset for the selected item
+							startPoint = center - selectedVerticalDisplacement;
+							// minus off the width of the nearest non-seleced element
+							startPoint += elementSize * Math.abs( _elementVerticalCenterMultiplier - 1 );
+							numItemsTop = Math.ceil( ( startPoint - plane.top ) / verticalDisplacement );
+						}
+						
+						start = Math.max( animationIndex - ( numItemsTop != 0 && numItemsTop < numItemsLeft ? numItemsTop : numItemsLeft ), 0 );
+						end = Math.min( animationIndex + ( numItemsBottom != 0 && numItemsBottom < numItemsRight ? numItemsBottom : numItemsRight ) + 1, target.numElements );
 					}
-					
-					start = Math.max( animationIndex - ( numItemsTop != 0 && numItemsTop < numItemsLeft ? numItemsTop : numItemsLeft ), 0 );
-					end = Math.min( animationIndex + ( numItemsBottom != 0 && numItemsBottom < numItemsRight ? numItemsBottom : numItemsRight ) + 1, target.numElements );
-					
-					indicesInView( start, end - start );
 				}
 				else
 				{
 					start = Math.max( animationIndex - numUnselectedElements, 0 );
-					end = Math.min( animationIndex + numUnselectedElements + 1, target.numElements )
+					end = Math.min( animationIndex + numUnselectedElements + 1, indicesInLayout.length )
 				}
 			}
 			else
