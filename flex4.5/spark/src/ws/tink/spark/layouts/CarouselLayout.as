@@ -1352,7 +1352,7 @@ package ws.tink.spark.layouts
 			var vector:Vector3D = new Vector3D( 0, 0, 0 );
 			element.visible = true;
 			element.depth = 0;
-			element.transformAround( vector, null, null, vector, null, null, vector, false );
+			element.transformAround( vector, null, null, vector, null, vector, vector, false );
 			applyColorTransformToElement( element, new ColorTransform() );
 		}
 		
