@@ -773,7 +773,7 @@ package ws.tink.spark.layouts.supportClasses
 			if( _selectedIndexInvalid )
 			{
 				_selectedIndexInvalid = false;
-				_selectedIndex = _proposedSelectedIndex % numElementsInLayout;
+				_selectedIndex = numElementsInLayout ? _proposedSelectedIndex % numElementsInLayout : _proposedSelectedIndex;
 				_proposedSelectedIndex = -1;
 				
 //				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
