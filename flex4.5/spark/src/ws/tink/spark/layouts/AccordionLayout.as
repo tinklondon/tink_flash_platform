@@ -863,6 +863,8 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();		
 			
+			if( !indicesInLayout.length ) return;
+			
 			var i:int;
 			var elementSize:ElementSize;
 			const numElementSizes:int = _elementSizes.length;
@@ -870,12 +872,47 @@ package ws.tink.spark.layouts
 			
 			if( _elementSizesInvalid )
 			{
-				var indicesRequiredIndex:int;
-				
+				// We use this vector to store a reference to the element index
+				// of any item that is currently in the display list.
+				// If we are creating a new elementSize, we must make sure that this element
+				// is actually added (i.e. not worry about being virtual as it's already created).
+				const indicesCreated:Vector.<int> = new Vector.<int>();
 				const size:Number = direction == TileDirection.VERTICAL ? unscaledHeight : unscaledWidth;
 				const selectedSize:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
+				
 				// Store a reference to the indices that we need ElementSize items for.
-				const indicesRequired:Vector.<int> = buttonBar || minElementSize ? indicesInLayout.concat() : Vector.<int>( [ indicesInLayout[ selectedIndex ] ] );
+				var indicesRequired:Vector.<int>;
+				var indicesRequiredIndex:int;
+				var element:IVisualElement;
+				
+				if( buttonBar || minElementSize )
+				{
+					indicesRequired = indicesInLayout.concat()
+				}
+				else
+				{
+					if( target.numChildren > 1 )
+					{
+						for( i = 0; i < target.numChildren; i++ )
+						{
+							element =  IVisualElement( target.getChildAt( i ) );
+							if( element.includeInLayout )
+							{
+								// Store a reference to the the element index of all children.
+								indicesCreated.push( target.getElementIndex( element ) );
+								
+							}
+						}
+					}
+					
+					// Also add this as an index that is required.
+					indicesRequired = indicesCreated.concat();
+					
+					// Make sure we always push the selectedIndex
+					var selected:int = indicesInLayout[ selectedIndex ];
+					if( indicesRequired.indexOf( selected ) == -1 ) indicesRequired.push( selected );
+				}
+				
 				
 				for( i = numElementSizes - 1; i >= 0; i-- )
 				{
@@ -919,7 +956,12 @@ package ws.tink.spark.layouts
 					
 					// Only get the virtual element if it is the selectedIndex,
 					// its start size is bigger than 0.
-					if( elementSize.displayListIndex == selectedIndex || elementSize.start ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
+					if( elementSize.displayListIndex == selectedIndex || elementSize.start || 
+					indicesCreated.indexOf( elementSize.displayListIndex ) != -1 )
+					{
+						trace( "pushed it", elementSize.displayListIndex );
+						elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
+					}
 					
 					_elementSizes.push( elementSize );
 					
@@ -941,6 +983,9 @@ package ws.tink.spark.layouts
 				}
 			}
 			
+//			trace( "_elementSizes", indicesRequired.length );
+//				trace( "hmmm test", elements.length, target.numChildren );
+			
 		}
 		
 		
@@ -957,6 +1002,8 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListReal();
 
+			if( !indicesInLayout.length ) return;
+			
 			var i:int;
 			var elementSize:ElementSize;
 			const numElementSizes:int = _elementSizes.length;
@@ -970,7 +1017,8 @@ package ws.tink.spark.layouts
 				const selectedSize:Number = size - _buttonLayout._totalSize - ( minElementSize * ( numElementsInLayout - 1 ) );
 				
 				// Store a reference to the indices that we need ElementSize items for.
-				const indicesRequired:Vector.<int> = buttonBar || minElementSize ? indicesInLayout.concat() : Vector.<int>( [ indicesInLayout[ selectedIndex ] ] );
+				//const indicesRequired:Vector.<int> = buttonBar || minElementSize ? indicesInLayout.concat() : Vector.<int>( [ indicesInLayout[ selectedIndex ] ] );
+				const indicesRequired:Vector.<int> = indicesInLayout.concat();
 				
 				for( i = numElementSizes - 1; i >= 0; i-- )
 				{
@@ -1296,6 +1344,7 @@ internal class ButtonLayout extends LayoutBase
 	
 	override public function measure():void
 	{
+		if( !_parentLayout.target ) return;
 		var matrix:Matrix;
 		var rotation:Number = _parentLayout.buttonRotation == "none" ? 0 : _parentLayout.buttonRotation == "left" ? -90 : 90;
 		if( rotation != _rotation )
@@ -1363,7 +1412,7 @@ internal class ButtonLayout extends LayoutBase
 	{
 		super.updateDisplayList( unscaledWidth, unscaledHeight );
 		
-		if( !target ) return;
+		if( !target || !_parentLayout.target ) return;
 		
 		var matrix:Matrix;
 		var rotation:Number = _parentLayout.buttonRotation == "none" ? 0 : _parentLayout.buttonRotation == "left" ? -90 : 90;

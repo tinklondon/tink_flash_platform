@@ -232,7 +232,6 @@ package ws.tink.spark.layouts.supportClasses
 		public function get animationValue():Number
 		{
 			return _animationValue % numElementsInLayout;
-//			return animation.isPlaying ? _animationValue : 0;
 		}
 		
 		
@@ -327,7 +326,6 @@ package ws.tink.spark.layouts.supportClasses
 		{
 //			super.invalidateSelectedIndex( selectedIndex, animation.currentValue[ "animationIndex" ] );
 			_animationValue = animation.currentValue[ "animationIndex" ];
-			
 //			updateIndicesInView();
 			invalidateTargetDisplayList();
 		}
