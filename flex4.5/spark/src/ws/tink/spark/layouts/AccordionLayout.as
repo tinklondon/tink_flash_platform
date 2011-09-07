@@ -932,12 +932,6 @@ package ws.tink.spark.layouts
 						// Only get the virtual element if it is the selectedIndex,
 						// its start size is bigger than 0, or its diff in size is bigger than 0.
 						if( elementSize.displayListIndex == selectedIndex || elementSize.start || elementSize.diff ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
-//						if( elementSize.element )
-//						{
-//							trace( "yeahh" );
-////							DisplayObject( elementSize.element ).visible = false;
-//							DisplayObject( elementSize.element ).scrollRect = new Rectangle( 0, 0, 20, 20 );
-//						}
 						
 						update( elementSize, selectedSize, creatingAll );
 					}
@@ -959,7 +953,6 @@ package ws.tink.spark.layouts
 					if( elementSize.displayListIndex == selectedIndex || elementSize.start || 
 					indicesCreated.indexOf( elementSize.displayListIndex ) != -1 )
 					{
-						trace( "pushed it", elementSize.displayListIndex );
 						elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
 					}
 					
@@ -982,10 +975,6 @@ package ws.tink.spark.layouts
 					if( selectedIndex == elementSize.layoutIndex || elementSize.size ) elementSize.element = target.getVirtualElementAt( elementSize.displayListIndex );
 				}
 			}
-			
-//			trace( "_elementSizes", indicesRequired.length );
-//				trace( "hmmm test", elements.length, target.numChildren );
-			
 		}
 		
 		
