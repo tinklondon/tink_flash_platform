@@ -60,7 +60,7 @@ package ws.tink.spark.layouts
 	 *  tag attributes of its superclass, and adds the following tag attributes:</p>
 	 *
 	 *  <pre>
-	 *  &lt;st:CarouselLayout
+	 *  &lt;st:AccordionLayout
 	 *    <strong>Properties</strong>
 	 *    angle="360"
 	 *    depthColor="-1"
@@ -158,70 +158,6 @@ package ws.tink.spark.layouts
 		//
 		//--------------------------------------------------------------------------
 		
-//		override protected function invalidateSelectedIndex(index:int, offset:Number):void
-//		{
-//			if( angle == 360 && useQuickestDirection && selectedIndex != -1 )
-//			{
-////				index
-//				var diff:Number = selectedIndex - index;
-//				if( Math.abs( diff ) > numElementsInLayout / 2 )
-//				{
-//					if( diff < 0 )
-//					{
-//						index -= numElementsInLayout;
-//					}
-//					else
-//					{
-//						index += numElementsInLayout;
-//					}
-//				}
-//			}
-//			trace( index, "ll", diff );
-//			super.invalidateSelectedIndex( index, offset );
-//		}
-//		
-//		override public function get selectedIndex():int
-//		{
-//			const s:int = super.selectedIndex % numElementsInLayout;
-////			trace( "mmmm", _animationValue % numElementsInLayout );
-//			return s < 0 ? numElementsInLayout + s : s;
-//			//			return animation.isPlaying ? _animationValue : 0;
-//		}
-//		
-//		//----------------------------------
-//		//  useQuickestDirection
-//		//---------------------------------- 
-//		
-//		/**
-//		 *  @private
-//		 *  Storage property for useQuickestDirection.
-//		 */
-//		private var _useQuickestDirection:Boolean = true;
-//		
-//		/**
-//		 *	The segment of a circle to rotate the elements around.
-//		 * 
-//		 *  @default true
-//		 * 
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get useQuickestDirection():Boolean
-//		{
-//			return _useQuickestDirection;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set useQuickestDirection( value:Boolean ) : void
-//		{
-//			if( _useQuickestDirection == value ) return;
-//			
-//			_useQuickestDirection = value;
-//		}
-			
 		//----------------------------------
 		//  angle
 		//---------------------------------- 

@@ -87,10 +87,7 @@ package ws.tink.spark.layouts
 	{
 		
 
-		override public function updateScrollRect(w:Number, h:Number):void
-		{
-			target.scrollRect = null;
-		}
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -1194,7 +1191,7 @@ package ws.tink.spark.layouts
 			var vector:Vector3D = new Vector3D( 0, 0, 0 );
 			element.visible = true;
 			element.depth = 0;
-			element.transformAround( vector, null, null, vector, null, null, vector, false );
+			element.transformAround( vector, null, null, vector, null, vector, vector, false );
 			applyColorTransformToElement( element, new ColorTransform() );
 		}
 		

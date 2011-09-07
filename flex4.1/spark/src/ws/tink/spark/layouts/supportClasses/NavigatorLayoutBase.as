@@ -3,10 +3,12 @@ package ws.tink.spark.layouts.supportClasses
 	import flash.display.DisplayObject;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
+	import flash.net.getClassByAlias;
 	
 	import mx.controls.scrollClasses.ScrollBarDirection;
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
+	import mx.events.ChildExistenceChangedEvent;
 	import mx.events.FlexEvent;
 	
 	import spark.components.DataGroup;
@@ -826,7 +828,20 @@ package ws.tink.spark.layouts.supportClasses
 			if( target is DataGroup )
 			{
 				var dataGroup:DataGroup = DataGroup( target );
-				if( !dataGroup.itemRenderer && dataGroup.itemRendererFunction == null && dataGroup.dataProvider ) elts = dataGroup.dataProvider.toArray();
+				
+				// If the user isn't using itemRenderers instead directly adding children to the dataProvider
+				if( !dataGroup.itemRenderer && dataGroup.itemRendererFunction == null && dataGroup.dataProvider )
+				{
+					elts = dataGroup.dataProvider.toArray();
+				}
+				else
+				{
+					elts = new Array();
+					for( var i:int = 0; i < dataGroup.numChildren; i++ )
+					{
+						elts.push( dataGroup.getChildAt( i ) );
+					}
+				}
 			}
 			else
 			{
@@ -1155,38 +1170,16 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function restoreElements():void
 		{
+			// When using virtualization, elements get created after updateElements()
+			// has been invoked as part of getVirtualItemAt(), therefore we must re-calculate them.
+			if( target is DataGroup && target.numChildren != _elements.length ) updateElements();
+			
 			for each( var element:IVisualElement in _elements )
 			{
-				restoreElement( element );
+				// Only restoe the element if its includeInLayout property
+				// is true.
+				if( element.includeInLayout ) restoreElement( element );
 			}
-//			var i:int;
-//			var numElements:int = target.numElements;
-//			if( target is DataGroup )
-//			{
-//				var dataGroup:DataGroup = DataGroup( target );
-//				for( i = 0; i < numElements; i++ )
-//				{
-//					// If we are adding children and not using an ItemRenderer
-//					if( !dataGroup.itemRenderer )
-//					{
-//						if( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ).includeInLayout )
-//						{
-//							restoreElement( IVisualElement( dataGroup.dataProvider.getItemAt( i ) ) );
-//						}
-//					}
-//				}
-//			}
-//			else
-//			{
-//				var content:Array = Group( target ).getMXMLContent();
-//				for( i = 0; i < numElements; i++ )
-//				{
-//					if( IVisualElement( content[ i ] ).includeInLayout )
-//					{
-//						restoreElement( IVisualElement( content[ i ] ) );
-//					}
-//				}
-//			}
 		}
 		
 		override public function updateScrollRect( w:Number, h:Number ):void
