@@ -324,10 +324,13 @@ package ws.tink.spark.controls
 			if( dp is ISelectableList )
 			{
 				const index:int = ISelectableList( dp ).selectedIndex;
+				if( index != -1 )
+				{
 				const item:Object = dp.getItemAt( index );
 				if( !indices ) indices = new Vector.<int>();
 				indices.push( index );
 				if( item is IList ) return recurseDataProviderSelectedIndices( IList( item ), indices );
+				}
 			}
 			else if( selectedIndex != -1 )
 			{
