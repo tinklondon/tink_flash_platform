@@ -42,6 +42,21 @@ DataNavigator
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
 }
 
+MenuBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MenuBarSkin");
+}
+
+MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropRightMenuBarItemRendererSkin");
+}
+
+MenuBar MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropDownMenuBarItemRendererSkin");
+}
+
 MultipleSelectionButtonBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
