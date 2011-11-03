@@ -87,7 +87,7 @@ package ws.tink.spark.primitives
 		 *  @private
 		 *  Storage property for holeWidth.
 		 */
-		private var _holeWidth:Number;
+		private var _holeWidth:Number = 0;
 		
 		/**
 		 *  The width of the hole to punch out of the filled shape.
@@ -98,6 +98,13 @@ package ws.tink.spark.primitives
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
+		 */
+		public function get holeWidth():Number
+		{
+			return _holeWidth;
+		}
+		/**
+		 *  @private
 		 */
 		public function set holeWidth( value:Number ):void
 		{
@@ -114,7 +121,7 @@ package ws.tink.spark.primitives
 		 *  @private
 		 *  Storage property for holeHeight.
 		 */
-		private var _holeHeight:Number;
+		private var _holeHeight:Number = 0;
 		
 		/**
 		 *  The height of the hole to punch out of the filled shape.
@@ -125,6 +132,13 @@ package ws.tink.spark.primitives
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
+		 */
+		public function get holeHeight():Number
+		{
+			return _holeHeight;
+		}
+		/**
+		 *  @private
 		 */
 		public function set holeHeight( value:Number ):void
 		{
