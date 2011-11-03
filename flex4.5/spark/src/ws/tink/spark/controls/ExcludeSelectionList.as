@@ -380,18 +380,18 @@ package ws.tink.spark.controls
 		/**
 		 * @inherit
 		 */
-		override mx_internal function setSelectedIndex( value:int, dispatchChangeEvent:Boolean = false ):void
+		override mx_internal function setSelectedIndex( value:int, dispatchChangeEvent:Boolean = false, changeCaret:Boolean = true ):void
 		{
 			if( value == selectedIndex || !indexSelectable( value ) ) return;
 
-			super.setSelectedIndex( value, dispatchChangeEvent );
+			super.setSelectedIndex( value, dispatchChangeEvent, changeCaret );
 		}
 		
 		
 		/**
 		 * @inherit
 		 */
-		override mx_internal function setSelectedIndices( value:Vector.<int>, dispatchChangeEvent:Boolean = false ):void
+		override mx_internal function setSelectedIndices( value:Vector.<int>, dispatchChangeEvent:Boolean = false, changeCaret:Boolean = true ):void
 		{
 			if( value == selectedIndices ) return;
 			
@@ -401,7 +401,7 @@ package ws.tink.spark.controls
 				if( indexSelectable( i ) ) newValue.push( i );
 			}
 			
-			super.setSelectedIndices( newValue, dispatchChangeEvent );
+			super.setSelectedIndices( newValue, dispatchChangeEvent, changeCaret );
 		}
 		
 		

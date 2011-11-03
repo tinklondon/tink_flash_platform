@@ -488,7 +488,7 @@ package ws.tink.spark.itemRenderers
 		 *  @param dispatchChangeEvent if true, the component will dispatch a "change" event if the
 		 *  value has changed. Otherwise, it will dispatch a "valueCommit" event. 
 		 */
-		override mx_internal function setSelectedIndex(value:int, dispatchChangeEvent:Boolean = false):void
+		override mx_internal function setSelectedIndex( value:int, dispatchChangeEvent:Boolean = false, changeCaret:Boolean = true ):void
 		{
 			var changed:Boolean;
 			
@@ -513,6 +513,8 @@ package ws.tink.spark.itemRenderers
 			
 			if( value == selectedIndex )
 			{
+				if( changeCaret ) setCurrentCaretIndex( selectedIndex );
+				
 				if( changed )
 				{
 					if( dispatchChangeEvent )
