@@ -16,3 +16,8 @@ obj/*
 
 Thumbs.db
 .DS_Store
+
+bin
+.settings
+html-template
+bin-debug
