@@ -39,11 +39,10 @@ package ws.tink.graphics.utils
 	 */
 	public class RectUtil
 	{
-//		include "../core/Version.as";
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Class methods
+		//  Class Methods
 		//
 		//--------------------------------------------------------------------------
 		
