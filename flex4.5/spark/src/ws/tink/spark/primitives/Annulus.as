@@ -243,7 +243,6 @@ package ws.tink.spark.primitives
 			{
 				g.drawEllipse( drawX, drawY, width, height );
 				g.drawEllipse( drawX + holeOffsetX + ( ( width - holeW ) / 2 ), drawY + holeOffsetY + ( ( height - holeH ) / 2 ), holeW, holeH );
-				return;
 			}
 			
 			const radiusX:Number = width / 2;
