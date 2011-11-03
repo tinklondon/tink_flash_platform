@@ -222,13 +222,13 @@ package ws.tink.spark.primitives
 			if( fillCreator )
 			{
 				setupFill( g );
-				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( fillCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
+				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( fillCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height );
 			}
 			
 			if( strokeCreator )
 			{
 				setupStroke( g );
-				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( strokeCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
+				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( strokeCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height );
 			}
 		}
 		
