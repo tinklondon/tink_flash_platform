@@ -64,5 +64,6 @@
 	<component id="Line" class="ws.tink.spark.primitives.Line"/>
 	<component id="Path" class="ws.tink.spark.primitives.Path"/>
 	<component id="Rect" class="ws.tink.spark.primitives.Rect"/>
+	<component id="Star" class="ws.tink.spark.primitives.Star"/>
 	
 </componentPackage>
