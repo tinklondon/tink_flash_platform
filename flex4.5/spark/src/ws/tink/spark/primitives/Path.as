@@ -9,7 +9,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package ws.tink.spark.primatives
+package ws.tink.spark.primitives
 {
 	
 	import flash.display.Graphics;
