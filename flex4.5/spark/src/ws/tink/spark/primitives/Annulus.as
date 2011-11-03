@@ -232,36 +232,37 @@ package ws.tink.spark.primitives
 		 */
 		override protected function draw( g:Graphics ):void
 		{
-			var strokeCreator:IGraphicsCreator = ( stroke is IGraphicsDefiner ) ? IGraphicsDefiner( stroke ).graphicsCreator : null;
-			var fillCreator:IGraphicsCreator = ( fill is IGraphicsDefiner ) ? IGraphicsDefiner( fill ).graphicsCreator : null;
-			var strokeAndFillCreators:Boolean = strokeCreator && fillCreator;
+			const strokeCreator:IGraphicsCreator = ( stroke is IGraphicsDefiner ) ? IGraphicsDefiner( stroke ).graphicsCreator : null;
+			const fillCreator:IGraphicsCreator = ( fill is IGraphicsDefiner ) ? IGraphicsDefiner( fill ).graphicsCreator : null;
+			const strokeAndFillCreators:Boolean = strokeCreator && fillCreator;
 			
-			var w:Number = _holeWidth > width ? width : _holeWidth;
-			var h:Number = _holeHeight > height ? height : _holeHeight;
-			var w2:Number = w / 2;
-			var h2:Number = h / 2;
+			const holeW:Number = holeWidth > width ? width : holeWidth;
+			const holeH:Number = holeHeight > height ? height : holeHeight;
 			
 			if( !strokeAndFillCreators )
 			{
 				g.drawEllipse( drawX, drawY, width, height );
-				g.drawEllipse( drawX + ( ( width - w ) / 2 ), drawY + ( ( height - h ) / 2 ), w, h );
+				g.drawEllipse( drawX + holeOffsetX + ( ( width - holeW ) / 2 ), drawY + holeOffsetY + ( ( height - holeH ) / 2 ), holeW, holeH );
+				return;
 			}
 			
-			var radiusX:Number = width / 2;
-			var radiusY:Number = height / 2;
+			const radiusX:Number = width / 2;
+			const radiusY:Number = height / 2;
+			const holeRadiusX:Number = holeW / 2;
+			const holeRadiusY:Number = holeH / 2;
 			
 			if( fillCreator )
 			{
 				setupFill( g );
-				EllipseUtil.drawEllipse( fillCreator, drawX + radiusX, drawY + ( height / 2 ), radiusX, radiusY );
-				EllipseUtil.drawEllipse( fillCreator, drawX + ( ( width - w ) / 2 ), drawY + ( ( height - h ) / 2 ), w2, h2 );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, radiusX, radiusY );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + holeOffsetX + radiusX, drawY + holeOffsetY + radiusY, holeRadiusX, holeRadiusY );
 			}
 			
 			if( strokeCreator )
 			{
 				setupStroke( g );
 				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, radiusX, radiusY );
-				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, w2, h2 );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + holeOffsetX + radiusX, drawY + holeOffsetY + radiusY, holeRadiusX, holeRadiusY );
 			}
 
 		}
