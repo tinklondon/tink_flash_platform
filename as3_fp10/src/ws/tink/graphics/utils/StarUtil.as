@@ -93,7 +93,7 @@ package ws.tink.graphics.utils
 				else
 				{
 					if( graphics ) graphics.lineTo( point.x, point.y );
-					if( graphicsCreator ) graphicsCreator.moveTo( point.x, point.y );
+					if( graphicsCreator ) graphicsCreator.lineTo( point.x, point.y );
 				}
 			}
 		}
