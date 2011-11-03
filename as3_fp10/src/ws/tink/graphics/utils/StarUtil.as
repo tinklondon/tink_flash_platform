@@ -25,12 +25,63 @@ package ws.tink.graphics.utils
 	
 	import ws.tink.graphics.IGraphicsCreator;
 
+	/**
+	 *  The StarUtil class is an all-static class with utility methods
+	 *  related to drawing star's or concave polygons.
+	 *  You do not create instances of StarUtil;
+	 *  instead you simply call methods such as the
+	 *  <code>StarUtil.drawStar()</code> method.
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
+	 */
 	public class StarUtil
 	{
-		public function StarUtil()
-		{
-		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Class Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Draws a star plotted around an ellipse. 
+		 *  You must set the line style, fill, or both 
+		 *  on the Graphics object before 
+		 *  you call the <code>drawStar()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The Graphics object that draws the polygon.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param numPoints The number of points of the star. This must be
+		 *  3 or more else an ArgumentError is thrown.
+		 * 
+		 *  @param width The width of the polygon, in pixels.
+		 * 
+		 *  @param height The height of the polygon, in pixels.
+		 * 
+		 *  @param innerWidth The inner width of the star, in pixels.
+		 * 
+		 *  @param innerHeight The inner height of the star, in pixels.
+		 * 
+		 *  @param angle The rotation of the star.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawStar( graphics:Graphics, x:Number, y:Number, numPoints:uint,
 										 width:Number, height:Number, innerWidth:Number, innerHeight:Number, angle:Number = 0 ):void
 		{
@@ -43,6 +94,42 @@ package ws.tink.graphics.utils
 			draw( x, y, numPoints, width, height, innerWidth, innerHeight, angle, graphics );
 		}
 		
+		/**
+		 *  Draws a star plotted around an ellipse. 
+		 *  You must set the line style, fill, or both 
+		 *  on the IGraphicsCreator object before 
+		 *  you call the <code>drawGraphicsCreatorStar()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The IGraphicsCreator object that draws the polygon.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param numPoints The number of points of the star. This must be
+		 *  3 or more else an ArgumentError is thrown.
+		 * 
+		 *  @param width The width of the polygon, in pixels.
+		 * 
+		 *  @param height The height of the polygon, in pixels.
+		 * 
+		 *  @param innerWidth The inner width of the star, in pixels.
+		 * 
+		 *  @param innerHeight The inner height of the star, in pixels.
+		 * 
+		 *  @param angle The rotation of the star.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawGraphicsCreatorStar( graphics:IGraphicsCreator, x:Number, y:Number, numPoints:uint,
 														width:Number, height:Number, innerWidth:Number, innerHeight:Number, angle:Number = 0 ):void
 		{
@@ -55,6 +142,9 @@ package ws.tink.graphics.utils
 			draw( x, y, numPoints, width, height, innerWidth, innerHeight, angle, null, graphics );
 		}
 		
+		/**
+		 *  @private
+		 */
 		private static function draw( x:Number, y:Number, numPoints:uint,
 									  width:Number, height:Number, innerWidth:Number, innerHeight:Number, angle:Number = 0,
 									  graphics:Graphics = null, graphicsCreator:IGraphicsCreator = null ):void

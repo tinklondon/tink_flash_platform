@@ -25,6 +25,18 @@ package ws.tink.graphics.utils
 	
 	import ws.tink.graphics.IGraphicsCreator;
 
+	/**
+	 *  The IsoscelesTriangleUtil class is an all-static class with utility methods
+	 *  related to isosceles triangles.
+	 *  You do not create instances of IsoscelesTriangleUtil;
+	 *  instead you simply call methods such as the
+	 *  <code>IsoscelesTriangleUtil.drawTriangle()</code> method.
+	 *  
+	 *  @langversion 3.0
+	 *  @playerversion Flash 9
+	 *  @playerversion AIR 1.1
+	 *  @productversion Flex 3
+	 */
 	public class IsoscelesTriangleUtil
 	{
 		
