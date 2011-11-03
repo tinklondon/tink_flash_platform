@@ -147,6 +147,74 @@ package ws.tink.spark.primitives
 		}
 		
 		
+		//----------------------------------
+		//  holeOffsetX
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for holeOffsetX.
+		 */
+		private var _holeOffsetX:Number = 0;
+		
+		/**
+		 *  The amount to offset the x position of the hole to punch out of the filled shape.
+		 * 
+		 *  @default 0
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get holeOffsetX():Number
+		{
+			return _holeOffsetX;
+		}
+		/**
+		 *  @private
+		 */
+		public function set holeOffsetX( value:Number ):void
+		{
+			_holeOffsetX =  value;
+			invalidateDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  holeOffsetY
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for holeOffsetY.
+		 */
+		private var _holeOffsetY:Number = 0;
+		
+		/**
+		 *  The amount to offset the y position of the hole to punch out of the filled shape.
+		 * 
+		 *  @default 0
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get holeOffsetY():Number
+		{
+			return _holeOffsetY;
+		}
+		/**
+		 *  @private
+		 */
+		public function set holeOffsetY( value:Number ):void
+		{
+			_holeOffsetY =  value;
+			invalidateDisplayList();
+		}
+		
+		
 		
 		//--------------------------------------------------------------------------
 		//
