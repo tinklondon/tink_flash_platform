@@ -28,7 +28,7 @@ package ws.tink.spark.primitives
 	import spark.primitives.supportClasses.FilledElement;
 	
 	import ws.tink.graphics.IGraphicsCreator;
-	import ws.tink.graphics.utils.RegularPolygonUtil;
+	import ws.tink.graphics.utils.EllipticalPolygonUtil;
 	import ws.tink.graphics.utils.StarUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
 	
@@ -216,19 +216,19 @@ package ws.tink.spark.primitives
 			
 			if( !strokeAndFillCreators )
 			{
-				RegularPolygonUtil.drawPolygon( g, drawX + halfWidth, drawY + halfHeight, numSides, width, height );
+				EllipticalPolygonUtil.drawPolygon( g, drawX + halfWidth, drawY + halfHeight, numSides, width, height );
 			}
 			
 			if( fillCreator )
 			{
 				setupFill( g );
-				RegularPolygonUtil.drawGraphicsCreatorPolygon( fillCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
+				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( fillCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
 			}
 			
 			if( strokeCreator )
 			{
 				setupStroke( g );
-				RegularPolygonUtil.drawGraphicsCreatorPolygon( strokeCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
+				EllipticalPolygonUtil.drawGraphicsCreatorPolygon( strokeCreator, drawX + halfWidth, drawY + halfHeight, numSides, width, height )
 			}
 		}
 		
