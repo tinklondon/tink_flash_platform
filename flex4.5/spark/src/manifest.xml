@@ -62,6 +62,7 @@
 	<component id="Cross" class="ws.tink.spark.primitives.Cross"/>
 	<component id="Ellipse" class="ws.tink.spark.primitives.Ellipse"/>
 	<component id="EllipticalPolygon" class="ws.tink.spark.primitives.EllipticalPolygon"/>
+	<component id="IsoscelesTriangle" class="ws.tink.spark.primitives.IsoscelesTriangle"/>
 	<component id="Line" class="ws.tink.spark.primitives.Line"/>
 	<component id="Path" class="ws.tink.spark.primitives.Path"/>
 	<component id="Rect" class="ws.tink.spark.primitives.Rect"/>
