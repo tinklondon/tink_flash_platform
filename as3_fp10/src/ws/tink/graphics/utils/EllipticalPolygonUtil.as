@@ -18,6 +18,18 @@ SOFTWARE.
 
 */
 
+/**
+ *  The EllipticalPolygonUtil class is an all-static class with utility methods
+ *  related to elliptical polygons.
+ *  You do not create instances of EllipticalPolygonUtil;
+ *  instead you simply call methods such as the
+ *  <code>EllipticalPolygonUtil.drawPolygon()</code> method.
+ *  
+ *  @langversion 3.0
+ *  @playerversion Flash 9
+ *  @playerversion AIR 1.1
+ *  @productversion Flex 3
+ */
 package ws.tink.graphics.utils
 {
 	import flash.display.Graphics;
@@ -27,10 +39,47 @@ package ws.tink.graphics.utils
 
 	public class EllipticalPolygonUtil
 	{
-		public function EllipticalPolygonUtil()
-		{
-		}
+
 		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Class Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 *  Draws a polygon plotted around an ellipse. 
+		 *  You must set the line style, fill, or both 
+		 *  on the Graphics object before 
+		 *  you call the <code>drawPolygon()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The Graphics object that draws the polygon.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param numSides The number of sides of the polygon. This must be
+		 *  3 or more else an ArgumentError is thrown.
+		 * 
+		 *  @param width The width of the polygon, in pixels.
+		 * 
+		 *  @param height The height of the polygon, in pixels.
+		 * 
+		 *  @param angle The rotation of the polygon.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawPolygon( graphics:Graphics, x:Number, y:Number, numSides:uint,
 											width:Number, height:Number, angle:Number = 0 ):void
 		{
@@ -43,6 +92,38 @@ package ws.tink.graphics.utils
 			draw( x, y, numSides, width, height, angle, graphics );
 		}
 		
+		/**
+		 *  Draws a polygon plotted around an ellipse. 
+		 *  You must set the line style, fill, or both 
+		 *  on the IGraphicsCreator object before 
+		 *  you call the <code>drawGraphicsCreatorPolygon()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The IGraphicsCreator object that draws the polygon.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param numSides The number of sides of the polygon. This must be
+		 *  3 or more else an ArgumentError is thrown.
+		 * 
+		 *  @param width The width of the polygon, in pixels.
+		 * 
+		 *  @param height The height of the polygon, in pixels.
+		 * 
+		 *  @param angle The rotation of the polygon.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawGraphicsCreatorPolygon( graphics:IGraphicsCreator, x:Number, y:Number, numSides:uint,
 														   width:Number, height:Number, angle:Number = 0 ):void
 		{
@@ -55,6 +136,9 @@ package ws.tink.graphics.utils
 			draw( x, y, numSides, width, height, angle, null, graphics );
 		}
 		
+		/**
+		 *  @private
+		 */
 		private static function draw( x:Number, y:Number, numSides:uint,
 									  width:Number, height:Number, angle:Number = 0,
 									  graphics:Graphics = null, graphicsCreator:IGraphicsCreator = null ):void

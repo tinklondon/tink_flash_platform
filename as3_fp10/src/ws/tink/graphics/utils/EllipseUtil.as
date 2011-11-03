@@ -51,14 +51,14 @@ package ws.tink.graphics.utils
 		/**
 		 *  Draws a circle. 
 		 *  You must set the line style, fill, or both 
-		 *  on the Graphics object before 
+		 *  on the IGraphicsCreator object before 
 		 *  you call the <code>drawCircle()</code> method 
 		 *  by calling the <code>linestyle()</code>, 
 		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
 		 *  <code>beginGradientFill()</code>, or 
 		 *  <code>beginBitmapFill()</code> method.
 		 * 
-		 *  @param graphics The IGraphicsCreator object that draws the rounded rectangle.
+		 *  @param graphics The IGraphicsCreator object that draws the circle.
 		 *
 		 *  @param x The horizontal position relative to the 
 		 *  registration point of the parent display object, in pixels.
@@ -85,14 +85,14 @@ package ws.tink.graphics.utils
 		/**
 		 *  Draws an ellipse. 
 		 *  You must set the line style, fill, or both 
-		 *  on the Graphics object before 
-		 *  you call the <code>drawCircle()</code> method 
+		 *  on the IGraphicsCreator object before 
+		 *  you call the <code>drawEllipse()</code> method 
 		 *  by calling the <code>linestyle()</code>, 
 		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
 		 *  <code>beginGradientFill()</code>, or 
 		 *  <code>beginBitmapFill()</code> method.
 		 * 
-		 *  @param graphics The IGraphicsCreator object that draws the rounded rectangle.
+		 *  @param graphics The IGraphicsCreator object that draws the ellipse.
 		 *
 		 *  @param x The horizontal position relative to the 
 		 *  registration point of the parent display object, in pixels.
