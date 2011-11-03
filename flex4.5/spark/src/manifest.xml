@@ -8,8 +8,6 @@
 	<component id="FormItem" class="ws.tink.spark.containers.FormItem"/>
 	<component id="Navigator" class="ws.tink.spark.containers.Navigator"/>
 	<component id="NavigatorGroup" class="ws.tink.spark.containers.NavigatorGroup"/>
-	<component id="ValidationForm" class="ws.tink.spark.containers.ValidationForm"/>
-	<component id="ValidationFormItem" class="ws.tink.spark.containers.ValidationFormItem"/>
 	
 	<!-- controls -->
 	<component id="Alert" class="ws.tink.spark.controls.Alert"/>
