@@ -26,11 +26,11 @@ package ws.tink.graphics.utils
 	import ws.tink.graphics.IGraphicsCreator;
 	
 	/**
-	 *  The Graphics class is an all-static class with utility methods
-	 *  related to the Graphics class.
-	 *  You do not create instances of GraphicsUtil;
+	 *  The EllipseUtil class is an all-static class with utility methods
+	 *  related to drawing ellipse's.
+	 *  You do not create instances of EllipseUtil;
 	 *  instead you simply call methods such as the
-	 *  <code>GraphicsUtil.drawRoundRectComplex()</code> method.
+	 *  <code>EllipseUtil.drawEllipse()</code> method.
 	 *  
 	 *  @langversion 3.0
 	 *  @playerversion Flash 9
@@ -39,20 +39,79 @@ package ws.tink.graphics.utils
 	 */
 	public class EllipseUtil
 	{
-//		include "../core/Version.as";
+
+		
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Class methods
+		//  Class Methods
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 *  Draws a circle. 
+		 *  You must set the line style, fill, or both 
+		 *  on the Graphics object before 
+		 *  you call the <code>drawCircle()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The IGraphicsCreator object that draws the rounded rectangle.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param radius The radius of the circle, in pixels.
+		 * 
+		 *  @param accuracy The number of quadratic bezier curves used to create the circle.
+		 *  The default is 10.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawCircle( graphics:IGraphicsCreator, x:Number, y:Number, 
 										   radius:Number, accuracy:Number = 10 ):void
 		{
 			EllipseUtil.drawEllipse( graphics,x, y, radius, radius, accuracy );
 		}
 		
+		/**
+		 *  Draws an ellipse. 
+		 *  You must set the line style, fill, or both 
+		 *  on the Graphics object before 
+		 *  you call the <code>drawCircle()</code> method 
+		 *  by calling the <code>linestyle()</code>, 
+		 *  <code>lineGradientStyle()</code>, <code>beginFill()</code>, 
+		 *  <code>beginGradientFill()</code>, or 
+		 *  <code>beginBitmapFill()</code> method.
+		 * 
+		 *  @param graphics The IGraphicsCreator object that draws the rounded rectangle.
+		 *
+		 *  @param x The horizontal position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param y The vertical position relative to the 
+		 *  registration point of the parent display object, in pixels.
+		 * 
+		 *  @param radiusX The radius of the ellipse on the x axis, in pixels.
+		 * 
+		 *  @param radiusX The radius of the ellipse on the y axis, in pixels.
+		 * 
+		 *  @param accuracy The number of quadratic bezier curves used to create the circle.
+		 *  The default is 10.
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 9
+		 *  @playerversion AIR 1.1
+		 *  @productversion Flex 3
+		 */
 		public static function drawEllipse( graphics:IGraphicsCreator, x:Number, y:Number,
 										   radiusX:Number, radiusY:Number, accuracy:Number = 10 ):void
 		{
