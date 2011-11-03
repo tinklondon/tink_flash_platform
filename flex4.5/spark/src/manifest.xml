@@ -57,11 +57,12 @@
 	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>
 	<component id="Module" class="ws.tink.spark.modules.Module"/>
 	
-	<component id="Annulus" class="ws.tink.spark.primatives.Annulus"/>
-	<component id="Cross" class="ws.tink.spark.primatives.Cross"/>
-	<component id="Ellipse" class="ws.tink.spark.primatives.Ellipse"/>
-	<component id="Line" class="ws.tink.spark.primatives.Line"/>
-	<component id="Path" class="ws.tink.spark.primatives.Path"/>
-	<component id="Rect" class="ws.tink.spark.primatives.Rect"/>
+	<!-- primitives -->
+	<component id="Annulus" class="ws.tink.spark.primitives.Annulus"/>
+	<component id="Cross" class="ws.tink.spark.primitives.Cross"/>
+	<component id="Ellipse" class="ws.tink.spark.primitives.Ellipse"/>
+	<component id="Line" class="ws.tink.spark.primitives.Line"/>
+	<component id="Path" class="ws.tink.spark.primitives.Path"/>
+	<component id="Rect" class="ws.tink.spark.primitives.Rect"/>
 	
 </componentPackage>

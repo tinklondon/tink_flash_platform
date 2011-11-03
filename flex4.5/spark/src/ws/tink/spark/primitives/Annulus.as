@@ -18,7 +18,7 @@ SOFTWARE.
 
 */
 
-package ws.tink.spark.primatives
+package ws.tink.spark.primitives
 {
 	import flash.display.Graphics;
 	import flash.geom.Point;
@@ -27,7 +27,7 @@ package ws.tink.spark.primatives
 	import ws.tink.graphics.IGraphicsCreator;
 	import ws.tink.graphics.utils.EllipseUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
-	import ws.tink.spark.primatives.Ellipse;
+	import ws.tink.spark.primitives.Ellipse;
 	
 	/**
 	 *  The Annulus class is a filled graphic element that draws an annulus or ring.
