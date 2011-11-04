@@ -77,6 +77,11 @@ RadioButtonBar
 	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
 }
 
+RatingsBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.RatingsBarSkin");
+}
+
 ValidityVScrollBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");

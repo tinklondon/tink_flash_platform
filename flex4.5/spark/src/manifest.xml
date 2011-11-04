@@ -26,6 +26,7 @@
 	<component id="PageStepper" class="ws.tink.spark.controls.PageStepper"/>
 	<component id="PropertiesList" class="ws.tink.spark.controls.PropertiesList"/>
 	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
+	<component id="RatingsBar" class="ws.tink.spark.controls.RatingsBar"/>
 	<component id="InlineScroller" class="ws.tink.spark.controls.InlineScroller"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
 	<component id="TimeStepper" class="ws.tink.spark.controls.TimeStepper"/>

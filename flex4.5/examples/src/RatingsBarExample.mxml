@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark"
+			   viewSourceURL="srcview/index.html" xmlns:itemRenderers="ws.tink.spark.itemRenderers.*">
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace st "library://ns.tink.ws/flex/spark";
+		@namespace itemRenderers "ws.tink.spark.itemRenderers.*";
+		itemRenderers|RatingsBarItemRenderer
+		{
+			selectionColor:#FFFF00;
+		}
+	</fx:Style>
+	<s:Panel title="RatingsBar Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+		
+		<st:RatingsBar id="ratingsBar" numRatings="5">
+			<st:itemRenderer>
+				<fx:Component>
+					<!--<itemRenderers:RaterRenderer/>-->
+					<itemRenderers:RatingsBarItemRenderer alternatingItemColors="{new Array(0xff0000,0x00ff00)}"
+														  />
+				</fx:Component>
+					
+			</st:itemRenderer>
+		</st:RatingsBar>
+		
+		<s:Label text="Rating: {ratingsBar.selectedIndex + 1}"/>
+		
+	</s:Panel>
+	
+</s:Application>

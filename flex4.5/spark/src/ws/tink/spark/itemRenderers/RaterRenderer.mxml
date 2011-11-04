@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:st="library://ns.tink.ws/flex/spark"
+				autoDrawBackground="false"
+				width="100%" minWidth="40" minHeight="40">
+	
+	<s:states>
+	   <s:State name="normal"/>
+	   <s:State name="selected"/>
+	</s:states>
+		
+	<st:Star width="30" height="30" horizontalCenter="0" verticalCenter="0">
+		<st:fill>
+			<s:RadialGradient>
+				<s:GradientEntry color.selected="0xffff00" color="0xcccccc"/>
+				<s:GradientEntry color.selected="0xffaa00" color="0x999999"/>
+			</s:RadialGradient>
+		</st:fill>
+		<st:stroke>
+			<s:SolidColorStroke color="0x666666" weight="1" caps="square" joints="miter"/>
+		</st:stroke>
+	</st:Star>
+
+	
+</s:ItemRenderer>
