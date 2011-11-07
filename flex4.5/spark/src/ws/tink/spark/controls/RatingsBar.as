@@ -27,6 +27,7 @@ package ws.tink.spark.controls
 	import mx.collections.ArrayList;
 	import mx.core.mx_internal;
 	import mx.events.SandboxMouseEvent;
+	import mx.managers.IFocusManagerComponent;
 	
 	import spark.components.IItemRenderer;
 	import spark.components.supportClasses.ListBase;
@@ -35,7 +36,49 @@ package ws.tink.spark.controls
 	
 	use namespace mx_internal;
 	
-	public class RatingsBar extends ListBase
+	//--------------------------------------
+	//  Styles
+	//--------------------------------------
+	
+	/**
+	 *  The alpha of the border for this component.
+	 *
+	 *  @default 1.0
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderAlpha", type="Number", inherit="no", theme="spark, mobile", minValue="0.0", maxValue="1.0")]
+	
+	/**
+	 *  The color of the border for this component.
+	 *
+	 *   @default #696969
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderColor", type="uint", format="Color", inherit="no", theme="spark, mobile")]
+	
+	/**
+	 *  Controls the visibility of the border for this component.
+	 *
+	 *  @default true
+	 * 
+	 *  @langversion 3.0
+	 *  @playerversion Flash 10
+	 *  @playerversion AIR 1.5
+	 *  @productversion Flex 4
+	 */
+	[Style(name="borderVisible", type="Boolean", inherit="no", theme="spark, mobile")]
+	
+	
+	
+	public class RatingsBar extends ListBase implements IFocusManagerComponent
 	{
 		
 		
