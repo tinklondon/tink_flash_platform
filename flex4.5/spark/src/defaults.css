@@ -9,7 +9,7 @@ Accordion
 
 Accordion s|ButtonBarButton
 {
-	cornerRadius : 0;
+	cornerRadius: 0;
 }
 
 Alert
@@ -34,7 +34,7 @@ DataAccordion
 
 DataAccordion s|ButtonBarButton
 {
-	cornerRadius : 0;
+	cornerRadius: 0;
 }
 
 DataNavigator
@@ -80,6 +80,13 @@ RadioButtonBar
 RatingsBar
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.RatingsBarSkin");
+}
+
+RatingsBarItemRenderer
+{
+	colors: #cccccc, #999999;
+	selectionColors: #ffff00, #ffaa00;
+	padding:5;
 }
 
 ValidityVScrollBar
