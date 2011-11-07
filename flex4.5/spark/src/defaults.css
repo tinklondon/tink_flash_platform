@@ -86,7 +86,7 @@ RatingsBarItemRenderer
 {
 	colors: #cccccc, #999999;
 	selectionColors: #ffff00, #ffaa00;
-	padding:5;
+	padding: 10;
 }
 
 ValidityVScrollBar
