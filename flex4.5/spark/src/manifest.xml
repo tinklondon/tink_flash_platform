@@ -45,6 +45,7 @@
 	<component id="MenuBarItemRenderer" class="ws.tink.spark.itemRenderers.MenuBarItemRenderer"/>
 	<component id="PropertyItemRenderer" class="ws.tink.spark.itemRenderers.PropertyItemRenderer"/>
 	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
+	<component id="RatingsBarItemRenderer" class="ws.tink.spark.itemRenderers.RatingsBarItemRenderer"/>
 	<component id="ValidityItemRenderer" class="ws.tink.spark.itemRenderers.ValidityItemRenderer"/>
 	
 	<!-- layouts -->
