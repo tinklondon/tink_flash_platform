@@ -53,7 +53,19 @@ package ws.tink.spark.primitives
 		{
 		}
 		
+		override public function set width(value:Number):void
+		{
+			super.width = value;
+			
+			if( width && !height ) height = width * 0.8660254037844386;
+		}
 		
+		override public function set height( value:Number ):void
+		{
+			super.height = value;
+			
+			if( height && !width ) width = height * 1.1339745962155614;
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -103,6 +115,29 @@ package ws.tink.spark.primitives
 		//  Overridden Methods
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 *  @inheritDoc
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+//		override protected function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
+//		{
+//			if( unscaledWidth > 0 && unscaledHeight == 0 )
+//			{
+//				height = unscaledHeight = unscaledWidth * ( Math.sqrt( 3 ) / 2 );
+//			}
+//			else if( unscaledHeight > 0 && unscaledWidth == 0 )
+//			{
+//				width = unscaledWidth = unscaledHeight * ( 2 - ( Math.sqrt( 3 ) / 2 ) );
+//			}
+//				
+//			super.updateDisplayList( unscaledWidth, unscaledHeight );
+//		}
+		
 		/**
 		 *  @inheritDoc
 		 *  
