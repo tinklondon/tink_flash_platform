@@ -4,19 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:st="library://ns.tink.ws/flex/spark"
 			   viewSourceURL="srcview/index.html"
-			   creationComplete="application1_creationCompleteHandler(event)">
-	<fx:Script>
-		<![CDATA[
-			import mx.events.FlexEvent;
-			
-			protected function application1_creationCompleteHandler(event:FlexEvent):void
-			{
-				// TODO Auto-generated method stub
-				trace( ( Math.sqrt( 3 ) / 2 ) );
-			}
-			
-		]]>
-	</fx:Script>
+			   width="500">
 	
 	<s:Panel title="IsoscelesTriangle Example" bottom="10" left="10" right="10" top="10">
 		
@@ -40,7 +28,7 @@
 			</st:fill>
 		</st:IsoscelesTriangle>
 		
-		<st:IsoscelesTriangle height="200">
+		<st:IsoscelesTriangle width="200">
 			<st:stroke>
 				<st:SolidColorDash weight="2" dash="4"/>
 			</st:stroke>
