@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:st="library://ns.tink.ws/flex/spark"
-			   viewSourceURL="srcview/index.html" xmlns:itemRenderers="ws.tink.spark.itemRenderers.*">
+			   viewSourceURL="srcview/index.html">
 	
 
 	<s:Panel title="RatingsBar Example" bottom="10" left="10" right="10" top="10">
