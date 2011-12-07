@@ -555,7 +555,7 @@ package ws.tink.spark.controls
 			if( renderer )
 			{
 				renderer.removeEventListener( IndexChangeEvent.CHANGE, onRendererChange, false );
-				renderer.addEventListener( MouseEvent.CLICK, onRendererClick, false, 1, true );
+				renderer.removeEventListener( MouseEvent.CLICK, onRendererClick, false );
 			}
 		}
 		
