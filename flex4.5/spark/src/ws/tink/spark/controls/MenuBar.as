@@ -479,24 +479,22 @@ package ws.tink.spark.controls
 			
 			if( value == selectedIndex )
 			{
-				if( changeCaret ) setCurrentCaretIndex( selectedIndex );
-				
 				if( changed )
 				{
 					if( dispatchChangeEvent )
 					{
 						
-						dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE, false, false, selectedIndex, selectedIndex));
+						dispatchEvent(new IndexChangeEvent (IndexChangeEvent.CHANGE, false, false, selectedIndex, selectedIndex ) );
 					}
 					else
 					{
-						dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+						dispatchEvent( new FlexEvent( FlexEvent.VALUE_COMMIT ) );
 					}
 				}
 			}
 			else
 			{
-				super.setSelectedIndex( value, dispatchChangeEvent );
+				super.setSelectedIndex( value, dispatchChangeEvent, changeCaret );
 			}
 		}
 		
