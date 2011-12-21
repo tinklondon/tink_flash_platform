@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!-- build.xml -->
+<project name="Tink Flex 4.5 Spark Library" basedir="../" default="main">
+
+	
+	<property file="${basedir}/build/build.properties" description="properities for builds" />
+	    	
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_TASKS}"/>
+    
+
+	<target name="main" depends="clean,include,compile,docs"/>
+	
+	<target name="clean" description="Cleans ${SWC_NAME} and asdocs">
+		<delete dir="${DOC_DIR}"/>
+		<delete file="${basedir}/bin/${SWC_NAME}"/>
+	</target>
+	
+	
+	<target name="include" description="Creates class list to be compiled into SWC">
+			
+		<path id="path">
+			<fileset dir="${SRC_DIR}/ws/tink/spark/">
+				<include name="**/*.as"/>
+				<include name="**/*.mxml"/>
+		  	</fileset>
+		</path>
+
+		<pathconvert property="classes" pathsep=" " dirsep="." refid="path">
+		
+	 		<map from="${SRC_DIR}/" to=""/>
+			
+			<mapper>
+				<chainedmapper>
+					<globmapper from="*.as" to="*"/>
+				</chainedmapper>
+				<chainedmapper>	
+					<globmapper from="*.mxml" to="*"/>
+				</chainedmapper>
+			</mapper>
+	 	</pathconvert>
+
+	</target>	
+	
+	
+	<target name="compile" description="Builds the SWC"> 
+		
+		<mkdir dir="${BIN_DIR}" />
+		    	
+		<compc output="${BIN_DIR}/${SWC_NAME}" static-link-runtime-shared-libraries="true" include-classes="${classes}" debug="false">
+			
+			<namespace uri="http://ns.adobe.com/mxml/2009" manifest="${FLEX_HOME}/frameworks/mxml-2009-manifest.xml"/>
+			<namespace uri="library://ns.adobe.com/flex/spark" manifest="${FLEX_HOME}/frameworks/projects/spark/manifest.xml"/>
+			
+			<external-library-path dir="${FLEX_HOME}/frameworks/libs" includes="*.swc"/>
+			<external-library-path dir="${FLEX_HOME}/frameworks/libs/player/${VERSION}/" includes="*.swc"/>
+			<external-library-path dir="${AS_LIB_SWC}" includes="*.swc"/>
+			<external-library-path dir="${MX_LIB_SWC}" includes="*.swc"/>
+			
+			<namespace uri="library://ns.tink.ws/flex/spark" manifest="${SRC_DIR}/manifest.xml"/>
+			<include-namespaces uri="library://ns.tink.ws/flex/spark"/>
+			
+			<include-file name="design.xml" path="${SRC_DIR}/design.xml"/>
+			<include-file name="defaults.css" path="${SRC_DIR}/defaults.css"/>
+		
+			<source-path path-element="${SRC_DIR}"/>
+			
+		</compc>
+		
+	</target>
+	
+	
+	<target name="docs" description="Creates the ASDocs">
+		
+		<asdoc output="${DOC_DIR}" append="false" 
+			lenient="false" failonerror="true" 
+			warnings="true" strict="true" locale="${LOCALE}"
+			footer="${DOC_FOOTER}" main-title="${DOC_TITLE}"
+			window-title="${DOC_TITLE}"
+			doc-classes="${classes}"
+			skip-xsl="false"
+			keep-xml="true"
+			>
+			
+			<namespace uri="http://ns.adobe.com/mxml/2009" manifest="${FLEX_HOME}/frameworks/mxml-2009-manifest.xml"/>
+			<namespace uri="library://ns.adobe.com/flex/spark" manifest="${FLEX_HOME}/frameworks/projects/spark/manifest.xml"/>
+			
+			<external-library-path dir="${FLEX_HOME}/frameworks/libs" includes="*.swc"/>
+			<external-library-path dir="${FLEX_HOME}/frameworks/libs/player/${VERSION}/" includes="*.swc"/>
+			<external-library-path dir="${AS_LIB_SWC}" includes="*.swc"/>
+			<external-library-path dir="${MX_LIB_SWC}" includes="*.swc"/>
+			
+			<namespace uri="library://ns.tink.ws/flex/spark" manifest="${SRC_DIR}/manifest.xml" /> 
+			<doc-namespaces uri="library://ns.tink.ws/flex/spark" />
+
+			<source-path path-element="${SRC_DIR}"/>
+		</asdoc>
+	
+		<!-- Update the SWC with asdocs -->
+		<zip destfile="${BIN_DIR}/${SWC_NAME}" update="true">
+		    <zipfileset dir="${DOC_DIR}/tempdita" prefix="docs">
+			    <include name="*.*"/>
+				<exclude name="ASDoc_Config.xml"/>
+				<exclude name="overviews.xml"/>
+		    </zipfileset>
+		</zip>
+		
+		<!-- Delete the tempdita dir used for adding asdocs to the SWC -->
+		<delete dir="${DOC_DIR}/tempdita"/>
+		
+	</target>
+	
+
+</project>

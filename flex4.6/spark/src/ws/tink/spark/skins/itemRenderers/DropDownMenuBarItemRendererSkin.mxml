@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Copyright (c) 2011 Tink Ltd - http://www.tink.ws
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-->
+
+<!--- One of the default skin classes for the Spark MenuBarItemRenderer component. 
+      The skin for the anchor button for a MenuBarItemRenderer component 
+      is defined by the ToggleButtonSkin class when the item is selectable
+	  and DropDownMenuBarItemRendererToggleButtonSkin when the item isn't selectable,
+	  usually due to the item being a branch, not a leaf.  
+      
+      <p>In a custom skin class that uses transitions, set the 
+      <code>itemDestructionPolicy</code> property to <code>none</code>
+      for the PopUpAnchor defined by the popUp property.</p>      
+        
+	  @see spark.skins.spark.ToggleButtonSkin
+      @see ws.tink.spark.controls.itemRenderers.MenuBarItemRenderer  
+      @see ws.tink.spark.skins.controls.DropDownMenuBarItemRendererToggleButtonSkin
+	  @see ws.tink.spark.skins.controls.DropRightMenuBarItemRendererSkin
+        
+      @langversion 3.0
+      @playerversion Flash 10
+      @playerversion AIR 1.5
+      @productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+    		 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 xmlns:st="library://ns.tink.ws/flex/spark"
+			 alpha.disabledStates=".5" xmlns:itemRenderers="ws.tink.spark.itemRenderers.*" xmlns:local="*"> 
+
+    <!-- host component -->
+    <fx:Metadata>
+    <![CDATA[ 
+        /** 
+         * @copy spark.skins.spark.ApplicationSkin#hostComponent
+         */
+        [HostComponent("ws.tink.spark.itemRenderers.MenuBarItemRenderer")]
+    ]]>
+    </fx:Metadata> 
+
+	<!-- states -->
+	<s:states>
+		<s:State name="normal" stateGroups="selectableStates,closedStates"/>
+		<s:State name="open" stateGroups="selectableStates,openStates"/>
+		<s:State name="disabled" stateGroups="selectableStates,disabledStates"/>
+		<s:State name="normalBranch" stateGroups="nonSelectectableStates,closedStates" />
+		<s:State name="openBranch" stateGroups="nonSelectectableStates,openStates"/>
+		<s:State name="disabledBranch" stateGroups="nonSelectectableStates,disabledStates"/>
+	</s:states>
+    
+    <!--- 
+        The PopUpAnchor control that opens the drop-down list. 
+        
+        <p>In a custom skin class that uses transitions, set the 
+        <code>itemDestructionPolicy</code> property to <code>none</code>.</p>
+    -->
+    <s:PopUpAnchor id="popUp"  displayPopUp.closedStates="false" displayPopUp.openStates="true" includeIn="openStates"
+        left="0" right="0" top="0" bottom="0" itemDestructionPolicy="auto"
+        popUpPosition="below" popUpWidthMatchesAnchorWidth="false">
+        
+        <!--- 
+              This includes borders, background colors, scrollers, and filters.
+              @copy spark.components.supportClasses.DropDownListBase#dropDown
+        -->
+        <s:Group id="dropDown" minHeight="22" >
+        
+            <!--- @private -->
+			<s:RectangularDropShadow id="dropShadow" blurX="10" blurY="10" alpha="0.45" distance="7" 
+                 angle="90" color="#000000" left="0" top="0" right="0" bottom="0"/>
+            
+            <!--- @private -->
+			
+			<s:DataGroup id="dataGroup" width="100%" itemRenderer="ws.tink.spark.itemRenderers.MenuBarItemRenderer">
+				<s:layout>
+					<s:VerticalLayout gap="0" horizontalAlign="contentJustify"/>
+				</s:layout>
+			</s:DataGroup>
+        </s:Group>
+    </s:PopUpAnchor>
+    
+    <!---  The default skin are ToggleButtonSkin and ArrowDownToggleButtonSkin. 
+            @copy spark.components.supportClasses.DropDownListBase#openButton
+			@see spark.skins.spark.ToggleButtonSkin
+            @see ws.tink.spark.skins.controls.ArrowDownToggleButtonSkin -->
+    <s:ToggleButton id="openButton" left="0" right="0" top="0" bottom="0" focusEnabled="false"
+					skinClass.selectableStates="spark.skins.spark.ToggleButtonSkin"
+					skinClass.nonSelectectableStates="ws.tink.spark.skins.controls.ArrowDownToggleButtonSkin"/>  
+
+</s:SparkSkin>
