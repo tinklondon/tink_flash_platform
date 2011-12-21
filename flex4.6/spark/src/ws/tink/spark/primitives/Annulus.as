@@ -18,7 +18,7 @@ SOFTWARE.
 
 */
 
-package ws.tink.spark.primatives
+package ws.tink.spark.primitives
 {
 	import flash.display.Graphics;
 	import flash.geom.Point;
@@ -27,7 +27,7 @@ package ws.tink.spark.primatives
 	import ws.tink.graphics.IGraphicsCreator;
 	import ws.tink.graphics.utils.EllipseUtil;
 	import ws.tink.spark.graphics.IGraphicsDefiner;
-	import ws.tink.spark.primatives.Ellipse;
+	import ws.tink.spark.primitives.Ellipse;
 	
 	/**
 	 *  The Annulus class is a filled graphic element that draws an annulus or ring.
@@ -87,7 +87,7 @@ package ws.tink.spark.primatives
 		 *  @private
 		 *  Storage property for holeWidth.
 		 */
-		private var _holeWidth:Number;
+		private var _holeWidth:Number = 0;
 		
 		/**
 		 *  The width of the hole to punch out of the filled shape.
@@ -98,6 +98,13 @@ package ws.tink.spark.primatives
 		 *  @playerversion Flash 10
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
+		 */
+		public function get holeWidth():Number
+		{
+			return _holeWidth;
+		}
+		/**
+		 *  @private
 		 */
 		public function set holeWidth( value:Number ):void
 		{
@@ -114,7 +121,7 @@ package ws.tink.spark.primatives
 		 *  @private
 		 *  Storage property for holeHeight.
 		 */
-		private var _holeHeight:Number;
+		private var _holeHeight:Number = 0;
 		
 		/**
 		 *  The height of the hole to punch out of the filled shape.
@@ -126,9 +133,84 @@ package ws.tink.spark.primatives
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */
+		public function get holeHeight():Number
+		{
+			return _holeHeight;
+		}
+		/**
+		 *  @private
+		 */
 		public function set holeHeight( value:Number ):void
 		{
 			_holeHeight =  value;
+			invalidateDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  holeOffsetX
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for holeOffsetX.
+		 */
+		private var _holeOffsetX:Number = 0;
+		
+		/**
+		 *  The amount to offset the x position of the hole to punch out of the filled shape.
+		 * 
+		 *  @default 0
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get holeOffsetX():Number
+		{
+			return _holeOffsetX;
+		}
+		/**
+		 *  @private
+		 */
+		public function set holeOffsetX( value:Number ):void
+		{
+			_holeOffsetX =  value;
+			invalidateDisplayList();
+		}
+		
+		
+		//----------------------------------
+		//  holeOffsetY
+		//---------------------------------- 
+		
+		/**
+		 *  @private
+		 *  Storage property for holeOffsetY.
+		 */
+		private var _holeOffsetY:Number = 0;
+		
+		/**
+		 *  The amount to offset the y position of the hole to punch out of the filled shape.
+		 * 
+		 *  @default 0
+		 *
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public function get holeOffsetY():Number
+		{
+			return _holeOffsetY;
+		}
+		/**
+		 *  @private
+		 */
+		public function set holeOffsetY( value:Number ):void
+		{
+			_holeOffsetY =  value;
 			invalidateDisplayList();
 		}
 		
@@ -150,36 +232,36 @@ package ws.tink.spark.primatives
 		 */
 		override protected function draw( g:Graphics ):void
 		{
-			var strokeCreator:IGraphicsCreator = ( stroke is IGraphicsDefiner ) ? IGraphicsDefiner( stroke ).graphicsCreator : null;
-			var fillCreator:IGraphicsCreator = ( fill is IGraphicsDefiner ) ? IGraphicsDefiner( fill ).graphicsCreator : null;
-			var strokeAndFillCreators:Boolean = strokeCreator && fillCreator;
+			const strokeCreator:IGraphicsCreator = ( stroke is IGraphicsDefiner ) ? IGraphicsDefiner( stroke ).graphicsCreator : null;
+			const fillCreator:IGraphicsCreator = ( fill is IGraphicsDefiner ) ? IGraphicsDefiner( fill ).graphicsCreator : null;
+			const strokeAndFillCreators:Boolean = strokeCreator && fillCreator;
 			
-			var w:Number = _holeWidth > width ? width : _holeWidth;
-			var h:Number = _holeHeight > height ? height : _holeHeight;
-			var w2:Number = w / 2;
-			var h2:Number = h / 2;
+			const holeW:Number = holeWidth > width ? width : holeWidth;
+			const holeH:Number = holeHeight > height ? height : holeHeight;
 			
 			if( !strokeAndFillCreators )
 			{
 				g.drawEllipse( drawX, drawY, width, height );
-				g.drawEllipse( drawX + ( ( width - w ) / 2 ), drawY + ( ( height - h ) / 2 ), w, h );
+				g.drawEllipse( drawX + holeOffsetX + ( ( width - holeW ) / 2 ), drawY + holeOffsetY + ( ( height - holeH ) / 2 ), holeW, holeH );
 			}
 			
-			var radiusX:Number = width / 2;
-			var radiusY:Number = height / 2;
+			const radiusX:Number = width / 2;
+			const radiusY:Number = height / 2;
+			const holeRadiusX:Number = holeW / 2;
+			const holeRadiusY:Number = holeH / 2;
 			
 			if( fillCreator )
 			{
 				setupFill( g );
-				EllipseUtil.drawEllipse( fillCreator, drawX + radiusX, drawY + ( height / 2 ), radiusX, radiusY );
-				EllipseUtil.drawEllipse( fillCreator, drawX + ( ( width - w ) / 2 ), drawY + ( ( height - h ) / 2 ), w2, h2 );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, radiusX, radiusY );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + holeOffsetX + radiusX, drawY + holeOffsetY + radiusY, holeRadiusX, holeRadiusY );
 			}
 			
 			if( strokeCreator )
 			{
 				setupStroke( g );
 				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, radiusX, radiusY );
-				EllipseUtil.drawEllipse( strokeCreator, drawX + radiusX, drawY + radiusY, w2, h2 );
+				EllipseUtil.drawEllipse( strokeCreator, drawX + holeOffsetX + radiusX, drawY + holeOffsetY + radiusY, holeRadiusX, holeRadiusY );
 			}
 
 		}
