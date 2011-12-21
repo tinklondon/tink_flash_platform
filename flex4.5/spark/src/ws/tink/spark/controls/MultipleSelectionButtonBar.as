@@ -213,11 +213,19 @@ package ws.tink.spark.controls
 			multipleSelectionChanged = true;
 			invalidateProperties(); 
 		}
+		
+		/**
+		 *  @private
+		 *  Overriden to stop the default ButtonBase behaviour. 
+		 */
 		override mx_internal function setSelectedIndex( value:int, dispatchChangeEvent:Boolean = false, changeCaret:Boolean = true ):void
 		{
 			// Overriden to stop the default ButtonBase behaviour
 		}
 	
+		/**
+		 *  @private
+		 */
 		private function onRendererClick( event:MouseEvent ):void
 		{
 			var renderer:IItemRenderer = IItemRenderer( event.currentTarget );
