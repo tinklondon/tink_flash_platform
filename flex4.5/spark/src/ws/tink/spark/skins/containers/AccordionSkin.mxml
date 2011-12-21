@@ -127,7 +127,7 @@ SOFTWARE.
 	more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
 	-->
 	<!--- @copy ws.tink.spark.containers.Navigator#contentGroup -->
-	<st:NavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
+	<st:NavigatorGroup id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0" clipAndEnableScrolling="true">
 		<st:layout>
 			<!--- @copy ws.tink.spark.containers.Accordion#accordionLayout -->
 			<st:AccordionLayout id="accordionLayout" layoutAllButtonBarBounds="true"/>
