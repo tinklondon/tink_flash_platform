@@ -969,7 +969,7 @@ package ws.tink.spark.controls
 		 */
 		public function getItemAt( index:int, prefetch:int = 0 ):Object
 		{
-			if( length <= index ) return null;
+			if( !dataProvider || length <= index ) return null;
 			return  dataProvider.getItemAt( index );
 		}
 		
@@ -1124,6 +1124,8 @@ package ws.tink.spark.controls
 		protected function adjustSelection( newIndex:int ):void
 		{
 			var nl:INavigatorLayout = INavigatorLayout( layout );
+			if( !nl ) return;
+			
 			if( nl is AnimationNavigatorLayoutBase )
 			{
 				var anl:AnimationNavigatorLayoutBase = AnimationNavigatorLayoutBase( nl );
