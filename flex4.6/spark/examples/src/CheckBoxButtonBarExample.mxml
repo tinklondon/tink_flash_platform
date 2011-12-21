@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!-- Simple example to demonstrate the Spark CheckBoxBar control -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark">
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			public const BASIC_COST:Number = 4.50;
+			
+			// This event handler adds the cost of condiments to the total cost.
+			private function condimentsChange( event:IndexChangeEvent ):void
+			{
+				var totalCost:Number = BASIC_COST;
+				
+				// Add on the cost of the selected condiments.
+				for each( var item:Object in condiments.selectedItems )
+				{
+					totalCost += item.cost
+				}
+				
+				// Format the totalCost and then display it in a label.
+				totalString.text = usdFormatter.format( totalCost );
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:CurrencyFormatter id="usdFormatter" precision="2" currencySymbol="$"
+							  decimalSeparatorFrom="." decimalSeparatorTo="." useNegativeSign="true"
+							  useThousandsSeparator="true" alignSymbol="left"/>
+	</fx:Declarations>
+	
+	<s:Panel title="CheckBoxBar Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+		
+		<s:Label text="Beefburger Base Price: $4.50" />
+		<s:Label text="Select condiments for your beefburger" />
+		
+		<st:CheckBoxBar id="condiments" change="condimentsChange(event)">
+			<st:layout>
+				<s:TileLayout requestedColumnCount="4" orientation="columns"/>
+			</st:layout>
+			<st:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Horseradish 0.10" cost="0.10"/>
+					<fx:Object label="Ketchup 0.10" cost="0.10"/>
+					<fx:Object label="Mayonnaise 0.10" cost="0.10"/>
+					<fx:Object label="Mustard 0.10" cost="0.10"/>
+					<fx:Object label="Lettuce 0.15" cost="0.15"/>
+					<fx:Object label="Onion 0.15" cost="0.15"/>
+					<fx:Object label="Cheese 0.20" cost="0.20"/>
+					<fx:Object label="Coleslaw 0.20" cost="0.20"/>
+					<fx:Object label="Guacamole 0.20" cost="0.20"/>
+					<fx:Object label="Tomato 0.20" cost="0.20"/>
+					<fx:Object label="Mushrooms 0.25" cost="0.25"/>
+					<fx:Object label="Pickles 0.25" cost="0.25"/>
+					<fx:Object label="Jalapeno 0.30" cost="0.30"/>
+					<fx:Object label="Fried Egg 0.40" cost="0.40"/>
+					<fx:Object label="Bacon 0.50" cost="0.50"/>
+				</s:ArrayList>
+			</st:dataProvider>
+		</st:CheckBoxBar>
+		
+		<mx:Spacer height="20" />
+		<s:HGroup>
+			<s:Label text="Total Price: " />
+			<s:Label id="totalString" text="$4.50"/>
+		</s:HGroup>
+		
+	</s:Panel>
+	
+</s:Application>

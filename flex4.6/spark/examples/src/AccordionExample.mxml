@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple example to demonstrate the Spark Accordion container -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark">
+	
+	<s:Panel title="Accordion Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+		
+		<st:Accordion id="accordion" width="100%" height="100%" creationPolicy="all">
+			<s:BorderContainer id="Item0" width="100%" height="100%" backgroundColor="0x0000ff">
+				<s:Label text="Accordion item 0" color="0xffffff" horizontalCenter="0" verticalCenter="0"/>
+			</s:BorderContainer>
+			<s:BorderContainer id="Item1" width="100%" height="100%" backgroundColor="0xff0000">
+				<s:Label text="Accordion item 1" color="0xffffff" horizontalCenter="0" verticalCenter="0"/>
+			</s:BorderContainer>
+			<s:BorderContainer id="Item2" width="100%" height="100%" backgroundColor="0x00ff00">
+				<s:Label text="Accordion item 2" color="0xffffff" horizontalCenter="0" verticalCenter="0"/>
+			</s:BorderContainer>
+		</st:Accordion>
+		
+		<s:HGroup>
+			<s:Button label="Select item 0" click="accordion.selectedIndex=0;"/>
+			<s:Button label="Select item 1" click="accordion.selectedIndex=1;"/>
+			<s:Button label="Select item 2" click="accordion.selectedIndex=2;"/>
+		</s:HGroup>
+		
+	</s:Panel>
+	
+</s:Application>

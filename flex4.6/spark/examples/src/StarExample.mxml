@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark"
+			   viewSourceURL="srcview/index.html">
+	
+	<s:Panel title="Star Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:HorizontalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+								verticalAlign="middle"/>
+		</s:layout>
+		
+		<st:Star width="200" height="200" numPoints="5">
+			<st:fill>
+				<s:RadialGradient>
+					<s:entries>
+						<s:GradientEntry color="0x0056FF" ratio="0" alpha="0.5"/>
+						<s:GradientEntry color="0x00CC99" ratio="0.33" alpha="0.5"/>
+						<s:GradientEntry color="0xECEC21" ratio="0.66" alpha="0.5"/>
+					</s:entries>
+				</s:RadialGradient>
+			</st:fill>
+		</st:Star>
+		
+		<st:Star width="250" height="150" numPoints="10">
+			<st:stroke>
+				<st:SolidColorDash weight="2" dash="4"/>
+			</st:stroke>
+			<st:fill>
+				<s:SolidColor color="0xECEC21"/>
+			</st:fill>
+		</st:Star>
+		
+	</s:Panel>
+	
+</s:Application>

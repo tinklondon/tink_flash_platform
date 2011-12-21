@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple example to demonstrate the Spark DataAccordion control -->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:st="library://ns.tink.ws/flex/spark">
+	
+	<s:Panel title="DataAccordion Example" bottom="10" left="10" right="10" top="10">
+		
+		<s:layout>
+			<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+		</s:layout>
+		
+		<st:DataAccordion id="dataAccordion" width="100%" height="100%">
+			<st:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Item 0" color="0x0000ff"/>
+					<fx:Object label="Item 1" color="0xff0000"/>
+					<fx:Object label="Item 2" color="0x00ff00"/>
+				</s:ArrayList>
+			</st:dataProvider>
+			<st:itemRenderer>
+				<fx:Component>
+					<s:ItemRenderer width="100%" height="100%">
+	
+						<fx:Script>
+							<![CDATA[
+								
+								[Bindable]
+								private var _color:uint;
+								
+								override public function set data( value:Object ):void
+								{
+									super.data = value;
+									if( data ) _color = data.color
+								}
+								
+							]]>
+						</fx:Script>
+	
+						<s:Rect width="100%" height="100%">
+							<s:fill>
+								<s:SolidColor color="{_color}"/>
+							</s:fill>
+						</s:Rect>
+						
+						<s:Label text="DataAccordion item {itemIndex}" color="0xffffff" horizontalCenter="0" verticalCenter="0"/>
+						
+					</s:ItemRenderer>
+				</fx:Component>
+			</st:itemRenderer>
+		</st:DataAccordion>
+		
+		<s:HGroup>
+			<s:Button label="Select item 0" click="dataAccordion.selectedIndex=0;"/>
+			<s:Button label="Select item 1" click="dataAccordion.selectedIndex=1;"/>
+			<s:Button label="Select item 2" click="dataAccordion.selectedIndex=2;"/>
+		</s:HGroup>
+		
+	</s:Panel>
+	
+</s:Application>
