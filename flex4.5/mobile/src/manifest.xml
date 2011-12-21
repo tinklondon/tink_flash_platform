@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<componentPackage>
+
+	<!-- transitions -->
+	<component id="SlideInOutViewTransition" class="ws.tink.spark.transitions.SlideInOutViewTransition"/>
+	
+</componentPackage>
