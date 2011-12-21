@@ -5,7 +5,6 @@ package ws.tink.spark.layouts.supportClasses
 	import flash.geom.Rectangle;
 	import flash.net.getClassByAlias;
 	
-	import mx.controls.scrollClasses.ScrollBarDirection;
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
 	import mx.events.ChildExistenceChangedEvent;
@@ -112,7 +111,7 @@ package ws.tink.spark.layouts.supportClasses
 			
 			useScrollBarForNavigation = true;
 			
-			_scrollBarDirection = ScrollBarDirection.VERTICAL;
+			_scrollBarDirection = LayoutAxis.VERTICAL;
 		}	
 		
 		
@@ -420,17 +419,17 @@ package ws.tink.spark.layouts.supportClasses
 		/**
 		 *  The direction of the ScrollBar to use for navigation.
 		 * 
-		 * 	<p>If <code>scrollBarDirection</code> is set to <code>ScrollBarDirection.VERTICAL</code>
+		 * 	<p>If <code>scrollBarDirection</code> is set to <code>LayoutAxis.VERTICAL</code>
 		 *  a VScrollBar will be displayed in the views Scroller.
-		 * 	If set to <code>ScrollBarDirection.HORIZONTAL</code> a HScrollBar will be displayed
+		 * 	If set to <code>LayoutAxis.HORIZONTAL</code> a HScrollBar will be displayed
 		 * 	in the views Scroller.</p>
 		 *  
 		 * 	<p>If the viewport doesn't have a Scroller or <code>useScrollBarForNavigation</code>
 		 *  is set to <code>false</code> a ScrollBar is displayed.</p>
 		 * 
-		 *  <p>The default value is <code>ScrollBarDirection.VERTICAL</code></p>
+		 *  <p>The default value is <code>LayoutAxis.VERTICAL</code></p>
 		 *
-		 * 	@see mx.controls.scrollClasses.ScrollBarDirection
+		 * 	@see mx.controls.scrollClasses.LayoutAxis
 		 *  @see ws.tink.spark.layouts.NavigatorLayoutBase#useScrollBarForNavigation
 		 * 
 		 *  @langversion 3.0
@@ -451,8 +450,8 @@ package ws.tink.spark.layouts.supportClasses
 			
 			switch( value )
 			{
-				case ScrollBarDirection.HORIZONTAL :
-				case ScrollBarDirection.VERTICAL :
+				case LayoutAxis.HORIZONTAL :
+				case LayoutAxis.VERTICAL :
 				{
 					_scrollBarDirection = value;
 					if( target ) scrollPositionChanged();
@@ -782,13 +781,16 @@ package ws.tink.spark.layouts.supportClasses
 //				updateSelectedIndex( _proposedSelectedIndex, 0 );
 			}
 			
-			if( useVirtualLayout )
+			if( selectedIndex > -1 )
 			{
-				_selectedElement = target ? target.getVirtualElementAt( selectedIndex ) : null;
-			}
-			else
-			{
-				_selectedElement = target ? target.getElementAt( selectedIndex ) : null;
+				if( useVirtualLayout )
+				{
+					_selectedElement = target ? target.getVirtualElementAt( selectedIndex ) : null;
+				}
+				else
+				{
+					_selectedElement = target ? target.getElementAt( selectedIndex ) : null;
+				}
 			}
 			
 			updateDisplayListBetween();
@@ -907,13 +909,13 @@ package ws.tink.spark.layouts.supportClasses
 			var scroller:Scroller = getScroller();
 			switch( scrollBarDirection )
 			{
-				case ScrollBarDirection.HORIZONTAL :
+				case LayoutAxis.HORIZONTAL :
 				{
 					target.setContentSize( unscaledWidth * _numElementsInLayout, unscaledHeight );
 					if( scroller ) scroller.horizontalScrollBar.stepSize = unscaledWidth;
 					break;
 				}
-				case ScrollBarDirection.VERTICAL :
+				case LayoutAxis.VERTICAL :
 				{
 					target.setContentSize( unscaledWidth, unscaledHeight * _numElementsInLayout );
 					if( scroller ) scroller.verticalScrollBar.stepSize = unscaledHeight;
@@ -980,13 +982,13 @@ package ws.tink.spark.layouts.supportClasses
 			var indexMaxScroll:Number;
 			switch( scrollBarDirection )
 			{
-				case ScrollBarDirection.HORIZONTAL :
+				case LayoutAxis.HORIZONTAL :
 				{
 					scrollPosition = horizontalScrollPosition;
 					indexMaxScroll = ( _unscaledWidth * _numElementsInLayout ) / _numElementsInLayout;
 					break;
 				}
-				case ScrollBarDirection.VERTICAL :
+				case LayoutAxis.VERTICAL :
 				{
 					scrollPosition = verticalScrollPosition;
 					indexMaxScroll = ( _unscaledHeight * _numElementsInLayout ) / _numElementsInLayout;
@@ -1015,11 +1017,11 @@ package ws.tink.spark.layouts.supportClasses
 			var scroller:Scroller = getScroller();
 			switch( scrollBarDirection )
 			{
-				case ScrollBarDirection.HORIZONTAL :
+				case LayoutAxis.HORIZONTAL :
 				{
 					target.horizontalScrollPosition = ( index + offset ) * _unscaledWidth;
 				}
-				case ScrollBarDirection.VERTICAL :
+				case LayoutAxis.VERTICAL :
 				{
 					target.verticalScrollPosition = (  index + offset ) * _unscaledHeight;
 				}
