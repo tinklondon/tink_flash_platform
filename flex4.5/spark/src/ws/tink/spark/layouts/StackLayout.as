@@ -398,7 +398,6 @@ package ws.tink.spark.layouts
 		{
 			super.updateDisplayListVirtual();
 			
-			trace( "updateDisplayListVirtual" );
 			if( target.numElements == 0 ) return;
 			
 			// Hide the last selectedElement.
