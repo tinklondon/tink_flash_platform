@@ -88,8 +88,3 @@ RatingsBarItemRenderer
 	selectionColors: #ffff00, #ffaa00;
 	padding: 10;
 }
-
-ValidityVScrollBar
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
-}

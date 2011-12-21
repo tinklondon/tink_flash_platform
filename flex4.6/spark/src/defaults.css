@@ -9,7 +9,7 @@ Accordion
 
 Accordion s|ButtonBarButton
 {
-	cornerRadius : 0;
+	cornerRadius: 0;
 }
 
 Alert
@@ -34,27 +34,12 @@ DataAccordion
 
 DataAccordion s|ButtonBarButton
 {
-	cornerRadius : 0;
+	cornerRadius: 0;
 }
 
 DataNavigator
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
-}
-
-InlineScroller
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.InlineScrollerSkin");
-}
-
-InlineScroller s|VScrollBar
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.VScrollBarIncrementDecrementSkin");
-}
-
-InlineScroller s|HScrollBar
-{
-	skinClass: ClassReference("ws.tink.spark.skins.controls.HScrollBarIncrementDecrementSkin");
 }
 
 MenuBar
@@ -92,7 +77,14 @@ RadioButtonBar
 	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
 }
 
-ValidityVScrollBar
+RatingsBar
 {
-	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
+	skinClass: ClassReference("ws.tink.spark.skins.controls.RatingsBarSkin");
+}
+
+RatingsBarItemRenderer
+{
+	colors: #cccccc, #999999;
+	selectionColors: #ffff00, #ffaa00;
+	padding: 10;
 }
