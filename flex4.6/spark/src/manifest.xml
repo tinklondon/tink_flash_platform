@@ -21,6 +21,7 @@
 	<component id="MultipleSelectionButtonBar" class="ws.tink.spark.controls.MultipleSelectionButtonBar"/>
 	<component id="PropertiesList" class="ws.tink.spark.controls.PropertiesList"/>
 	<component id="RadioButtonBar" class="ws.tink.spark.controls.RadioButtonBar"/>
+	<component id="RatingsBar" class="ws.tink.spark.controls.RatingsBar"/>
 	<component id="InlineScroller" class="ws.tink.spark.controls.InlineScroller"/>
 	<component id="TimedTextInput" class="ws.tink.spark.controls.TimedTextInput"/>
     
@@ -34,6 +35,7 @@
 	<component id="MenuBarItemRenderer" class="ws.tink.spark.itemRenderers.MenuBarItemRenderer"/>
 	<component id="PropertyItemRenderer" class="ws.tink.spark.itemRenderers.PropertyItemRenderer"/>
 	<component id="RadioButtonItemRenderer" class="ws.tink.spark.itemRenderers.RadioButtonItemRenderer"/>
+	<component id="RatingsBarItemRenderer" class="ws.tink.spark.itemRenderers.RatingsBarItemRenderer"/>
 	
 	<!-- layouts -->
 	<component id="AccordionLayout" class="ws.tink.spark.layouts.AccordionLayout"/>
@@ -46,11 +48,15 @@
 	<component id="ModuleLoader" class="ws.tink.spark.modules.ModuleLoader"/>
 	<component id="Module" class="ws.tink.spark.modules.Module"/>
 	
-	<component id="Annulus" class="ws.tink.spark.primatives.Annulus"/>
-	<component id="Cross" class="ws.tink.spark.primatives.Cross"/>
-	<component id="Ellipse" class="ws.tink.spark.primatives.Ellipse"/>
-	<component id="Line" class="ws.tink.spark.primatives.Line"/>
-	<component id="Path" class="ws.tink.spark.primatives.Path"/>
-	<component id="Rect" class="ws.tink.spark.primatives.Rect"/>
+	<!-- primitives -->
+	<component id="Annulus" class="ws.tink.spark.primitives.Annulus"/>
+	<component id="Cross" class="ws.tink.spark.primitives.Cross"/>
+	<component id="Ellipse" class="ws.tink.spark.primitives.Ellipse"/>
+	<component id="EllipticalPolygon" class="ws.tink.spark.primitives.EllipticalPolygon"/>
+	<component id="IsoscelesTriangle" class="ws.tink.spark.primitives.IsoscelesTriangle"/>
+	<component id="Line" class="ws.tink.spark.primitives.Line"/>
+	<component id="Path" class="ws.tink.spark.primitives.Path"/>
+	<component id="Rect" class="ws.tink.spark.primitives.Rect"/>
+	<component id="Star" class="ws.tink.spark.primitives.Star"/>
 	
 </componentPackage>

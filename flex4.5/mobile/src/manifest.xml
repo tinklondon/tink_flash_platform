@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <componentPackage>
 
+	<!-- layouts -->
+	<component id="HorizontalSpinnerLayout" class="ws.tink.spark.layouts.HorizontalSpinnerLayout"/>
+	
 	<!-- transitions -->
 	<component id="SlideInOutViewTransition" class="ws.tink.spark.transitions.SlideInOutViewTransition"/>
 	
