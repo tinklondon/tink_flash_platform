@@ -107,7 +107,7 @@ package ws.tink.spark.layouts.supportClasses
 		{
 			super();
 			
-//			useVirtualLayout = true;
+			//			useVirtualLayout = true;
 			
 			useScrollBarForNavigation = true;
 			
@@ -243,57 +243,57 @@ package ws.tink.spark.layouts.supportClasses
 			return false;
 		}
 		
-//		[Inspectable(category="General", enumeration="false,true", defaultValue="true")]
-//		public function get stepScrollBar():Boolean
-//		{
-//			return _stepScrollBar;
-//		}
-//		public function set stepScrollBar(value:Boolean):void
-//		{
-//			if( value == _stepScrollBar ) return;
-//			
-//			_stepScrollBar = value;
-//			
-//			invalidateTargetDisplayList();
-//		}
+		//		[Inspectable(category="General", enumeration="false,true", defaultValue="true")]
+		//		public function get stepScrollBar():Boolean
+		//		{
+		//			return _stepScrollBar;
+		//		}
+		//		public function set stepScrollBar(value:Boolean):void
+		//		{
+		//			if( value == _stepScrollBar ) return;
+		//			
+		//			_stepScrollBar = value;
+		//			
+		//			invalidateTargetDisplayList();
+		//		}
 		
 		
 		//----------------------------------
 		//  selectedIndexOffset
 		//---------------------------------- 
-//		
-//		/**
-//		 *  @private
-//		 *	Storage property for selectedIndexOffset.
-//		 */
-//		private var _selectedIndexOffset	: Number = 0;
-//		
-//		/**
-//		 *  inheritDoc
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		public function get selectedIndexOffset():Number
-//		{
-//			return _selectedIndexOffset;
-//		}
-//		/**
-//		 *  @private
-//		 */
-//		public function set selectedIndexOffset( value:Number ):void
-//		{
-//			if( _useScrollBarForNavigation )
-//			{
-//				updateScrollBar( _selectedIndex, value );
-//			}
-//			else
-//			{
-//				updateSelectedIndex( _selectedIndex, value );
-//			}
-//		}
+		//		
+		//		/**
+		//		 *  @private
+		//		 *	Storage property for selectedIndexOffset.
+		//		 */
+		//		private var _selectedIndexOffset	: Number = 0;
+		//		
+		//		/**
+		//		 *  inheritDoc
+		//		 *  
+		//		 *  @langversion 3.0
+		//		 *  @playerversion Flash 10
+		//		 *  @playerversion AIR 1.5
+		//		 *  @productversion Flex 4
+		//		 */
+		//		public function get selectedIndexOffset():Number
+		//		{
+		//			return _selectedIndexOffset;
+		//		}
+		//		/**
+		//		 *  @private
+		//		 */
+		//		public function set selectedIndexOffset( value:Number ):void
+		//		{
+		//			if( _useScrollBarForNavigation )
+		//			{
+		//				updateScrollBar( _selectedIndex, value );
+		//			}
+		//			else
+		//			{
+		//				updateSelectedIndex( _selectedIndex, value );
+		//			}
+		//		}
 		
 		
 		//----------------------------------
@@ -362,7 +362,7 @@ package ws.tink.spark.layouts.supportClasses
 			}
 			else
 			{
-//				updateSelectedIndex( value, 0 );
+				//				updateSelectedIndex( value, 0 );
 				invalidateSelectedIndex( value, 0 );
 			}
 		}
@@ -699,11 +699,11 @@ package ws.tink.spark.layouts.supportClasses
 			_unscaledWidth = unscaledWidth;
 			_unscaledHeight = unscaledHeight;
 			
-//			if( _elementsChanged || _targetChanged )
-//			{
-//				_elementsChanged = false;
-//				updateElements();
-//			}
+			//			if( _elementsChanged || _targetChanged )
+			//			{
+			//				_elementsChanged = false;
+			//				updateElements();
+			//			}
 			
 			var scrollPositionInvalid:Boolean;
 			
@@ -712,7 +712,7 @@ package ws.tink.spark.layouts.supportClasses
 			// a) the number of elements have changed
 			// b) includeLayout has changed on an element
 			// updateElementsInLayout();
-
+			
 			// TODO This was move to measure, but if the target has an explicit size
 			// measure isn't invoked, so checking it here too.
 			// If fired in measure this should no longer get invoked due to
@@ -723,22 +723,22 @@ package ws.tink.spark.layouts.supportClasses
 				updateElementsInLayout();
 			}
 			
-//			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
+			//			if( numElementsInLayout != _numElementsInLayout ) scrollPositionInvalid = true;
 			
 			// If the selected index has changed exit the method as its handle in selectedIndex
 			if( _numElementsInLayout == 0 )
 			{
-//				_selectedIndex = -1;
+				//				_selectedIndex = -1;
 				_selectedIndexInvalid = true;
 				_proposedSelectedIndex = -1;
-//				_proposedSelectedIndexOffset = 0;
+				//				_proposedSelectedIndexOffset = 0;
 			}
 			else if( selectedIndex == -1 )
 			{
 				_selectedIndexInvalid = true;
 				_proposedSelectedIndex = 0;
-//				_proposedSelectedIndexOffset = 0;
-//				scrollPositionChanged();
+				//				_proposedSelectedIndexOffset = 0;
+				//				scrollPositionChanged();
 				scrollPositionInvalid = true;
 			}
 			
@@ -749,7 +749,7 @@ package ws.tink.spark.layouts.supportClasses
 				// Only update if the target was changed after the selectedIndex
 				if( !_selectedIndexChangedAfterTargetChanged )
 				{
-//					scrollPositionChanged();
+					//					scrollPositionChanged();
 					scrollPositionInvalid = true;
 				}
 				else
@@ -777,8 +777,8 @@ package ws.tink.spark.layouts.supportClasses
 				_selectedIndex = numElementsInLayout ? _proposedSelectedIndex % numElementsInLayout : _proposedSelectedIndex;
 				_proposedSelectedIndex = -1;
 				
-//				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
-//				updateSelectedIndex( _proposedSelectedIndex, 0 );
+				//				updateSelectedIndex( _proposedSelectedIndex, _proposedSelectedIndexOffset );
+				//				updateSelectedIndex( _proposedSelectedIndex, 0 );
 			}
 			
 			if( selectedIndex > -1 )
@@ -880,7 +880,7 @@ package ws.tink.spark.layouts.supportClasses
 				{
 					_indicesInLayout.push( i );
 				}
-					
+				
 				_numElementsInLayout = _indicesInLayout.length;
 				_numElementsNotInLayout = _indicesNotInLayout.length;
 				return;
@@ -912,13 +912,21 @@ package ws.tink.spark.layouts.supportClasses
 				case LayoutAxis.HORIZONTAL :
 				{
 					target.setContentSize( unscaledWidth * _numElementsInLayout, unscaledHeight );
-					if( scroller ) scroller.horizontalScrollBar.stepSize = unscaledWidth;
+					if( scroller && scroller.horizontalScrollBar ) 
+					{
+						scroller.horizontalScrollBar.stepSize = unscaledWidth;
+						target.horizontalScrollPosition = selectedIndex * unscaledWidth;
+					}
 					break;
 				}
 				case LayoutAxis.VERTICAL :
 				{
 					target.setContentSize( unscaledWidth, unscaledHeight * _numElementsInLayout );
-					if( scroller ) scroller.verticalScrollBar.stepSize = unscaledHeight;
+					if( scroller && scroller.verticalScrollBar )
+					{
+						scroller.verticalScrollBar.stepSize = unscaledHeight;
+						target.verticalScrollPosition = selectedIndex * unscaledHeight;
+					}
 					break;
 				}
 			}
@@ -935,11 +943,11 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function updateDisplayListVirtual():void
 		{
-//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
-//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
-//			{
-//				target.getVirtualElementAt( _indicesNotInLayout[ i ] );
-//			}
+			//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
+			//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
+			//			{
+			//				target.getVirtualElementAt( _indicesNotInLayout[ i ] );
+			//			}
 		}
 		
 		/**
@@ -948,11 +956,11 @@ package ws.tink.spark.layouts.supportClasses
 		 */
 		protected function updateDisplayListReal():void
 		{
-//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
-//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
-//			{
-//				target.getElementAt( _indicesNotInLayout[ i ] );
-//			}
+			//			var numElementsNoInLayout:int = _indicesNotInLayout.length;
+			//			for( var i:int = 0; i < numElementsNoInLayout; i++ )
+			//			{
+			//				target.getElementAt( _indicesNotInLayout[ i ] );
+			//			}
 		}
 		
 		protected function setElementLayoutBoundsSize( element:IVisualElement, postLayoutTransform:Boolean = true ):void
@@ -998,14 +1006,14 @@ package ws.tink.spark.layouts.supportClasses
 			
 			if( target.numElements )
 			{
-//				updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
-//								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
+				//				updateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
+				//								( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
 				invalidateSelectedIndex( Math.round( scrollPosition / indexMaxScroll ),
 					( scrollPosition % indexMaxScroll > indexMaxScroll / 2 ) ? -( 1 - ( scrollPosition % indexMaxScroll ) / indexMaxScroll ) : ( scrollPosition % indexMaxScroll ) / indexMaxScroll );			
 			}
 			else
 			{
-//				updateSelectedIndex( -1, NaN );
+				//				updateSelectedIndex( -1, NaN );
 				invalidateSelectedIndex( -1, NaN );
 			}
 		}
@@ -1019,11 +1027,11 @@ package ws.tink.spark.layouts.supportClasses
 			{
 				case LayoutAxis.HORIZONTAL :
 				{
-					target.horizontalScrollPosition = ( index + offset ) * _unscaledWidth;
+					if( !isNaN( unscaledWidth ) ) target.horizontalScrollPosition = ( index + offset ) * unscaledWidth;
 				}
 				case LayoutAxis.VERTICAL :
 				{
-					target.verticalScrollPosition = (  index + offset ) * _unscaledHeight;
+					if( !isNaN( unscaledHeight ) ) target.verticalScrollPosition = (  index + offset ) * unscaledHeight;
 				}
 			}
 		}
@@ -1036,22 +1044,22 @@ package ws.tink.spark.layouts.supportClasses
 		 *  @playerversion AIR 1.5
 		 *  @productversion Flex 4
 		 */  
-//		protected function updateSelectedIndex( index:int, offset:Number ):void
-//		{
-////			trace( "updateSelectedIndex", index, offset );
-//			if( _selectedIndex == index ) return;// && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
-//			
-//			_proposedSelectedIndex = -1;
-////			_proposedSelectedIndexOffset = 0;
-//			
-//			_selectedIndexChanged = _selectedIndex != index;
-//			_selectedIndex = index;
-////			_selectedIndexOffset = offset;
-////			invalidateTargetDisplayList();
-//		}
+		//		protected function updateSelectedIndex( index:int, offset:Number ):void
+		//		{
+		////			trace( "updateSelectedIndex", index, offset );
+		//			if( _selectedIndex == index ) return;// && ( _selectedIndexOffset == offset || ( isNaN( _selectedIndexOffset ) && isNaN( offset ) ) ) ) return;
+		//			
+		//			_proposedSelectedIndex = -1;
+		////			_proposedSelectedIndexOffset = 0;
+		//			
+		//			_selectedIndexChanged = _selectedIndex != index;
+		//			_selectedIndex = index;
+		////			_selectedIndexOffset = offset;
+		////			invalidateTargetDisplayList();
+		//		}
 		
 		private var _proposedSelectedIndex:int = -1;
-//		private var _proposedSelectedIndexOffset:Number = 0;;
+		//		private var _proposedSelectedIndexOffset:Number = 0;;
 		private var _selectedIndexInvalid:Boolean;
 		protected function invalidateSelectedIndex( index:int, offset:Number ):void
 		{
@@ -1059,7 +1067,7 @@ package ws.tink.spark.layouts.supportClasses
 			
 			_selectedIndexInvalid = true;
 			_proposedSelectedIndex = index;// % numElementsInLayout;
-//			_proposedSelectedIndexOffset = offset;
+			//			_proposedSelectedIndexOffset = offset;
 			invalidateTargetDisplayList();
 		}
 		
@@ -1078,7 +1086,7 @@ package ws.tink.spark.layouts.supportClasses
 		protected function invalidateTargetDisplayList() : void
 		{
 			if( !target ) return;
-
+			
 			target.invalidateDisplayList();
 		}
 		
@@ -1115,57 +1123,57 @@ package ws.tink.spark.layouts.supportClasses
 			return null;
 		}
 		
-//		/**
-//		 *  @inheritDoc
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		override public function elementAdded( index:int ):void
-//		{
-//			super.elementAdded( index );
-//			
-//			_elementsChanged = true;
-//			
-//			invalidateTargetDisplayList();
-//			//TODO maybe add a listener here for "includeInLayoutChanged"
-//			// not implement due to risk of not being able to remove the listener
-//			// (https://bugs.adobe.com/jira/browse/SDK-25896)
-//			
-//			
-//			// TODO Tink
-//			// We should fire this if the index added is less or equal to the
-//			// selectedIndex.
-//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
-//			// AS THE INDEX HASN'T CHANGED
-////			if( selectedIndex == -1 ) scrollPositionChanged();
-//		}
+		//		/**
+		//		 *  @inheritDoc
+		//		 *  
+		//		 *  @langversion 3.0
+		//		 *  @playerversion Flash 10
+		//		 *  @playerversion AIR 1.5
+		//		 *  @productversion Flex 4
+		//		 */
+		//		override public function elementAdded( index:int ):void
+		//		{
+		//			super.elementAdded( index );
+		//			
+		//			_elementsChanged = true;
+		//			
+		//			invalidateTargetDisplayList();
+		//			//TODO maybe add a listener here for "includeInLayoutChanged"
+		//			// not implement due to risk of not being able to remove the listener
+		//			// (https://bugs.adobe.com/jira/browse/SDK-25896)
+		//			
+		//			
+		//			// TODO Tink
+		//			// We should fire this if the index added is less or equal to the
+		//			// selectedIndex.
+		//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+		//			// AS THE INDEX HASN'T CHANGED
+		////			if( selectedIndex == -1 ) scrollPositionChanged();
+		//		}
 		
-//		/**
-//		 *  @inheritDoc
-//		 *  
-//		 *  @langversion 3.0
-//		 *  @playerversion Flash 10
-//		 *  @playerversion AIR 1.5
-//		 *  @productversion Flex 4
-//		 */
-//		override public function elementRemoved(index:int):void
-//		{
-//			super.elementRemoved( index );
-//			
-//			_elementsChanged = true;
-//			
-//			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
-//			
-//			// TODO Tink
-//			// We should fire this if the index added is less or equal to the
-//			// selectedIndex.
-//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
-//			// AS THE INDEX HASN'T CHANGED
-////			if( selectedIndex == -1 ) scrollPositionChanged();
-//		}
+		//		/**
+		//		 *  @inheritDoc
+		//		 *  
+		//		 *  @langversion 3.0
+		//		 *  @playerversion Flash 10
+		//		 *  @playerversion AIR 1.5
+		//		 *  @productversion Flex 4
+		//		 */
+		//		override public function elementRemoved(index:int):void
+		//		{
+		//			super.elementRemoved( index );
+		//			
+		//			_elementsChanged = true;
+		//			
+		//			//TODO restor element (https://bugs.adobe.com/jira/browse/SDK-25896)
+		//			
+		//			// TODO Tink
+		//			// We should fire this if the index added is less or equal to the
+		//			// selectedIndex.
+		//			// WE NEED TO FORCE THIS TO UPDATE THOUGH AS IT WON'T BY DEFAULT
+		//			// AS THE INDEX HASN'T CHANGED
+		////			if( selectedIndex == -1 ) scrollPositionChanged();
+		//		}
 		
 		/**
 		 *  @private

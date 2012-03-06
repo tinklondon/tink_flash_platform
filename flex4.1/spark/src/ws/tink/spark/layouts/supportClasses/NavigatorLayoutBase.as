@@ -3,12 +3,10 @@ package ws.tink.spark.layouts.supportClasses
 	import flash.display.DisplayObject;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
-	import flash.net.getClassByAlias;
 	
 	import mx.controls.scrollClasses.ScrollBarDirection;
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
-	import mx.events.ChildExistenceChangedEvent;
 	import mx.events.FlexEvent;
 	
 	import spark.components.DataGroup;
@@ -910,13 +908,21 @@ package ws.tink.spark.layouts.supportClasses
 				case ScrollBarDirection.HORIZONTAL :
 				{
 					target.setContentSize( unscaledWidth * _numElementsInLayout, unscaledHeight );
-					if( scroller ) scroller.horizontalScrollBar.stepSize = unscaledWidth;
+					if( scroller )
+					{
+						scroller.horizontalScrollBar.stepSize = unscaledWidth;
+						target.horizontalScrollPosition = selectedIndex * unscaledWidth;
+					}
 					break;
 				}
 				case ScrollBarDirection.VERTICAL :
 				{
 					target.setContentSize( unscaledWidth, unscaledHeight * _numElementsInLayout );
-					if( scroller ) scroller.verticalScrollBar.stepSize = unscaledHeight;
+					if( scroller )
+					{
+						scroller.verticalScrollBar.stepSize = unscaledHeight;
+						target.verticalScrollPosition = selectedIndex * unscaledHeight;
+					}
 					break;
 				}
 			}
@@ -1017,11 +1023,13 @@ package ws.tink.spark.layouts.supportClasses
 			{
 				case ScrollBarDirection.HORIZONTAL :
 				{
-					target.horizontalScrollPosition = ( index + offset ) * _unscaledWidth;
+					if( !isNaN( unscaledWidth ) ) target.horizontalScrollPosition = ( index + offset ) * unscaledWidth;
+					break;
 				}
 				case ScrollBarDirection.VERTICAL :
 				{
-					target.verticalScrollPosition = (  index + offset ) * _unscaledHeight;
+					if( !isNaN( unscaledHeight ) ) target.verticalScrollPosition = (  index + offset ) * unscaledHeight;
+					break;
 				}
 			}
 		}
