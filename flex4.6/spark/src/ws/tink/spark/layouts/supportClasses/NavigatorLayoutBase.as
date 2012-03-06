@@ -912,13 +912,21 @@ package ws.tink.spark.layouts.supportClasses
 				case LayoutAxis.HORIZONTAL :
 				{
 					target.setContentSize( unscaledWidth * _numElementsInLayout, unscaledHeight );
-					if( scroller ) scroller.horizontalScrollBar.stepSize = unscaledWidth;
+					if( scroller && scroller.horizontalScrollBar ) 
+					{
+						scroller.horizontalScrollBar.stepSize = unscaledWidth;
+						target.horizontalScrollPosition = selectedIndex * unscaledWidth;
+					}
 					break;
 				}
 				case LayoutAxis.VERTICAL :
 				{
 					target.setContentSize( unscaledWidth, unscaledHeight * _numElementsInLayout );
-					if( scroller ) scroller.verticalScrollBar.stepSize = unscaledHeight;
+					if( scroller && scroller.verticalScrollBar )
+					{
+						scroller.verticalScrollBar.stepSize = unscaledHeight;
+						target.verticalScrollPosition = selectedIndex * unscaledHeight;
+					}
 					break;
 				}
 			}
@@ -1019,11 +1027,11 @@ package ws.tink.spark.layouts.supportClasses
 			{
 				case LayoutAxis.HORIZONTAL :
 				{
-					target.horizontalScrollPosition = ( index + offset ) * _unscaledWidth;
+					if( !isNaN( unscaledWidth ) ) target.horizontalScrollPosition = ( index + offset ) * unscaledWidth;
 				}
 				case LayoutAxis.VERTICAL :
 				{
-					target.verticalScrollPosition = (  index + offset ) * _unscaledHeight;
+					if( !isNaN( unscaledHeight ) ) target.verticalScrollPosition = (  index + offset ) * unscaledHeight;
 				}
 			}
 		}
