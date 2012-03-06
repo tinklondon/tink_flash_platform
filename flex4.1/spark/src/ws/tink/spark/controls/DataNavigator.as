@@ -1248,6 +1248,18 @@ package ws.tink.spark.controls
 					contentGroup.addEventListener(
 						RendererExistenceEvent.RENDERER_REMOVE, dispatchEvent);
 				}
+				
+				if (hasEventListener(FlexEvent.VALUE_COMMIT))
+				{
+					contentGroup.addEventListener(
+						FlexEvent.VALUE_COMMIT, dispatchEvent);
+				}
+				
+				if (hasEventListener(IndexChangeEvent.CHANGE))
+				{
+					contentGroup.addEventListener(
+						IndexChangeEvent.CHANGE, dispatchEvent);
+				}
 			}
 		}
 		
@@ -1264,6 +1276,10 @@ package ws.tink.spark.controls
 					RendererExistenceEvent.RENDERER_ADD, dispatchEvent);
 				contentGroup.removeEventListener(
 					RendererExistenceEvent.RENDERER_REMOVE, dispatchEvent);
+				contentGroup.removeEventListener(
+					FlexEvent.VALUE_COMMIT, dispatchEvent);
+				contentGroup.removeEventListener(
+					IndexChangeEvent.CHANGE, dispatchEvent);
 				
 				// copy proxied values from contentGroup (if explicitly set) to dataGroupProperties
 				
@@ -1374,6 +1390,18 @@ package ws.tink.spark.controls
 				contentGroup.addEventListener(
 					RendererExistenceEvent.RENDERER_REMOVE, dispatchEvent);
 			}
+			
+			if (type == FlexEvent.VALUE_COMMIT && contentGroup)
+			{
+				contentGroup.addEventListener(
+					FlexEvent.VALUE_COMMIT, dispatchEvent);
+			}
+			
+			if (type == IndexChangeEvent.CHANGE && contentGroup)
+			{
+				contentGroup.addEventListener(
+					IndexChangeEvent.CHANGE, dispatchEvent);
+			}
 		}
 		
 		/**
@@ -1404,6 +1432,24 @@ package ws.tink.spark.controls
 				{
 					contentGroup.removeEventListener(
 						RendererExistenceEvent.RENDERER_REMOVE, dispatchEvent);
+				}
+			}
+			
+			if (type == FlexEvent.VALUE_COMMIT && contentGroup)
+			{
+				if (!hasEventListener(FlexEvent.VALUE_COMMIT))
+				{
+					contentGroup.removeEventListener(
+						FlexEvent.VALUE_COMMIT, dispatchEvent);
+				}
+			}
+			
+			if (type == IndexChangeEvent.CHANGE && contentGroup)
+			{
+				if (!hasEventListener(IndexChangeEvent.CHANGE))
+				{
+					contentGroup.removeEventListener(
+						IndexChangeEvent.CHANGE, dispatchEvent);
 				}
 			}
 		}
